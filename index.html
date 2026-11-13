@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f7ff">
+<meta name="description" content="Gra dla klasy 3: nauka zegara, zadania tekstowe, dwie pomyłki i kolekcja zabawnych naklejek.">
+<title>Zegarowe przygody 3.0 — misja 10 pytań</title>
+<style>
+  :root { --ink:#243052; --muted:#66718c; --paper:#fff; --mint:#d9f6e8; --aqua:#087e83; --pink:#f76b77; --pink-pale:#ffe8ed; --purple:#6656cc; --border:#e6e9f3; --cream:#fff7e3; }
+  * {box-sizing:border-box}
+  body {margin:0; color:var(--ink); font-family:ui-rounded, 'Trebuchet MS', system-ui, -apple-system, 'Segoe UI', sans-serif; background:radial-gradient(circle at 12% 3%, #e5e0ff,transparent 29%),radial-gradient(circle at 91% 18%, #d6f8ea,transparent 32%),#f6f7ff; min-height:100svh}
+  button,select {font:inherit}
+  button {cursor:pointer}
+  button:focus-visible,select:focus-visible,svg:focus-visible {outline:3px solid #7767f7;outline-offset:3px}
+  .app {width:min(1120px,100%);margin:0 auto;padding:23px 20px 36px}
+  header {display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;flex-wrap:wrap}
+  .identity {display:flex;gap:12px;align-items:center}
+  .logo {width:51px;height:51px;border-radius:16px;background:#fff;display:grid;place-items:center;font-size:30px;box-shadow:0 8px 22px #5b568020}
+  h1 {font-size:clamp(1.4rem,3vw,2rem);letter-spacing:-.035em;line-height:1.15;margin:0}
+  .subtitle {margin:4px 0 0;color:var(--muted);font-size:.93rem}
+  .topscore {display:flex;gap:9px}
+  .score {background:#fff;border:1px solid var(--border);padding:10px 15px;border-radius:17px;font-size:.9rem;white-space:nowrap}
+  .score strong {display:block;font-size:1.3rem;margin-top:2px;line-height:1.1}
+  .tabbar {display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px}
+  .tab {border:2px solid transparent;border-radius:16px;background:#fff;color:var(--ink);font-weight:800;padding:12px 17px;box-shadow:0 5px 13px #303c6410;transition:transform .1s,border-color .15s}
+  .tab[aria-selected="true"] {background:#e9f7f5;border-color:var(--aqua);color:#085b61}
+  .tab:hover {transform:translateY(-1px)}
+  .config {display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 15px;background:#fff9;border:1px solid #e9eaf3;border-radius:16px;padding:12px 17px}
+  .difficulty {display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .difficulty label {font-weight:800;font-size:.9rem;margin-right:2px}
+  .level {border:1px solid #dedfed;border-radius:12px;background:#fff;padding:8px 12px;color:var(--ink);font-size:.9rem;font-weight:700}
+  .level[aria-pressed="true"] {background:#6357ce;color:#fff;border-color:#6357ce}
+  .progresslabel {font-size:.91rem;color:var(--muted);font-weight:800;white-space:nowrap}
+  .progress {height:8px;background:#e7eaf3;border-radius:9px;overflow:hidden;margin-bottom:17px}
+  .progress>span {height:100%;display:block;width:0;background:linear-gradient(90deg,#64c8bd,#8b7be0);transition:width .25s}
+  main {display:grid;grid-template-columns:minmax(310px,1.08fr) minmax(310px,.92fr);gap:20px;align-items:start}
+  .clockpane,.workpane {background:#fff;border:1px solid #e8eaf4;border-radius:26px;box-shadow:0 13px 36px #5861800e}
+  .clockpane {padding:24px 19px 25px;text-align:center}
+  .workpane {padding:27px 25px 25px;min-height:450px}
+  .clockhint {margin:0 auto;color:var(--muted);font-weight:700;font-size:.93rem}
+  .clockbox {width:min(100%,430px);margin:8px auto 6px;position:relative;aspect-ratio:1}
+  #clock {display:block;width:100%;height:100%;overflow:visible;touch-action:none;user-select:none;-webkit-user-select:none}
+  #clock.interactive {cursor:crosshair}
+  .legend {display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);font-weight:750}
+  .swatch {display:inline-block;width:24px;height:6px;border-radius:9px;vertical-align:middle;margin-right:4px}
+  .swatch.hour {background:var(--aqua)} .swatch.minute {background:var(--pink)}
+  .eyebrow {color:var(--purple);font-weight:900;letter-spacing:.07em;text-transform:uppercase;font-size:.78rem;margin-bottom:8px}
+  h2 {font-size:clamp(1.55rem,3vw,2rem);letter-spacing:-.04em;line-height:1.15;margin:0 0 12px}
+  .desc {line-height:1.6;color:var(--muted);margin:0 0 20px;font-size:.99rem}
+  .target {font-size:clamp(2.8rem,8vw,4rem);font-weight:900;color:var(--aqua);letter-spacing:-.055em;line-height:1;margin:3px 0 19px}
+  .answers {display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin:22px 0}
+  .field {display:flex;flex:1;min-width:112px;flex-direction:column;gap:7px;font-size:.87rem;font-weight:800;color:var(--muted)}
+  select {width:100%;padding:13px 9px;border:2px solid #dcddec;border-radius:14px;background:#fff;color:var(--ink);font-size:1.2rem;font-weight:800;min-height:54px}
+  .colon {font-size:2rem;font-weight:900;padding-bottom:7px;color:var(--muted)}
+  .hands {display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:15px 0}
+  .handchoice {min-height:55px;border-radius:15px;border:2px solid #e0e5f0;background:#fff;color:var(--ink);font-weight:850;padding:10px 8px}
+  .handchoice[data-hand="hour"][aria-pressed="true"] {border-color:var(--aqua);background:#e7f8f6;color:#006d70}
+  .handchoice[data-hand="minute"][aria-pressed="true"] {border-color:var(--pink);background:var(--pink-pale);color:#ad3241}
+  .nudge {display:flex;gap:10px;align-items:center;margin:7px 0 17px}
+  .nudge button {flex:1;border:1px solid #dcdfee;background:#f8f9fe;border-radius:13px;min-height:44px;font-weight:850;color:var(--ink)}
+  .nudge span {color:var(--muted);font-size:.85rem;flex:1.8;text-align:center}
+  .buttonrow {display:flex;gap:10px;flex-wrap:wrap;margin-top:21px}
+  .primary {flex:1;padding:14px 19px;min-height:53px;background:var(--purple);border:2px solid var(--purple);color:#fff;font-weight:900;border-radius:15px;box-shadow:0 7px 18px #6656cc20;font-size:1rem}
+  .primary:hover {background:#5142b1}
+  .secondary {border:2px solid #e5e5f3;background:#fff;color:var(--muted);padding:12px 17px;min-height:53px;font-weight:850;border-radius:15px}
+  .secondary:hover {border-color:#bbb7eb;color:var(--purple)}
+  .feedback {margin:16px 0 0;padding:13px 15px;background:#f1f5ff;border-radius:14px;line-height:1.5;font-weight:750}
+  .feedback.success {background:#e6f8ec;color:#16643c}
+  .feedback.error {background:#fff1e5;color:#865221}
+  .feedback.info {background:#f0f1ff;color:#473b9a}
+  .tip {margin-top:19px;background:#fff7e7;border:1px solid #fce9c5;padding:13px 15px;border-radius:15px;font-size:.92rem;line-height:1.5;color:#70562b}
+  .tip strong {color:#59401d}
+  .small {font-size:.82rem;color:var(--muted)}
+  .finish {text-align:center;padding:22px 0 10px}
+  .finish .emoji {font-size:4rem;line-height:1.2}
+  .finish p {line-height:1.65;color:var(--muted)}
+  footer {text-align:center;font-size:.81rem;color:var(--muted);padding:20px 0 0}
+  .hidden {display:none !important}
+  .story-prompt {font-size:clamp(1.22rem,2.3vw,1.55rem);font-weight:800;line-height:1.55;background:#f2f4ff;border:1px solid #e1e2f9;border-radius:18px;padding:18px 17px;margin:15px 0 20px;white-space:pre-line}
+  .story-answer-label {font-weight:850;font-size:.94rem;margin:0}
+  .choice-list {display:grid;gap:10px;margin:14px 0 18px}
+  .choice {text-align:left;border:2px solid #dfe4ef;border-radius:14px;background:#fff;padding:13px 15px;font-size:1rem;font-weight:800;color:var(--ink);line-height:1.4;min-height:54px}
+  .choice[aria-pressed="true"] {border-color:#6556cc;background:#f0edff;color:#4536a3}
+  .story-clock-tools {padding:12px 8px 2px;margin:9px auto 0;max-width:430px;border-top:1px solid var(--border)}
+  .story-clock-tools .hands {margin:10px 0 5px}
+  .story-clock-tools .small {margin:8px 0}
+  .clock-steps {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .clock-steps button {background:#f8f9fe;border:1px solid #dadeea;border-radius:11px;padding:10px 2px;font-size:.78rem;font-weight:800;color:var(--ink);min-height:44px}
+  .clock-start {min-height:42px;width:100%;margin:11px 0 4px;font-size:.85rem;padding:7px}
+  body[data-mode="story"] .clockpane {position:relative}
+  body[data-mode="story"] #clock {touch-action:none}
+  @media(max-width:730px){body[data-mode="story"] .workpane,body[data-mode="mission"][data-puzzle="story"] .workpane{order:-1} body[data-mode="story"] .clockpane .clockbox,body[data-mode="mission"][data-puzzle="story"] .clockpane .clockbox{max-width:310px} .story-prompt{padding:14px;font-size:1.2rem} .clock-steps{gap:5px} .clock-steps button{font-size:.72rem}}
+
+  @media(max-width:730px) { .app{padding:16px 12px 30px} header{margin-bottom:15px}.topscore{width:100%}.score{flex:1;padding:8px 12px}.tab{flex:1;padding:11px 10px;font-size:.95rem}.config{padding:11px}.progress{margin-bottom:12px}main{grid-template-columns:1fr;gap:12px}.clockpane{padding:13px 10px 15px}.clockbox{max-width:350px;margin:0 auto}.workpane{padding:21px 18px;min-height:initial}.desc{margin-bottom:15px}.hands{margin:12px 0}.nudge{margin-bottom:10px}.clockhint{font-size:.82rem} }
+  @media(max-width:380px) {.tab{font-size:.83rem;padding:10px 7px}.logo{width:43px;height:43px}.level{font-size:.8rem;padding:8px}.answers{gap:5px}.field{min-width:95px}.colon{padding:0 2px 8px}}
+  @media(prefers-reduced-motion:reduce) {*{transition:none !important}}
+
+  /* Grywalizacja: dwie pomyłki w serii, mikro-nagrody i duża naklejka. */
+  .lives {display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 15px;padding:10px 15px;border-radius:15px;background:#fff;border:1px solid #e8eaf3;font-weight:800}
+  .lives strong{font-size:1.35rem;letter-spacing:.08em;white-space:nowrap}
+  .lives small{color:var(--muted);font-size:.83rem;font-weight:700}
+  .lives .rule{color:#66718c;font-size:.79rem;margin-left:auto;max-width:385px;line-height:1.35;font-weight:650}
+  .mini-reward{display:flex;align-items:center;gap:12px;background:#fff5d9;border:2px dashed #f3cb79;border-radius:16px;padding:12px 14px;margin:12px 0 3px;font-weight:850;color:#825b25}
+  .mini-reward .mini-emoji{font-size:2.3rem;flex:none;line-height:1.2}
+  .mini-reward.pop{animation:happy-pop .35s ease-out}
+  @keyframes happy-pop{0%{transform:scale(.94)}70%{transform:scale(1.025)}100%{transform:scale(1)}}
+  .finish-percent{display:inline-flex;align-items:center;justify-content:center;background:#edf8f6;color:#007d77;border-radius:100px;font-size:1.5rem;padding:8px 20px;font-weight:900;margin:13px 0 10px}
+  .award-card{max-width:370px;position:relative;margin:19px auto 20px;padding:23px 14px 24px;background:linear-gradient(145deg,#e8ddff,#fff4d5);border:3px dashed #be9ee9;border-radius:29px;box-shadow:0 8px 0 #e5def9,0 18px 34px #6d4eaa26;isolation:isolate;transform:rotate(-1deg)}
+  .award-card[data-theme="mint"]{background:linear-gradient(145deg,#d3fff0,#fff4ce);border-color:#6dcdb5;box-shadow:0 8px 0 #d7f2e6,0 18px 34px #6d4eaa26}
+  .award-card[data-theme="peach"]{background:linear-gradient(145deg,#ffe0cc,#fff4d5);border-color:#f7b278;box-shadow:0 8px 0 #ffead9,0 18px 34px #6d4eaa26}
+  .award-card::before,.award-card::after{content:'✦';position:absolute;font-size:2.1rem;color:#e39a17}
+  .award-card::before{top:15px;left:20px}.award-card::after{right:19px;bottom:15px}
+  .award-header{font-size:.81rem;text-transform:uppercase;letter-spacing:.14em;font-weight:950;color:#705894}
+  .award-face{width:165px;height:165px;margin:10px auto 12px;display:grid;place-items:center;border:6px solid #fff;border-radius:50%;background:radial-gradient(circle at 35% 30%,white,#ffed9c);box-shadow:0 9px 17px #8d70b238;font-size:6rem;transform:rotate(4deg)}
+  .award-name{font-size:1.62rem;font-weight:950;letter-spacing:-.03em;line-height:1.12;margin:4px 0 11px}
+  .award-quote{font-size:1.06rem;line-height:1.5;color:#5e4d78;font-weight:800;margin:0 auto 12px;max-width:310px}
+  .award-collection{font-size:.85rem;color:#6d617f;font-weight:700}
+  .retry-message{padding:15px 17px;border-radius:14px;background:#fff6e5;color:#755c27;margin:15px auto;max-width:360px;line-height:1.5}
+  .legend-short{font-size:.8rem;font-weight:750;color:#645a80}
+  @media(max-width:730px){.lives .rule{margin-left:0}.app{padding-bottom:28px}.award-face{width:145px;height:145px;font-size:5rem}.award-name{font-size:1.4rem}}
+  @media(prefers-reduced-motion:reduce){.mini-reward.pop{animation:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="identity"><div class="logo" aria-hidden="true">⏰</div><div><h1>Zegarowe przygody</h1><p class="subtitle">Klasa 3 · 10 zagadek, 2 pomyłki i wesołe naklejki</p></div></div>
+    <div class="topscore" aria-label="Wyniki ćwiczeń"><div class="score">Rozwiązane <strong id="solvedCount">0/10</strong></div><div class="score">Gwiazdki <strong id="starCount">0 ⭐</strong></div></div>
+  </header>
+  <nav class="tabbar" aria-label="Rodzaj ćwiczeń">
+    <button class="tab" data-mode="read" id="readTab" aria-selected="false" type="button">👀 Odczytaj godzinę</button>
+    <button class="tab" data-mode="set" id="setTab" aria-selected="false" type="button">🖐️ Ustaw wskazówki</button>
+    <button class="tab" data-mode="story" id="storyTab" aria-selected="false" type="button">🧠 Zadania z czasem</button>
+    <button class="tab" data-mode="mission" id="missionTab" aria-selected="true" type="button">🎲 Wielka misja · Mix</button>
+  </nav>
+  <div class="config">
+    <div class="difficulty" role="group" aria-label="Poziom trudności"><label>Poziom:</label><button type="button" class="level" data-level="1" aria-pressed="true">1 · Podstawy</button><button type="button" class="level" data-level="2" aria-pressed="false">2 · Co 5 minut</button><button type="button" class="level" data-level="3" aria-pressed="false">3 · Co minutę</button></div>
+    <div class="difficulty storytypes hidden" id="storyTypes" role="group" aria-label="Typ zadań"><label>Rodzaj:</label><button type="button" class="level typebutton" data-kind="mix" aria-pressed="true">🎲 Wszystkie</button><button type="button" class="level typebutton" data-kind="calc" aria-pressed="false">⏳ Obliczenia</button><button type="button" class="level typebutton" data-kind="words" aria-pressed="false">💬 Słownie</button><button type="button" class="level typebutton" data-kind="life" aria-pressed="false">🏫 Z życia</button></div>
+    <div class="progresslabel" id="taskLabel">Zadanie 1 z 10</div>
+  </div>
+  <div class="lives"><span>Serduszka pomyłek:</span><strong id="mistakeCount" aria-label="Dwa serduszka">❤️❤️</strong><small id="mistakeText">2 z 2 pomyłek</small><span class="rule">Możesz poprawić dwie pomyłki w serii. Potem gra pomoże Ci rozwiązaniem. Duża naklejka za 10/10.</span></div>
+  <div class="progress"><span id="progressFill"></span></div>
+  <main>
+    <section class="clockpane" aria-label="Zegar wskazówkowy">
+      <p class="clockhint" id="clockInstruction">Spójrz uważnie na obie wskazówki</p>
+      <div class="clockbox"><svg id="clock" viewBox="0 0 400 400" role="img" aria-label="Zegar ze wskazówkami" xmlns="http://www.w3.org/2000/svg"><circle cx="200" cy="200" r="181" fill="#eef0fc"/><circle cx="200" cy="200" r="172" fill="white" stroke="#e2e6f1" stroke-width="3"/><g id="ticks"></g><g id="numbers"></g><g id="hourHand" data-hand="hour"><line x1="200" y1="219" x2="200" y2="118" stroke="#087e83" stroke-width="12" stroke-linecap="round"/><circle cx="200" cy="136" r="18" fill="transparent"/></g><g id="minuteHand" data-hand="minute"><line x1="200" y1="223" x2="200" y2="71" stroke="#f76b77" stroke-width="8" stroke-linecap="round"/><circle cx="200" cy="84" r="19" fill="transparent"/></g><circle cx="200" cy="200" r="13" fill="#27324c"/><circle cx="200" cy="200" r="5" fill="white"/></svg></div>
+      <div class="legend"><span><i class="swatch hour"></i> krótka = godzina</span><span><i class="swatch minute"></i> długa = minuty</span></div>
+      <div id="storyClockTools" class="story-clock-tools hidden">
+        <div class="hands"><button class="handchoice" type="button" data-hand="hour" aria-pressed="true">🟢 Krótka</button><button class="handchoice" type="button" data-hand="minute" aria-pressed="false">🔴 Długa</button></div>
+        <p class="small">Zegar jest pomocniczy. Możesz poruszać jego wskazówkami.</p>
+        <div class="clock-steps"><button type="button" id="clockBack15">−15 min</button><button type="button" id="clockForward15">+15 min</button><button type="button" id="clockForward30">+30 min</button><button type="button" id="clockForward60">+1 godz.</button></div>
+        <button type="button" class="secondary clock-start" id="clockStart">🕘 Ustaw godzinę początkową</button>
+      </div>
+    </section>
+    <section class="workpane" aria-live="polite">
+      <div id="exercise">
+        <div class="eyebrow" id="modeCaption">Odczytywanie</div>
+        <h2 id="question">Która jest godzina?</h2>
+        <p class="desc" id="instruction">Sprawdź, gdzie jest krótka wskazówka, a potem policz minuty na długiej.</p>
+        <div id="readControls"><div class="answers"><label class="field" for="answerHour">Godzina<select id="answerHour"><option value="">Wybierz</option></select></label><div class="colon" aria-hidden="true">:</div><label class="field" for="answerMinute">Minuty<select id="answerMinute"><option value="">Wybierz</option></select></label></div></div>
+        <div id="storyControls" class="hidden">
+          <div class="story-prompt" id="storyPrompt"></div>
+          <div id="storyDigitAnswer"><p class="small story-answer-label">Wpisz wynik — godzinę i minuty:</p><div class="answers"><label class="field" for="storyHour">Godzina (0–23)<select id="storyHour"><option value="">Wybierz</option></select></label><div class="colon" aria-hidden="true">:</div><label class="field" for="storyMinute">Minuty<select id="storyMinute"><option value="">Wybierz</option></select></label></div></div>
+          <div id="storyWordAnswer" class="hidden"><p class="small story-answer-label">Wybierz jedną odpowiedź:</p><div class="choice-list" id="storyChoices"></div></div>
+        </div>
+        <div id="setControls" class="hidden"><div class="target" id="targetTime">3:30</div><p class="small">Dotknij tarczy zegara, aby ustawić wybraną wskazówkę. Możesz też przeciągać wskazówki palcem lub myszką.</p><div class="hands"><button class="handchoice" type="button" data-hand="hour" aria-pressed="true">🟢 Krótka · godzina</button><button class="handchoice" type="button" data-hand="minute" aria-pressed="false">🔴 Długa · minuty</button></div><div class="nudge"><button id="nudgeBack" type="button" aria-label="Przesuń wybraną wskazówkę do tyłu">← W lewo</button><span id="nudgeLabel">Przesuwasz godzinę</span><button id="nudgeForward" type="button" aria-label="Przesuń wybraną wskazówkę do przodu">W prawo →</button></div></div>
+        <div class="buttonrow"><button class="primary" type="button" id="checkBtn">Sprawdź ✓</button><button class="secondary" type="button" id="hintBtn">💡 Podpowiedź</button><button class="secondary" type="button" id="skipBtn">Pomiń</button></div>
+        <div id="feedback" class="feedback hidden" role="status"></div>
+        <div class="mini-reward hidden" id="miniReward" role="status"><span class="mini-emoji" id="miniEmoji">🦉</span><span id="miniText"></span></div>
+        <div class="tip" id="lessonTip"><strong>Zapamiętaj:</strong> krótka wskazówka pokazuje godziny, a długa minuty. Każda duża liczba na tarczy to <strong>5 minut</strong> dla długiej wskazówki.</div>
+      </div>
+      <div class="finish hidden" id="finish">
+        <div class="emoji">🏆</div><h2 id="finishTitle">Brawo!</h2>
+        <div class="finish-percent" id="finishPercent">100%</div>
+        <p id="finishSummary"></p>
+        <div id="awardCard" class="award-card hidden" role="status" aria-label="Odblokowana wielka naklejka">
+          <div class="award-header">✨ Specjalna naklejka! ✨</div>
+          <div class="award-face" id="awardEmoji">🦄</div>
+          <div class="award-name" id="awardName">Jednorożec Punktualności</div>
+          <p class="award-quote" id="awardQuote"></p>
+          <div class="award-collection" id="awardCollection"></div>
+        </div>
+        <div class="retry-message hidden" id="retryMessage">🎁 Wielka naklejka czeka na komplet 10/10. Spróbuj ponownie — kolejne pytania będą inne!</div>
+        <button class="primary" id="restartBtn" type="button">Kolejne 10 zadań 🎲</button>
+        <p class="small" id="bestScore"></p>
+      </div>
+    </section>
+  </main>
+  <footer>Ćwicz we własnym tempie 💜 · Dane zostają na urządzeniu · Bez reklam, konta i internetu</footer>
+</div>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const clock = $('clock'), hourHand = $('hourHand'), minuteHand = $('minuteHand');
+  const TOTAL=10, MAX_MISTAKES=2;
+  const state={mode:'mission', puzzleMode:'read',level:1,storyKind:'mix',index:1,targetH:3,targetM:0,userH:12,userM:0,selected:'hour',solved:0,stars:0,mistakes:0,questionMistakes:0,done:false,dragging:false,story:null,selectedChoice:null,plan:[],lastMini:-1,lastPrompt:'',ended:false};
+  const pad=n=>String(n).padStart(2,'0');
+  const format=(h,m)=>`${pad(h)}:${pad(m)}`;
+  const rand=n=>Math.floor(Math.random()*n);
+  const pick=a=>a[rand(a.length)];
+  const norm12=h=>((h-1+120)%12)+1;
+  const norm1440=t=>((t%1440)+1440)%1440;
+  const minutesOf=(h,m)=>h*60+m;
+  const splitTime=t=>({h:Math.floor(norm1440(t)/60),m:norm1440(t)%60});
+  const shuffle=a=>{const copy=[...a];for(let i=copy.length-1;i>0;i--){const j=rand(i+1);[copy[i],copy[j]]=[copy[j],copy[i]];}return copy;};
+  const genitive=['dwunastej','pierwszej','drugiej','trzeciej','czwartej','piątej','szóstej','siódmej','ósmej','dziewiątej','dziesiątej','jedenastej'];
+  const nominative=['dwunasta','pierwsza','druga','trzecia','czwarta','piąta','szósta','siódma','ósma','dziewiąta','dziesiąta','jedenasta'];
+  const minuteWords={5:'pięć',10:'dziesięć',15:'kwadrans',20:'dwadzieścia',25:'dwadzieścia pięć'};
+  const durationWords={5:'5 minut',10:'10 minut',15:'kwadrans',20:'20 minut',25:'25 minut',30:'pół godziny',35:'35 minut',40:'40 minut',45:'trzy kwadranse',50:'50 minut',60:'godzinę',75:'godzinę i kwadrans',90:'półtorej godziny',105:'godzinę i trzy kwadranse',120:'dwie godziny',135:'dwie godziny i kwadrans',150:'dwie i pół godziny',180:'trzy godziny'};
+  const miniRewards=[
+    ['🦉','Sowa woła: „Ty-kak świetnie!”'],
+    ['🐱','Kot mruczy: „Miau-nuta sukcesu!”'],
+    ['🚀','Rakieta zdążyła dokładnie na czas!'],
+    ['🐸','Żabka przeskoczyła cały kwadrans!'],
+    ['🦊','Lisek daje piątkę wskazówką!'],
+    ['🐼','Panda klaszcze co pięć minut!'],
+    ['🍩','Pączek kręci się jak wskazówka!'],
+    ['🦄','Jednorożec zarządza przerwę na radość!'],
+    ['🐙','Ośmiornica liczy osiem zegarów naraz!'],
+    ['🌈','Kolorowe minuty są po Twojej stronie!'],
+    ['🐧','Pingwin wreszcie się nie spóźnił!'],
+    ['🎈','Balon wzleciał punktualnie!']
+  ];
+  const bigRewards=[
+    {emoji:'🦄',name:'Jednorożec Punktualności',phrase:'Przybywam punktualnie… nawet z krainy bajek!',theme:'lilac'},
+    {emoji:'🦉',name:'Sowa Dwunasta',phrase:'Huhu! Kto tu mądrze liczy minuty?',theme:'mint'},
+    {emoji:'🚀',name:'Rakieta Kwadransowa',phrase:'Od zera do kwadransa w trzy, dwa, jeden!',theme:'peach'},
+    {emoji:'🐱',name:'Kot Miau-nutka',phrase:'Mam dziewięć żyć i zawsze czas na drzemkę!',theme:'lilac'},
+    {emoji:'🐸',name:'Żabka Tik-Tak',phrase:'Hop! Przeskoczyłam na właściwą godzinę!',theme:'mint'},
+    {emoji:'🐼',name:'Panda Półgodzinka',phrase:'Wpół do bambusa? To pora na przekąskę!',theme:'peach'},
+    {emoji:'🦊',name:'Lis Sprytny Zegarmistrz',phrase:'Żadna wskazówka mnie nie przechytrzy!',theme:'lilac'},
+    {emoji:'🐧',name:'Pingwin na Czas',phrase:'Na lodzie się ślizgam, z godzinami nie!',theme:'mint'},
+    {emoji:'🐙',name:'Ośmiornica Ośma',phrase:'Mam osiem ramion, ale tylko dwie wskazówki!',theme:'peach'},
+    {emoji:'🍕',name:'Pizza o Piątej',phrase:'Każdy kwadrans to dobry czas na kawałek!',theme:'lilac'},
+    {emoji:'🍩',name:'Donut Minut',phrase:'Jestem okrągły jak tarcza, ale smaczniejszy!',theme:'mint'},
+    {emoji:'🐢',name:'Żółw Ekspres',phrase:'Idę wolno, ale zegar znam błyskawicznie!',theme:'peach'},
+    {emoji:'🐝',name:'Pszczółka Punktulka',phrase:'Bzyy! Nawet sekunda mi nie umknie!',theme:'mint'},
+    {emoji:'🦖',name:'Dinozaur Czasozaur',phrase:'Mam milion lat i nie spóźniłem się ani razu!',theme:'peach'},
+    {emoji:'🛸',name:'Kosmita Tik-Tak',phrase:'Na mojej planecie godzina trwa tyle, co śmiech!',theme:'lilac'},
+    {emoji:'👑',name:'Królowa Kwadransa',phrase:'Ogłaszam: od dziś minuty są moimi poddanymi!',theme:'mint'}
+  ];
+  const minuteLabel=n=>{const last=n%10;return `${n} ${last>=2&&last<=4&&(n%100<12||n%100>14)?'minuty':n===1?'minutę':'minut'}`;};
+  function daypart(h){return h>=5&&h<=9?'rano':h<=11?'przed południem':h<=17?'po południu':h<=22?'wieczorem':'w nocy';}
+  function expressTime(h,m){
+    const current=h%12,next=(h+1)%12;
+    let phrase;
+    if(m===0)phrase=nominative[current];
+    else if(m===15)phrase=`kwadrans po ${genitive[current]}`;
+    else if(m===30)phrase=`wpół do ${genitive[next]}`;
+    else if(m===45)phrase=`za kwadrans ${nominative[next]}`;
+    else if([5,10,20,25].includes(m))phrase=`${minuteWords[m]} po ${genitive[current]}`;
+    else if([35,40,50,55].includes(m))phrase=`za ${minuteWords[60-m]} ${nominative[next]}`;
+    else phrase=m<30?`${m===1?'minuta':minuteLabel(m)} po ${genitive[current]}`:`za ${60-m===1?'minutę':minuteLabel(60-m)} ${nominative[next]}`;
+    return `${phrase} ${daypart(h)}`;
+  }
+  function buildDial(){
+    const ns='http://www.w3.org/2000/svg';
+    for(let i=0;i<60;i++){
+      const major=i%5===0,a=i*Math.PI/30,inner=major?151:160,outer=166;
+      const line=document.createElementNS(ns,'line');
+      line.setAttribute('x1',200+Math.sin(a)*inner);line.setAttribute('y1',200-Math.cos(a)*inner);
+      line.setAttribute('x2',200+Math.sin(a)*outer);line.setAttribute('y2',200-Math.cos(a)*outer);
+      line.setAttribute('stroke',major?'#52627b':'#cdd5e2');line.setAttribute('stroke-width',major?'3.5':'1.9');line.setAttribute('stroke-linecap','round');$('ticks').append(line);
+    }
+    for(let n=1;n<=12;n++){
+      const a=n*Math.PI/6,txt=document.createElementNS(ns,'text');
+      txt.setAttribute('x',200+Math.sin(a)*132);txt.setAttribute('y',200-Math.cos(a)*132+1);
+      txt.setAttribute('text-anchor','middle');txt.setAttribute('dominant-baseline','middle');txt.setAttribute('font-size',[3,6,9,12].includes(n)?'28':'24');txt.setAttribute('font-weight','850');txt.setAttribute('font-family','Trebuchet MS, Segoe UI, sans-serif');txt.setAttribute('fill','#28334e');
+      txt.textContent=n;$('numbers').append(txt);
+    }
+  }
+  function currentMode(){return state.mode==='mission'?state.puzzleMode:state.mode;}
+  const availableMinutes=()=>state.level===1?[0]:Array.from({length:state.level===2?12:60},(_,i)=>i*(state.level===2?5:1));
+  const storyMinutes=()=>state.level===1?[0,15,30,45]:state.level===2?Array.from({length:12},(_,i)=>i*5):Array.from({length:60},(_,i)=>i);
+  function selectFill(el,from,to,step=1,showPad=true){el.replaceChildren(new Option('Wybierz',''));for(let n=from;n<=to;n+=step)el.add(new Option(showPad?pad(n):String(n),String(n)));}
+  function populateSelects(){
+    selectFill($('answerHour'),1,12,1,false);
+    selectFill($('answerMinute'),0,59,state.level===1?60:state.level===2?5:1);
+    selectFill($('storyHour'),0,23);
+    selectFill($('storyMinute'),0,59,state.level===1?15:state.level===2?5:1);
+  }
+  function renderClock(){
+    const mode=currentMode(),h=mode==='read'?state.targetH:state.userH,m=mode==='read'?state.targetM:state.userM;
+    hourHand.setAttribute('transform',`rotate(${(h%12)*30+m*.5} 200 200)`);
+    minuteHand.setAttribute('transform',`rotate(${m*6} 200 200)`);
+    clock.setAttribute('aria-label',mode==='read'?'Zegar do odczytania godziny.':'Zegar pomocniczy, przesuń wskazówki.');
+    hourHand.setAttribute('opacity',mode==='read'||state.selected==='hour'?'1':'.7');
+    minuteHand.setAttribute('opacity',mode==='read'||state.selected==='minute'?'1':'.7');
+  }
+  function updateCounters(){
+    $('solvedCount').textContent=`${state.solved}/${TOTAL}`;
+    $('starCount').textContent=state.stars+' ⭐';
+    $('mistakeCount').textContent='❤️'.repeat(MAX_MISTAKES-state.mistakes)+'🤍'.repeat(state.mistakes);
+    $('mistakeText').textContent=`${MAX_MISTAKES-state.mistakes} z ${MAX_MISTAKES} pomyłek`;
+  }
+  function updateHandChoice(){document.querySelectorAll('.handchoice').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.hand===state.selected)));$('nudgeLabel').textContent=state.selected==='hour'?'Przesuwasz godzinę':'Przesuwasz minuty';renderClock();}
+  function updateModeUI(){
+    const mode=currentMode(),read=mode==='read',set=mode==='set',story=mode==='story';
+    document.body.dataset.mode=state.mode;document.body.dataset.puzzle=mode;
+    for(const name of ['read','set','story','mission'])$(name+'Tab').setAttribute('aria-selected',String(name===state.mode));
+    $('readControls').classList.toggle('hidden',!read);$('setControls').classList.toggle('hidden',!set);
+    $('storyControls').classList.toggle('hidden',!story);
+    $('storyTypes').classList.toggle('hidden',state.mode!=='story');
+    $('storyClockTools').classList.toggle('hidden',!story);
+    clock.classList.toggle('interactive',!read);
+    const captions={read:'👀 Odczytywanie',set:'🖐️ Ustawianie wskazówek',story:'🧠 Zadania z czasem'};
+    $('modeCaption').textContent=(state.mode==='mission'?'🎲 Wielka misja · ':'')+captions[mode];
+    $('question').textContent=read?'Która jest godzina?':set?'Ustaw tę godzinę:':'Pomyśl i rozwiąż!';
+    $('instruction').textContent=read?'Popatrz na wskazówki i wybierz godzinę oraz minuty.':set?'Ustaw krótką i długą wskazówkę we właściwych miejscach.':'Wybierz odpowiedź lub zapisz godzinę cyframi. Możesz liczyć w pamięci albo na zegarze pomocniczym.';
+    $('clockInstruction').textContent=read?'Spójrz uważnie na obie wskazówki':set?'Dotknij tarczy lub przeciągnij wskazówki':'Zegar do samodzielnego liczenia czasu';
+    $('lessonTip').innerHTML=story?'<strong>Ściąga:</strong> kwadrans = <strong>15 minut</strong>, pół godziny = <strong>30 minut</strong>. „Kwadrans po dziewiątej” to 09:15, „wpół do dziesiątej” to 09:30, a „za kwadrans dziesiąta” to 09:45.':'<strong>Zapamiętaj:</strong> krótka wskazówka pokazuje godziny, a długa minuty. Każda duża liczba na tarczy to <strong>5 minut</strong> dla długiej wskazówki.';
+    updateHandChoice();
+  }
+  function feedback(message,kind='info'){$('feedback').className='feedback '+kind;$('feedback').textContent=message;}
+  function hideFeedback(){$('feedback').className='feedback hidden';$('feedback').textContent='';}
+  function getDuration(){
+    const easy=[15,30,45,60,90],medium=[5,10,15,20,30,45,60,75,90,120,150],hard=[5,10,15,20,25,30,35,40,45,50,60,75,90,105,120,135,150,180];
+    return pick(state.level===1?easy:state.level===2?medium:hard);
+  }
+  function buildCalculation(curated=false){
+    let start,delta,future;
+    if(curated){start=9*60+35;delta=150;future=true;}
+    else {const h=state.level===3?rand(24):6+rand(14),m=pick(storyMinutes());start=h*60+m;delta=getDuration();future=Math.random()<.65;}
+    const s=splitTime(start),answer=norm1440(start+(future?delta:-delta)),result=splitTime(answer);
+    const verbal=!curated&&state.level!==3&&Math.random()<.23;
+    const startText=verbal?`„${expressTime(s.h,s.m)}”`:format(s.h,s.m);
+    const words=durationWords[delta]||`${delta} minut`;
+    const prompt=future?`Jest ${startText}.\nKtóra będzie godzina za ${words}?`:`Jest ${startText}.\nKtóra była godzina ${words} temu?`;
+    const hours=Math.floor(delta/60),remaining=delta%60,sign=future?1:-1,operator=future?'+':'−';
+    const middle=splitTime(start+sign*hours*60);
+    const explanation=hours&&remaining?`${format(s.h,s.m)} ${operator} ${hours} godz. = ${format(middle.h,middle.m)}, potem ${operator} ${remaining} min = ${format(result.h,result.m)}.`:`${format(s.h,s.m)} ${operator} ${delta} min = ${format(result.h,result.m)}.`;
+    return {kind:'calc',answer,prompt,start,explanation,hint:`${future?'Dodawaj':'Odejmuj'} czas etapami. 60 minut to jedna godzina. Zacznij od ${format(s.h,s.m)}.`};
+  }
+  function buildWords(asChoice){
+    const h=6+rand(15),m=pick(storyMinutes()),answer=h*60+m,phrase=expressTime(h,m);
+    const hint=m===30?'„Wpół do” oznacza 30 minut przed następną pełną godziną.':m===45?'„Za kwadrans” to 15 minut przed następną pełną godziną.':m===15?'„Kwadrans po” oznacza 15 minut po pełnej godzinie.':m>30?'„Za” mówi, ile minut brakuje do następnej godziny.':'„Po” mówi, ile minut już minęło.';
+    if(!asChoice)return {kind:'toDigits',answer,prompt:`Którą godzinę oznacza wyrażenie:\n„${phrase}”?`,start:answer,hint,explanation:`„${phrase}” to ${format(h,m)}.`};
+    const choices=[answer],shifts=shuffle(state.level===1?[15,-15,30,-30,60,-60,120,-120]:[5,-5,10,-10,15,-15,30,-30,60,-60,120]);
+    for(const shift of shifts){const t=answer+shift,tm=splitTime(t);if(t>=360&&t<=1255&&!choices.includes(t)&&storyMinutes().includes(tm.m)&&choices.length<4)choices.push(t);}
+    for(let gap=1;choices.length<4&&gap<24;gap++){const t=answer+gap*15;if(t<=1255&&!choices.includes(t)&&storyMinutes().includes(splitTime(t).m))choices.push(t);}
+    return {kind:'toWords',answer,prompt:`Jest ${format(h,m)}.\nKtóre określenie jest poprawne?`,choices:shuffle(choices),start:answer,hint,explanation:`${format(h,m)} to „${phrase}”.`};
+  }
+  function buildLife(){
+    // Każdy scenariusz kończy się pytaniem o godzinę (nie o czas trwania).
+    const templates=[
+      {subject:'🏫 Lekcja',low:8,high:12,durations:[45],forward:true,
+       text:(s,d)=>`Lekcja zaczyna się o ${s}. Trwa ${durationWords[d]}.\nO której się kończy?`},
+      {subject:'🎬 Film',low:13,high:19,durations:[60,90,120,150],forward:true,
+       text:(s,d)=>`Film zaczyna się o ${s}. Seans trwa ${durationWords[d]}.\nO której się skończy?`},
+      {subject:'🚍 Autobus',low:7,high:18,durations:[15,20,25,30,40,45,60],forward:true,
+       text:(s,d)=>`Autobus odjeżdża o ${s}. Podróż trwa ${durationWords[d]}.\nO której dojedzie na miejsce?`},
+      {subject:'🏊 Basen',low:10,high:18,durations:[30,45,60,90],forward:false,
+       text:(s,d)=>`Zajęcia na basenie skończyły się o ${s}. Trwały ${durationWords[d]}.\nO której się zaczęły?`},
+      {subject:'🍪 Pieczenie',low:10,high:18,durations:[15,20,25,30,40,45,60],forward:true,
+       text:(s,d)=>`Ciasto wstawiono do piekarnika o ${s}. Piecze się ${durationWords[d]}.\nO której będzie gotowe?`},
+      {subject:'📚 Czytanie',low:14,high:19,durations:[15,20,30,45,60],forward:true,
+       text:(s,d)=>`Zaczęłaś czytać książkę o ${s}. Czytałaś przez ${durationWords[d]}.\nO której skończyłaś?`},
+      {subject:'🚂 Pociąg',low:10,high:20,durations:[30,45,60,90,120,150],forward:false,
+       text:(s,d)=>`Pociąg przyjechał o ${s}. Podróż trwała ${durationWords[d]}.\nO której odjechał?`},
+      {subject:'🎂 Urodziny',low:10,high:17,durations:[15,30,45,60],forward:true,
+       text:(s,d)=>`Jest ${s}. Goście na urodziny przyjdą za ${durationWords[d]}.\nO której przyjdą?`},
+      {subject:'🛝 Plac zabaw',low:11,high:18,durations:[15,30,45,60,90],forward:true,
+       text:(s,d)=>`Na plac zabaw wyszłaś o ${s}. Zabawa trwała ${durationWords[d]}.\nO której wróciłaś?`},
+      {subject:'🎨 Plastyka',low:9,high:16,durations:[30,45,60,90],forward:false,
+       text:(s,d)=>`Kółko plastyczne skończyło się o ${s}. Trwało ${durationWords[d]}.\nO której się zaczęło?`},
+      {subject:'🍿 Kino',low:13,high:20,durations:[15,30,45],forward:true,
+       text:(s,d)=>`Jest ${s}. Do rozpoczęcia filmu zostało ${durationWords[d]}.\nO której film się zacznie?`},
+      {subject:'🐶 Spacer',low:7,high:19,durations:[15,30,45,60],forward:true,
+       text:(s,d)=>`Spacer z pieskiem rozpoczął się o ${s}. Trwał ${durationWords[d]}.\nO której wróciliście?`}
+    ];
+    const template=pick(templates);
+    const possible=template.durations.filter(d=>state.level===1?[15,30,45,60,90].includes(d):state.level===2?true:true);
+    const duration=pick(possible),h=template.low+rand(template.high-template.low+1),m=pick(storyMinutes());
+    const start=h*60+m,answer=norm1440(start+(template.forward?duration:-duration));
+    const end=splitTime(answer),sign=template.forward?'+':'−';
+    const q=template.text(format(h,m),duration);
+    const explanation=`${format(h,m)} ${sign} ${duration} min = ${format(end.h,end.m)}.`;
+    return {kind:'life',answer,prompt:`${template.subject}\n${q}`,start,hint:`Zacznij od ${format(h,m)} i ${template.forward?'dodaj':'odejmij'} ${duration} minut. Możesz użyć zegara pomocniczego.`,explanation};
+  }
+  function buildPlan(){
+    if(state.mode==='mission')return shuffle(['read','read','set','set','calc','calc','wordsDigits','wordsChoice','life','life']);
+    if(state.mode==='story'&&state.storyKind==='mix')return shuffle(['calc','calc','calc','wordsDigits','wordsChoice','words','life','life','life','life']);
+    if(state.mode==='story'&&state.storyKind==='life')return Array(TOTAL).fill('life');
+    if(state.mode==='story'&&state.storyKind==='calc')return Array(TOTAL).fill('calc');
+    if(state.mode==='story'&&state.storyKind==='words')return Array(TOTAL).fill('words');
+    return Array(TOTAL).fill(state.mode);
+  }
+  function generateStory(kind){
+    if(kind==='life')return buildLife();
+    if(kind==='calc')return buildCalculation(state.level>=2&&state.index===1);
+    return buildWords(kind==='wordsChoice'?true:kind==='wordsDigits'?false:rand(2)===0);
+  }
+  function showStory(){
+    const task=state.story,multiple=task.kind==='toWords';
+    $('storyPrompt').textContent=task.prompt;
+    $('storyDigitAnswer').classList.toggle('hidden',multiple);
+    $('storyWordAnswer').classList.toggle('hidden',!multiple);
+    $('storyHour').value='';$('storyMinute').value='';
+    $('storyChoices').replaceChildren();state.selectedChoice=null;
+    if(multiple)for(const value of task.choices){
+      const el=document.createElement('button');el.className='choice';el.type='button';el.dataset.time=String(value);el.setAttribute('aria-pressed','false');
+      const t=splitTime(value);el.textContent=expressTime(t.h,t.m);
+      el.addEventListener('click',()=>{if(state.done)return;state.selectedChoice=value;document.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.time)===value)));});
+      $('storyChoices').append(el);
+    }
+    $('clockStart').classList.toggle('hidden',task.start===undefined);
+    state.userH=12;state.userM=0;updateHandChoice();
+  }
+  function newPuzzle(){
+    state.done=false;state.questionMistakes=0;state.selected='hour';state.dragging=false;
+    const kind=state.plan[state.index-1];
+    state.puzzleMode=['read','set'].includes(kind)?kind:'story';
+    if(state.puzzleMode==='story'){
+      let task;for(let tries=0;tries<16;tries++){task=generateStory(kind);if(task.prompt!==state.lastPrompt)break;}
+      state.story=task;state.lastPrompt=task.prompt;
+      state.targetH=splitTime(task.answer).h;state.targetM=splitTime(task.answer).m;
+      populateSelects();showStory();
+    } else {
+      const prev=format(state.targetH,state.targetM),options=availableMinutes();
+      do{state.targetH=rand(12)+1;state.targetM=pick(options);}while(format(state.targetH,state.targetM)===prev&&options.length*12>1);
+      do{state.userH=rand(12)+1;state.userM=pick(options);}while(state.userH===state.targetH&&state.userM===state.targetM);
+      populateSelects();$('targetTime').textContent=format(state.targetH,state.targetM);
+    }
+    $('taskLabel').textContent=`Zadanie ${state.index} z ${TOTAL}`;
+    $('progressFill').style.width=((state.index-1)/TOTAL*100)+'%';
+    $('checkBtn').textContent='Sprawdź ✓';
+    $('hintBtn').classList.remove('hidden');$('skipBtn').classList.remove('hidden');
+    $('finish').classList.add('hidden');$('exercise').classList.remove('hidden');
+    $('miniReward').classList.add('hidden');
+    hideFeedback();updateModeUI();updateCounters();
+  }
+  function beginSession(){
+    state.index=1;state.solved=0;state.stars=0;state.mistakes=0;state.questionMistakes=0;state.lastPrompt='';state.ended=false;
+    state.plan=buildPlan();newPuzzle();
+  }
+  function describeSolution(){return currentMode()==='story'?state.story.explanation:`To jest godzina ${format(state.targetH,state.targetM)}.`;}
+  function miniReward(correct){
+    const box=$('miniReward');box.classList.remove('hidden');
+    if(!correct){$('miniEmoji').textContent='🧩';$('miniText').textContent='Naklejka za odważną próbę! Następne zadanie czeka.';return;}
+    let idx=rand(miniRewards.length);
+    if(idx===state.lastMini)idx=(idx+1+rand(miniRewards.length-1))%miniRewards.length;
+    state.lastMini=idx;$('miniEmoji').textContent=miniRewards[idx][0];$('miniText').textContent=miniRewards[idx][1];
+    box.classList.remove('pop');void box.offsetWidth;box.classList.add('pop');
+  }
+  function lockPuzzle(){
+    state.done=true;$('checkBtn').textContent=state.index===TOTAL?'Zobacz wynik 🏆':'Następne zadanie →';
+    $('hintBtn').classList.add('hidden');$('skipBtn').classList.add('hidden');
+  }
+  function success(){
+    const perfect=state.questionMistakes===0;
+    state.solved++;if(perfect)state.stars++;
+    updateCounters();lockPuzzle();
+    const praise=perfect?'⭐ Brawo! Za pierwszym razem!':'👏 Świetnie! Udało się poprawić odpowiedź!';
+    feedback(`${praise} ${describeSolution()}`,'success');miniReward(true);
+  }
+  function giveSolution(reason){
+    if(state.done)return;
+    if(currentMode()==='set'){state.userH=state.targetH;state.userM=state.targetM;renderClock();}
+    lockPuzzle();feedback(`${reason} Rozwiązanie: ${describeSolution()} Spróbuj następnego zadania!`,'info');miniReward(false);
+  }
+  function check(){
+    if(state.done){next();return;}
+    let valid=true,correct=false;
+    if(currentMode()==='read'){
+      const h=$('answerHour').value,m=$('answerMinute').value;
+      if(h===''||m==='')valid=false;
+      else correct=Number(h)===state.targetH&&Number(m)===state.targetM;
+    }else if(currentMode()==='set')correct=state.userH===state.targetH&&state.userM===state.targetM;
+    else {
+      const task=state.story;
+      if(task.kind==='toWords'){
+        if(state.selectedChoice===null)valid=false;
+        else correct=state.selectedChoice===task.answer;
+      }else{
+        const h=$('storyHour').value,m=$('storyMinute').value;
+        if(h===''||m==='')valid=false;
+        else correct=minutesOf(Number(h),Number(m))===task.answer;
+      }
+    }
+    if(!valid){feedback('Najpierw wybierz odpowiedź, a potem ją sprawdź. 😊');return;}
+    if(correct){success();return;}
+    state.questionMistakes++;
+    if(state.mistakes<MAX_MISTAKES){
+      state.mistakes++;updateCounters();
+      feedback(state.mistakes===1?'💗 Pierwsza pomyłka — masz jeszcze jedno serduszko. Popraw odpowiedź lub użyj podpowiedzi.':'💗 Druga pomyłka. Serduszka się skończyły, ale nadal możesz spróbować poprawić odpowiedź!','error');
+    }else{
+      giveSolution('To nie ta odpowiedź. Gdy skończyły się serduszka, pokazujemy wyjaśnienie.');
+    }
+  }
+  function next(){if(state.index>=TOTAL){finish();return;}state.index++;newPuzzle();}
+  function hint(){
+    if(state.done)return;
+    if(currentMode()==='story'){feedback(`💡 ${state.story.hint}`,'info');return;}
+    const h=state.targetH,m=state.targetM;
+    if(currentMode()==='read'){
+      const k=Math.floor(m/5),minPart=m%5===0?`Długa wskazówka stoi na ${m===0?12:k}, czyli pokazuje ${pad(m)} minut.`:`Długa wskazówka jest między ${k===0?12:k} a ${k+1}. Małe kreski liczymy po jednej minucie.`;
+      feedback(`💡 ${minPart} Krótka wskazówka pokazuje godzinę, którą właśnie zaczęliśmy.`);
+    }else{
+      const mark=m/5,desc=m%5===0?`na liczbie ${m===0?12:mark}`:`między liczbami ${Math.floor(mark)===0?12:Math.floor(mark)} i ${Math.floor(mark)+1}, na ${m%5}. małej kresce`;
+      feedback(`💡 Długa wskazówka powinna być ${desc}. Krótka pokazuje godzinę ${h} i powoli zmierza do następnej.`);
+    }
+  }
+  function skip(){giveSolution('Sprawdźmy to razem!');}
+  function pickBigReward(){
+    let last=-1;try{last=Number(localStorage.getItem('zegar-v3-last-sticker')??-1);}catch(e){}
+    let idx=rand(bigRewards.length);
+    if(idx===last)idx=(idx+1+rand(bigRewards.length-1))%bigRewards.length;
+    try{localStorage.setItem('zegar-v3-last-sticker',String(idx));}catch(e){}
+    return bigRewards[idx];
+  }
+  function finish(){
+    if(state.ended)return;state.ended=true;
+    $('exercise').classList.add('hidden');$('finish').classList.remove('hidden');
+    $('taskLabel').textContent=`Ukończono ${TOTAL} zadań`;$('progressFill').style.width='100%';
+    const percent=Math.round(state.solved/TOTAL*100),winning=percent>90;
+    $('finishPercent').textContent=percent+'%';
+    $('finishTitle').textContent=winning?'Misja ukończona! 🏆':percent>=70?'Świetnie Ci idzie! 🌈':'Każda próba uczy! 💜';
+    $('finishSummary').textContent=`Poprawnie rozwiązane: ${state.solved}/${TOTAL}. Trafione za pierwszym razem: ${state.stars}/${TOTAL}. Zużyte serduszka: ${state.mistakes}/${MAX_MISTAKES}.`;
+    $('awardCard').classList.toggle('hidden',!winning);
+    $('retryMessage').classList.toggle('hidden',winning);
+    if(winning){
+      const reward=pickBigReward();
+      $('awardCard').dataset.theme=reward.theme;
+      $('awardEmoji').textContent=reward.emoji;
+      $('awardName').textContent=reward.name;
+      $('awardQuote').textContent=`„${reward.phrase}”`;
+      let count=1;try{count=(Number(localStorage.getItem('zegar-v3-sticker-count'))||0)+1;localStorage.setItem('zegar-v3-sticker-count',String(count));}catch(e){}
+      $('awardCollection').textContent=`To Twoja ${count}. wielka naklejka!`;
+    }
+    const key=`zegar-przygody-v3-${state.mode}-${state.level}-${state.mode==='story'?state.storyKind:'all'}`;
+    let best=state.solved;
+    try{best=Math.max(Number(localStorage.getItem(key))||0,state.solved);localStorage.setItem(key,String(best));}catch(e){}
+    $('bestScore').textContent=`Twój rekord w tej kategorii: ${best}/${TOTAL}. Duża naklejka jest za wynik 10/10!`;
+    $('restartBtn').textContent='Kolejne 10 zadań 🎲';
+  }
+  function selectHand(hand){state.selected=hand;updateHandChoice();}
+  function angleFromPointer(ev){
+    const point=clock.createSVGPoint();point.x=ev.clientX;point.y=ev.clientY;
+    const matrix=clock.getScreenCTM();if(!matrix)return null;
+    const p=point.matrixTransform(matrix.inverse()),dx=p.x-200,dy=p.y-200;
+    if(Math.hypot(dx,dy)<20)return null;
+    return (Math.atan2(dx,-dy)*180/Math.PI+360)%360;
+  }
+  function adjustFromPointer(ev){
+    const angle=angleFromPointer(ev);if(angle===null)return;
+    if(state.selected==='minute'){
+      const step=state.level===3?1:state.level===2?5:currentMode()==='story'?15:60;
+      state.userM=(Math.round(angle/(6*step))*step)%60;
+    }else state.userH=norm12(Math.round(angle/30-state.userM/60));
+    renderClock();
+  }
+  function nudge(direction){
+    if(currentMode()!=='set'||state.done)return;
+    if(state.selected==='hour')state.userH=norm12(state.userH+direction);
+    else state.userM=(state.userM+direction*(state.level===1?60:state.level===3?1:5)+60)%60;
+    renderClock();
+  }
+  function stepClock(amount){
+    if(currentMode()!=='story'||state.done)return;
+    const result=splitTime(minutesOf(state.userH%12,state.userM)+amount);
+    state.userH=norm12(result.h);state.userM=result.m;renderClock();
+  }
+  document.querySelectorAll('.tab').forEach(button=>button.addEventListener('click',()=>{
+    const mode=button.dataset.mode;
+    if(mode!==state.mode){state.mode=mode;beginSession();}
+  }));
+  document.querySelectorAll('.level[data-level]').forEach(button=>button.addEventListener('click',()=>{
+    const level=Number(button.dataset.level);
+    if(level!==state.level){state.level=level;document.querySelectorAll('.level[data-level]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.level)===level)));beginSession();}
+  }));
+  document.querySelectorAll('.typebutton').forEach(button=>button.addEventListener('click',()=>{
+    const kind=button.dataset.kind;
+    if(kind!==state.storyKind){state.storyKind=kind;document.querySelectorAll('.typebutton').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.kind===kind)));beginSession();}
+  }));
+  document.querySelectorAll('.handchoice').forEach(button=>button.addEventListener('click',()=>selectHand(button.dataset.hand)));
+  $('nudgeBack').addEventListener('click',()=>nudge(-1));$('nudgeForward').addEventListener('click',()=>nudge(1));
+  $('clockBack15').addEventListener('click',()=>stepClock(-15));$('clockForward15').addEventListener('click',()=>stepClock(15));
+  $('clockForward30').addEventListener('click',()=>stepClock(30));$('clockForward60').addEventListener('click',()=>stepClock(60));
+  $('clockStart').addEventListener('click',()=>{
+    if(currentMode()!=='story'||state.done||state.story.start===undefined)return;
+    const time=splitTime(state.story.start);state.userH=norm12(time.h);state.userM=time.m;renderClock();
+  });
+  $('checkBtn').addEventListener('click',check);$('hintBtn').addEventListener('click',hint);$('skipBtn').addEventListener('click',skip);$('restartBtn').addEventListener('click',beginSession);
+  clock.addEventListener('pointerdown',ev=>{
+    if(currentMode()==='read'||state.done)return;
+    const group=ev.target.closest('[data-hand]');if(group&&group.dataset.hand)selectHand(group.dataset.hand);
+    state.dragging=true;clock.setPointerCapture(ev.pointerId);adjustFromPointer(ev);ev.preventDefault();
+  });
+  clock.addEventListener('pointermove',ev=>{if(state.dragging&&currentMode()!=='read'&&!state.done){adjustFromPointer(ev);ev.preventDefault();}});
+  for(const type of ['pointerup','pointercancel','lostpointercapture'])clock.addEventListener(type,()=>{state.dragging=false;});
+  document.addEventListener('keydown',ev=>{
+    if(currentMode()!=='read'&&!state.done&&document.activeElement===clock){
+      if(ev.key==='ArrowLeft'||ev.key==='ArrowDown'){currentMode()==='set'?nudge(-1):stepClock(-5);ev.preventDefault();}
+      if(ev.key==='ArrowRight'||ev.key==='ArrowUp'){currentMode()==='set'?nudge(1):stepClock(5);ev.preventDefault();}
+    }
+  });
+  clock.setAttribute('tabindex','0');buildDial();beginSession();
+  // Funkcje diagnostyczne używane podczas sprawdzania aplikacji.
+  window.__clockLogic={splitTime,expressTime,buildCalculation,buildWords,buildLife,buildPlan,format,minutesOf,state,currentMode,beginSession,check,finish,success,generateStory};
+})();
+
+</script>
+</body>
+</html>
