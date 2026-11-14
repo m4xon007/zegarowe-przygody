@@ -1,0 +1,25 @@
+ZEGAROWE PRZYGODY 4.1 — INSTALACJA PWA (GITHUB PAGES)
+
+1. Rozpakuj ZIP na telefonie lub komputerze.
+2. Otwórz repozytorium https://github.com/M4xon007/zegarowe-przygody
+3. Prześlij do GŁÓWNEGO katalogu repozytorium wszystkie pliki z tego ZIP-a:
+   index.html
+   manifest.webmanifest
+   sw.js
+   icon-192.png
+   icon-512.png
+   icon-maskable-512.png
+   apple-touch-icon.png
+   icon.svg oraz icon-maskable.svg (opcjonalnie, pliki źródłowe ikon)
+4. Potwierdź Commit changes; w przypadku index.html zastąp starszą wersję.
+5. GitHub Pages: gałąź main i /(root) — nie trzeba zmieniać, jeśli już działa.
+6. Na tablecie Android uruchom Chrome i otwórz
+   https://m4xon007.github.io/zegarowe-przygody/
+7. Menu Chrome (trzy kropki) -> „Zainstaluj aplikację” lub „Dodaj do ekranu głównego”.
+8. Uruchom z ikony. Po pierwszym otwarciu online gra może działać offline.
+
+Ważne:
+- Nie wysyłaj na GitHub samego pliku ZIP (GitHub Pages go nie rozpakowuje).
+- Ranking zapisuje się lokalnie w danej przeglądarce/urządzeniu, nie w repozytorium.
+- Nie czyść danych witryny, jeżeli chcesz zachować rekordy.
+- Na GitHub Pages adres /zegarowe-przygody/ jest ważny dla manifestu PWA.

@@ -3,9 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f6f7ff">
+<meta name="theme-color" content="#6656cc">
 <meta name="description" content="Gra do nauki zegara: 25 pytań, dwie próby, naklejki, punkty i lokalny ranking wyników.">
-<title>Zegarowe przygody 4.0 — misja 25 pytań</title>
+<title>Zegarowe przygody 4.1 — misja 25 pytań</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Zegarowe przygody">
+<meta name="application-name" content="Zegarowe przygody">
+<meta name="mobile-web-app-capable" content="yes">
+
 <style>
   :root { --ink:#243052; --muted:#66718c; --paper:#fff; --mint:#d9f6e8; --aqua:#087e83; --pink:#f76b77; --pink-pale:#ffe8ed; --purple:#6656cc; --border:#e6e9f3; --cream:#fff7e3; }
   * {box-sizing:border-box}
@@ -812,6 +821,15 @@
   window.__clockLogic={splitTime,expressTime,buildCalculation,buildWords,buildLife,buildPlan,format,minutesOf,state,currentMode,beginSession,check,finish,success,generateStory,rankedEntries,safeReadResults,bigRewards,miniRewards};
 })();
 
+</script>
+<script>
+// Instaluje powłokę gry w pamięci offline; nie zmienia lokalnego rankingu ani pytań.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js', { scope: './' })
+      .catch(error => console.warn('Tryb offline jest chwilowo niedostępny:', error));
+  });
+}
 </script>
 </body>
 </html>
