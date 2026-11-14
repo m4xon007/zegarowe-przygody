@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f6f7ff">
-<meta name="description" content="Gra dla klasy 3: nauka zegara, zadania tekstowe, dwie pomyłki i kolekcja zabawnych naklejek.">
-<title>Zegarowe przygody 3.0 — misja 10 pytań</title>
+<meta name="description" content="Gra do nauki zegara: 25 pytań, dwie próby, naklejki, punkty i lokalny ranking wyników.">
+<title>Zegarowe przygody 4.0 — misja 25 pytań</title>
 <style>
   :root { --ink:#243052; --muted:#66718c; --paper:#fff; --mint:#d9f6e8; --aqua:#087e83; --pink:#f76b77; --pink-pale:#ffe8ed; --purple:#6656cc; --border:#e6e9f3; --cream:#fff7e3; }
   * {box-sizing:border-box}
@@ -69,8 +69,6 @@
   .feedback.success {background:#e6f8ec;color:#16643c}
   .feedback.error {background:#fff1e5;color:#865221}
   .feedback.info {background:#f0f1ff;color:#473b9a}
-  .tip {margin-top:19px;background:#fff7e7;border:1px solid #fce9c5;padding:13px 15px;border-radius:15px;font-size:.92rem;line-height:1.5;color:#70562b}
-  .tip strong {color:#59401d}
   .small {font-size:.82rem;color:var(--muted)}
   .finish {text-align:center;padding:22px 0 10px}
   .finish .emoji {font-size:4rem;line-height:1.2}
@@ -85,22 +83,14 @@
   .story-clock-tools {padding:12px 8px 2px;margin:9px auto 0;max-width:430px;border-top:1px solid var(--border)}
   .story-clock-tools .hands {margin:10px 0 5px}
   .story-clock-tools .small {margin:8px 0}
-  .clock-steps {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
-  .clock-steps button {background:#f8f9fe;border:1px solid #dadeea;border-radius:11px;padding:10px 2px;font-size:.78rem;font-weight:800;color:var(--ink);min-height:44px}
-  .clock-start {min-height:42px;width:100%;margin:11px 0 4px;font-size:.85rem;padding:7px}
   body[data-mode="story"] .clockpane {position:relative}
   body[data-mode="story"] #clock {touch-action:none}
-  @media(max-width:730px){body[data-mode="story"] .workpane,body[data-mode="mission"][data-puzzle="story"] .workpane{order:-1} body[data-mode="story"] .clockpane .clockbox,body[data-mode="mission"][data-puzzle="story"] .clockpane .clockbox{max-width:310px} .story-prompt{padding:14px;font-size:1.2rem} .clock-steps{gap:5px} .clock-steps button{font-size:.72rem}}
+  @media(max-width:730px){body[data-mode="story"] .workpane,body[data-mode="mission"][data-puzzle="story"] .workpane{order:-1} body[data-mode="story"] .clockpane .clockbox,body[data-mode="mission"][data-puzzle="story"] .clockpane .clockbox{max-width:310px} .story-prompt{padding:14px;font-size:1.2rem}}
 
   @media(max-width:730px) { .app{padding:16px 12px 30px} header{margin-bottom:15px}.topscore{width:100%}.score{flex:1;padding:8px 12px}.tab{flex:1;padding:11px 10px;font-size:.95rem}.config{padding:11px}.progress{margin-bottom:12px}main{grid-template-columns:1fr;gap:12px}.clockpane{padding:13px 10px 15px}.clockbox{max-width:350px;margin:0 auto}.workpane{padding:21px 18px;min-height:initial}.desc{margin-bottom:15px}.hands{margin:12px 0}.nudge{margin-bottom:10px}.clockhint{font-size:.82rem} }
   @media(max-width:380px) {.tab{font-size:.83rem;padding:10px 7px}.logo{width:43px;height:43px}.level{font-size:.8rem;padding:8px}.answers{gap:5px}.field{min-width:95px}.colon{padding:0 2px 8px}}
   @media(prefers-reduced-motion:reduce) {*{transition:none !important}}
 
-  /* Grywalizacja: dwie pomyłki w serii, mikro-nagrody i duża naklejka. */
-  .lives {display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 15px;padding:10px 15px;border-radius:15px;background:#fff;border:1px solid #e8eaf3;font-weight:800}
-  .lives strong{font-size:1.35rem;letter-spacing:.08em;white-space:nowrap}
-  .lives small{color:var(--muted);font-size:.83rem;font-weight:700}
-  .lives .rule{color:#66718c;font-size:.79rem;margin-left:auto;max-width:385px;line-height:1.35;font-weight:650}
   .mini-reward{display:flex;align-items:center;gap:12px;background:#fff5d9;border:2px dashed #f3cb79;border-radius:16px;padding:12px 14px;margin:12px 0 3px;font-weight:850;color:#825b25}
   .mini-reward .mini-emoji{font-size:2.3rem;flex:none;line-height:1.2}
   .mini-reward.pop{animation:happy-pop .35s ease-out}
@@ -118,15 +108,40 @@
   .award-collection{font-size:.85rem;color:#6d617f;font-weight:700}
   .retry-message{padding:15px 17px;border-radius:14px;background:#fff6e5;color:#755c27;margin:15px auto;max-width:360px;line-height:1.5}
   .legend-short{font-size:.8rem;font-weight:750;color:#645a80}
-  @media(max-width:730px){.lives .rule{margin-left:0}.app{padding-bottom:28px}.award-face{width:145px;height:145px;font-size:5rem}.award-name{font-size:1.4rem}}
+  @media(max-width:730px){.app{padding-bottom:28px}.award-face{width:145px;height:145px;font-size:5rem}.award-name{font-size:1.4rem}}
   @media(prefers-reduced-motion:reduce){.mini-reward.pop{animation:none}}
+  /* Wersja 4: dwie próby na zadanie, 25 pytań, ranking i diagnoza */
+  .topscore{flex-wrap:wrap}
+  .attempts{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;padding:10px 15px;background:white;border:1px solid var(--border);border-radius:15px;font-weight:850}
+  .attempts strong{background:#e8e5ff;color:#4b3da2;border-radius:10px;padding:7px 12px;white-space:nowrap}
+  .attempts .rule{font-size:.83rem;color:var(--muted);font-weight:650;line-height:1.4;flex:1;min-width:220px}
+  .playerconfig input{width:120px;min-width:80px;border:1px solid #d5d9e9;border-radius:12px;padding:9px 10px;font:inherit;font-weight:800;color:var(--ink)}
+  .ranking{background:#fff;border:1px solid var(--border);padding:16px 18px;border-radius:20px;margin-bottom:15px}
+  .ranking-head{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+  .ranking h2{font-size:1.2rem;margin:0 0 8px}
+  .rank-row{display:grid;grid-template-columns:30px 1fr auto auto;gap:12px;align-items:center;padding:11px 4px;border-bottom:1px solid var(--border);font-size:.91rem}
+  .rank-row:last-child{border:0}
+  .rank-row>small{color:var(--muted)}
+  .rank-name{font-weight:800;overflow-wrap:anywhere}
+  .clock-toggle{min-height:43px;padding:10px 14px;width:100%;font-size:.9rem}
+  body[data-puzzle="story"] #clock:not(.interactive){cursor:default;touch-action:auto}
+  .finish-points{font-size:1.25rem;font-weight:900;background:#f3edff;color:#5841a6;border-radius:14px;padding:14px;margin:14px 0}
+  .training-report{text-align:left;background:#f7f9ff;padding:16px;border:1px solid #e4e9f5;border-radius:18px;margin-top:19px}
+  .training-report h3{font-size:1.13rem;margin:0 0 10px}
+  .training-report p{margin:6px 0 11px}
+  .skill-row{display:grid;gap:4px;border:1px solid #e4e9f5;background:#fff;border-radius:11px;padding:10px 12px;margin:8px 0}
+  .skill-row span{color:#a14256;font-weight:800;font-size:.88rem}
+  .skill-row small{color:var(--muted);line-height:1.35}
+  .skill-overview{display:grid;gap:5px;font-size:.8rem;color:var(--muted)}
+  .finish-rank{margin:15px 0;color:#4a4088;font-weight:900}
+  @media(max-width:730px){.score{flex:1 1 calc(50% - 9px);min-width:120px}.rank-row{grid-template-columns:28px 1fr auto}.rank-row>small{grid-column:2 / -1}.attempts .rule{min-width:100%}.playerconfig{width:100%}.playerconfig input{flex:1}}
 </style>
 </head>
 <body>
 <div class="app">
   <header>
-    <div class="identity"><div class="logo" aria-hidden="true">⏰</div><div><h1>Zegarowe przygody</h1><p class="subtitle">Klasa 3 · 10 zagadek, 2 pomyłki i wesołe naklejki</p></div></div>
-    <div class="topscore" aria-label="Wyniki ćwiczeń"><div class="score">Rozwiązane <strong id="solvedCount">0/10</strong></div><div class="score">Gwiazdki <strong id="starCount">0 ⭐</strong></div></div>
+    <div class="identity"><div class="logo" aria-hidden="true">⏰</div><div><h1>Zegarowe przygody</h1><p class="subtitle">Klasa 3 · 25 zagadek, rekordy i bajkowe naklejki</p></div></div>
+    <div class="topscore" aria-label="Wyniki ćwiczeń"><div class="score">Zaliczone <strong id="solvedCount">0/25</strong></div><div class="score">Punkty <strong id="pointsCount">0 🏅</strong></div><div class="score">Naklejki <strong id="starCount">0 ⭐</strong></div><div class="score error-score">Błędy <strong id="errorCount">0</strong></div></div>
   </header>
   <nav class="tabbar" aria-label="Rodzaj ćwiczeń">
     <button class="tab" data-mode="read" id="readTab" aria-selected="false" type="button">👀 Odczytaj godzinę</button>
@@ -136,21 +151,22 @@
   </nav>
   <div class="config">
     <div class="difficulty" role="group" aria-label="Poziom trudności"><label>Poziom:</label><button type="button" class="level" data-level="1" aria-pressed="true">1 · Podstawy</button><button type="button" class="level" data-level="2" aria-pressed="false">2 · Co 5 minut</button><button type="button" class="level" data-level="3" aria-pressed="false">3 · Co minutę</button></div>
-    <div class="difficulty storytypes hidden" id="storyTypes" role="group" aria-label="Typ zadań"><label>Rodzaj:</label><button type="button" class="level typebutton" data-kind="mix" aria-pressed="true">🎲 Wszystkie</button><button type="button" class="level typebutton" data-kind="calc" aria-pressed="false">⏳ Obliczenia</button><button type="button" class="level typebutton" data-kind="words" aria-pressed="false">💬 Słownie</button><button type="button" class="level typebutton" data-kind="life" aria-pressed="false">🏫 Z życia</button></div>
-    <div class="progresslabel" id="taskLabel">Zadanie 1 z 10</div>
+    <div class="difficulty storytypes hidden" id="storyTypes" role="group" aria-label="Typ zadań"><label>Rodzaj:</label><button type="button" class="level typebutton" data-kind="mix" aria-pressed="true">🎲 Wszystkie</button><button type="button" class="level typebutton" data-kind="calc" aria-pressed="false">⏳ Obliczenia</button><button type="button" class="level typebutton" data-kind="words" aria-pressed="false">💬 Słownie</button><button type="button" class="level typebutton" data-kind="life" aria-pressed="false">📖 Historie</button></div>
+    <div class="difficulty storytheme" id="storyTheme" role="group" aria-label="Tematyka historyjek"><label>Bohaterowie:</label><button type="button" class="level themebutton" data-theme="fairy" aria-pressed="true">✨ Bajkowi</button><button type="button" class="level themebutton" data-theme="mix" aria-pressed="false">🎲 Mieszani</button><button type="button" class="level themebutton" data-theme="classic" aria-pressed="false">🏫 Zwykłe</button></div>
+    <div class="difficulty playerconfig"><label for="playerName">Gracz:</label><input id="playerName" type="text" maxlength="18" placeholder="Gracz" autocomplete="off" aria-label="Nazwa gracza"><button class="level" type="button" id="rankingToggle" aria-expanded="false" aria-controls="rankPanel">🏆 Ranking</button></div>
+    <div class="progresslabel" id="taskLabel">Zadanie 1 z 25</div>
   </div>
-  <div class="lives"><span>Serduszka pomyłek:</span><strong id="mistakeCount" aria-label="Dwa serduszka">❤️❤️</strong><small id="mistakeText">2 z 2 pomyłek</small><span class="rule">Możesz poprawić dwie pomyłki w serii. Potem gra pomoże Ci rozwiązaniem. Duża naklejka za 10/10.</span></div>
+  <div class="attempts"><span>Próba w tym zadaniu:</span><strong id="attemptCount">1 z 2</strong><span class="rule">Za pierwszą poprawną odpowiedź +10 pkt i naklejka, za drugą +5 pkt. Po dwóch nieudanych próbach zadanie jest niezaliczone.</span></div>
+  <section id="rankPanel" class="ranking hidden" aria-label="Ranking zapisanych serii"><div class="ranking-head"><h2>🏆 Ranking lokalny</h2><span class="small" id="rankScope"></span></div><div id="rankList"></div><p class="small">Ranking pokazuje 10 najlepszych ukończonych serii w wybranym trybie i na wybranym poziomie. Zapisywany jest tylko w tej przeglądarce.</p></section>
   <div class="progress"><span id="progressFill"></span></div>
   <main>
     <section class="clockpane" aria-label="Zegar wskazówkowy">
       <p class="clockhint" id="clockInstruction">Spójrz uważnie na obie wskazówki</p>
-      <div class="clockbox"><svg id="clock" viewBox="0 0 400 400" role="img" aria-label="Zegar ze wskazówkami" xmlns="http://www.w3.org/2000/svg"><circle cx="200" cy="200" r="181" fill="#eef0fc"/><circle cx="200" cy="200" r="172" fill="white" stroke="#e2e6f1" stroke-width="3"/><g id="ticks"></g><g id="numbers"></g><g id="hourHand" data-hand="hour"><line x1="200" y1="219" x2="200" y2="118" stroke="#087e83" stroke-width="12" stroke-linecap="round"/><circle cx="200" cy="136" r="18" fill="transparent"/></g><g id="minuteHand" data-hand="minute"><line x1="200" y1="223" x2="200" y2="71" stroke="#f76b77" stroke-width="8" stroke-linecap="round"/><circle cx="200" cy="84" r="19" fill="transparent"/></g><circle cx="200" cy="200" r="13" fill="#27324c"/><circle cx="200" cy="200" r="5" fill="white"/></svg></div>
+      <div class="clockbox"><svg id="clock" viewBox="0 0 400 400" role="img" aria-label="Zegar ze wskazówkami" xmlns="http://www.w3.org/2000/svg"><circle cx="200" cy="200" r="181" fill="#eef0fc"/><circle cx="200" cy="200" r="172" fill="white" stroke="#e2e6f1" stroke-width="3"/><g id="ticks"></g><g id="numbers"></g><g id="hourHand" data-hand="hour"><line x1="200" y1="219" x2="200" y2="118" stroke="transparent" stroke-width="35" stroke-linecap="round" pointer-events="stroke"/><line x1="200" y1="219" x2="200" y2="118" stroke="#087e83" stroke-width="12" stroke-linecap="round"/><circle cx="200" cy="136" r="18" fill="transparent"/></g><g id="minuteHand" data-hand="minute"><line x1="200" y1="223" x2="200" y2="71" stroke="transparent" stroke-width="33" stroke-linecap="round" pointer-events="stroke"/><line x1="200" y1="223" x2="200" y2="71" stroke="#f76b77" stroke-width="8" stroke-linecap="round"/><circle cx="200" cy="84" r="19" fill="transparent"/></g><circle cx="200" cy="200" r="13" fill="#27324c"/><circle cx="200" cy="200" r="5" fill="white"/></svg></div>
       <div class="legend"><span><i class="swatch hour"></i> krótka = godzina</span><span><i class="swatch minute"></i> długa = minuty</span></div>
       <div id="storyClockTools" class="story-clock-tools hidden">
-        <div class="hands"><button class="handchoice" type="button" data-hand="hour" aria-pressed="true">🟢 Krótka</button><button class="handchoice" type="button" data-hand="minute" aria-pressed="false">🔴 Długa</button></div>
-        <p class="small">Zegar jest pomocniczy. Możesz poruszać jego wskazówkami.</p>
-        <div class="clock-steps"><button type="button" id="clockBack15">−15 min</button><button type="button" id="clockForward15">+15 min</button><button type="button" id="clockForward30">+30 min</button><button type="button" id="clockForward60">+1 godz.</button></div>
-        <button type="button" class="secondary clock-start" id="clockStart">🕘 Ustaw godzinę początkową</button>
+        <button class="secondary clock-toggle" id="clockToggle" type="button" aria-pressed="false">🔒 Włącz zegar do liczenia</button>
+        <div id="storyHandTools" class="hidden"><div class="hands"><button class="handchoice" type="button" data-hand="hour" aria-pressed="true">🟢 Krótka</button><button class="handchoice" type="button" data-hand="minute" aria-pressed="false">🔴 Długa</button></div><p class="small">Zegar do samodzielnych obliczeń. Wskazówki startują od 12:00 — nie ustawiamy odpowiedzi za Ciebie.</p></div>
       </div>
     </section>
     <section class="workpane" aria-live="polite">
@@ -164,16 +180,18 @@
           <div id="storyDigitAnswer"><p class="small story-answer-label">Wpisz wynik — godzinę i minuty:</p><div class="answers"><label class="field" for="storyHour">Godzina (0–23)<select id="storyHour"><option value="">Wybierz</option></select></label><div class="colon" aria-hidden="true">:</div><label class="field" for="storyMinute">Minuty<select id="storyMinute"><option value="">Wybierz</option></select></label></div></div>
           <div id="storyWordAnswer" class="hidden"><p class="small story-answer-label">Wybierz jedną odpowiedź:</p><div class="choice-list" id="storyChoices"></div></div>
         </div>
-        <div id="setControls" class="hidden"><div class="target" id="targetTime">3:30</div><p class="small">Dotknij tarczy zegara, aby ustawić wybraną wskazówkę. Możesz też przeciągać wskazówki palcem lub myszką.</p><div class="hands"><button class="handchoice" type="button" data-hand="hour" aria-pressed="true">🟢 Krótka · godzina</button><button class="handchoice" type="button" data-hand="minute" aria-pressed="false">🔴 Długa · minuty</button></div><div class="nudge"><button id="nudgeBack" type="button" aria-label="Przesuń wybraną wskazówkę do tyłu">← W lewo</button><span id="nudgeLabel">Przesuwasz godzinę</span><button id="nudgeForward" type="button" aria-label="Przesuń wybraną wskazówkę do przodu">W prawo →</button></div></div>
-        <div class="buttonrow"><button class="primary" type="button" id="checkBtn">Sprawdź ✓</button><button class="secondary" type="button" id="hintBtn">💡 Podpowiedź</button><button class="secondary" type="button" id="skipBtn">Pomiń</button></div>
+        <div id="setControls" class="hidden"><div class="target" id="targetTime">3:30</div><p class="small">Wybierz 🟢 krótką lub 🔴 długą wskazówkę, a potem dotknij zegara albo przeciągnij wskazówkę. Możesz ustawić każdą z 60 minut — na każdym poziomie.</p><div class="hands"><button class="handchoice" type="button" data-hand="hour" aria-pressed="true">🟢 Krótka · godzina</button><button class="handchoice" type="button" data-hand="minute" aria-pressed="false">🔴 Długa · minuty</button></div><div class="nudge"><button id="nudgeBack" type="button" aria-label="Przesuń wybraną wskazówkę do tyłu">← W lewo</button><span id="nudgeLabel">Przesuwasz godzinę</span><button id="nudgeForward" type="button" aria-label="Przesuń wybraną wskazówkę do przodu">W prawo →</button></div></div>
+        <div class="buttonrow"><button class="primary" type="button" id="checkBtn">Sprawdź ✓</button></div>
         <div id="feedback" class="feedback hidden" role="status"></div>
         <div class="mini-reward hidden" id="miniReward" role="status"><span class="mini-emoji" id="miniEmoji">🦉</span><span id="miniText"></span></div>
-        <div class="tip" id="lessonTip"><strong>Zapamiętaj:</strong> krótka wskazówka pokazuje godziny, a długa minuty. Każda duża liczba na tarczy to <strong>5 minut</strong> dla długiej wskazówki.</div>
       </div>
       <div class="finish hidden" id="finish">
         <div class="emoji">🏆</div><h2 id="finishTitle">Brawo!</h2>
         <div class="finish-percent" id="finishPercent">100%</div>
         <p id="finishSummary"></p>
+        <div id="finishPoints" class="finish-points"></div>
+        <div id="trainingReport" class="training-report" aria-label="Podsumowanie umiejętności"></div>
+        <div id="finishRank" class="finish-rank"></div>
         <div id="awardCard" class="award-card hidden" role="status" aria-label="Odblokowana wielka naklejka">
           <div class="award-header">✨ Specjalna naklejka! ✨</div>
           <div class="award-face" id="awardEmoji">🦄</div>
@@ -181,21 +199,21 @@
           <p class="award-quote" id="awardQuote"></p>
           <div class="award-collection" id="awardCollection"></div>
         </div>
-        <div class="retry-message hidden" id="retryMessage">🎁 Wielka naklejka czeka na komplet 10/10. Spróbuj ponownie — kolejne pytania będą inne!</div>
-        <button class="primary" id="restartBtn" type="button">Kolejne 10 zadań 🎲</button>
+        <div class="retry-message hidden" id="retryMessage">🎁 Specjalna naklejka jest za wynik powyżej 90% — co najmniej 23 z 25 zaliczonych zadań. Trenuj dalej!</div>
+        <button class="primary" id="restartBtn" type="button">Kolejne 25 zadań 🎲</button>
         <p class="small" id="bestScore"></p>
       </div>
     </section>
   </main>
-  <footer>Ćwicz we własnym tempie 💜 · Dane zostają na urządzeniu · Bez reklam, konta i internetu</footer>
+  <footer>Ćwicz samodzielnie 💜 · Bez podpowiedzi i reklam · Wyniki zapisują się w tej przeglądarce · Nieoficjalna gra edukacyjna</footer>
 </div>
 <script>
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
   const clock = $('clock'), hourHand = $('hourHand'), minuteHand = $('minuteHand');
-  const TOTAL=10, MAX_MISTAKES=2;
-  const state={mode:'mission', puzzleMode:'read',level:1,storyKind:'mix',index:1,targetH:3,targetM:0,userH:12,userM:0,selected:'hour',solved:0,stars:0,mistakes:0,questionMistakes:0,done:false,dragging:false,story:null,selectedChoice:null,plan:[],lastMini:-1,lastPrompt:'',ended:false};
+  const TOTAL=25, MAX_ATTEMPTS=2, RESULTS_KEY="zegarowe-przygody-v4-results", PLAYER_KEY="zegarowe-przygody-v4-player";
+  const state={mode:'mission', puzzleMode:'read',level:1,storyKind:'mix',theme:'fairy',errors:0,wrongAttempts:0,lastWrongSignature:null,index:1,targetH:3,targetM:0,userH:12,userM:0,selected:'hour',solved:0,stars:0,points:0,questionMistakes:0,done:false,dragging:false,story:null,selectedChoice:null,plan:[],lastMini:-1,lastPrompt:'',ended:false,storyClockEnabled:false,skills:{},seen:new Set(),player:'Gracz'};
   const pad=n=>String(n).padStart(2,'0');
   const format=(h,m)=>`${pad(h)}:${pad(m)}`;
   const rand=n=>Math.floor(Math.random()*n);
@@ -208,38 +226,92 @@
   const genitive=['dwunastej','pierwszej','drugiej','trzeciej','czwartej','piątej','szóstej','siódmej','ósmej','dziewiątej','dziesiątej','jedenastej'];
   const nominative=['dwunasta','pierwsza','druga','trzecia','czwarta','piąta','szósta','siódma','ósma','dziewiąta','dziesiąta','jedenasta'];
   const minuteWords={5:'pięć',10:'dziesięć',15:'kwadrans',20:'dwadzieścia',25:'dwadzieścia pięć'};
+  const fairyNames=['Vaiana','Elsa','Anna','Olaf','Stitch','Simba','Ariel','Mirabel','Roszpunka','Miki','Minnie','Merida','Bella','Dzwoneczek'];
+  const storyCharacter=()=>state.theme==='fairy'||(state.theme==='mix'&&Math.random()<.5)?pick(fairyNames):null;
   const durationWords={5:'5 minut',10:'10 minut',15:'kwadrans',20:'20 minut',25:'25 minut',30:'pół godziny',35:'35 minut',40:'40 minut',45:'trzy kwadranse',50:'50 minut',60:'godzinę',75:'godzinę i kwadrans',90:'półtorej godziny',105:'godzinę i trzy kwadranse',120:'dwie godziny',135:'dwie godziny i kwadrans',150:'dwie i pół godziny',180:'trzy godziny'};
   const miniRewards=[
-    ['🦉','Sowa woła: „Ty-kak świetnie!”'],
-    ['🐱','Kot mruczy: „Miau-nuta sukcesu!”'],
-    ['🚀','Rakieta zdążyła dokładnie na czas!'],
-    ['🐸','Żabka przeskoczyła cały kwadrans!'],
-    ['🦊','Lisek daje piątkę wskazówką!'],
-    ['🐼','Panda klaszcze co pięć minut!'],
-    ['🍩','Pączek kręci się jak wskazówka!'],
-    ['🦄','Jednorożec zarządza przerwę na radość!'],
-    ['🐙','Ośmiornica liczy osiem zegarów naraz!'],
-    ['🌈','Kolorowe minuty są po Twojej stronie!'],
-    ['🐧','Pingwin wreszcie się nie spóźnił!'],
-    ['🎈','Balon wzleciał punktualnie!']
+    ['🦉','Sowa huczy: „Huhu, co za punktualny umysł!”'],
+    ['🐱','Kotek mruczy: „Miau-nuta geniuszu!”'],
+    ['🐶','Piesek merda ogonem dokładnie co kwadrans!'],
+    ['🦄','Jednorożec mówi: „To był magiczny tik-tak!”'],
+    ['🐒','Małpka skacze: „Banany za minuty!”'],
+    ['🐼','Panda klaszcze łapkami: „Bambusowo policzone!”'],
+    ['🦊','Lisek mówi: „Ale z Ciebie sprytny zegarmistrz!”'],
+    ['🐧','Pingwin wyślizgał złotą minutę!'],
+    ['🐸','Żabka zrobiła hop wprost w dobry czas!'],
+    ['🐙','Ośmiornica daje osiem piątek na sekundę!'],
+    ['🐢','Żółw zdążył, bo zna wszystkie godziny!'],
+    ['🐝','Pszczółka bzyczy: „Punktualne bzzz!”'],
+    ['🦖','Dinozaur ryczy: „Jura-sycznie rozwiązane!”'],
+    ['🦁','Lew ogłasza: „Królowa czasu nadchodzi!”'],
+    ['🐰','Króliczek skacze przez trzy kwadranse!'],
+    ['🦋','Motyl fruwa prosto na właściwą godzinę!'],
+    ['🐻','Miś budzi się punktualnie na gratulacje!'],
+    ['🐨','Koala przytula najlepszy wynik!'],
+    ['🦩','Flaming stoi na jednej nodze, ale liczy dwie wskazówki!'],
+    ['🦔','Jeżyk ma tyle kolców, ile minut w zegarze! Prawie!'],
+    ['🦦','Wydra pluska: „Kwadrans radości!”'],
+    ['🦜','Papuga woła: „Tik-tak, świetny znak!”'],
+    ['🐬','Delfin wyskoczył dokładnie o czasie!'],
+    ['🦓','Zebra wie, kiedy jest czas na paski!'],
+    ['🦒','Żyrafa widzi dobrą godzinę z daleka!'],
+    ['🐿️','Wiewiórka schowała pięć minut w dziupli!'],
+    ['🦥','Leniwiec nie spieszy się, ale liczy świetnie!'],
+    ['🐯','Tygrys mruczy: „Pazurrrkowo!”'],
+    ['🐹','Chomik przebiegł pełne kółko po tarczy!'],
+    ['🐑','Owieczka liczy minuty zamiast owiec!'],
+    ['🦘','Kangur skacze od dwunastej do szóstej!'],
+    ['🦭','Foka bije brawo płetwami co minutę!'],
+    ['🐺','Wilk wyje: „Auuu, ale dobry czas!”'],
+    ['🦚','Paw rozkłada ogon na wielką chwilę!'],
+    ['🐳','Wieloryb śpiewa: „Czas na brawa!”'],
+    ['🐤','Kurczaczek ćwierka: „Pik-pik, tik-tik!”'],
+    ['🐞','Biedronka policzyła kropki i minuty!'],
+    ['🦀','Krab idzie bokiem, ale odpowiedź jest prosta!'],
+    ['🐊','Krokodyl szczerzy uśmiech pełen minut!'],
+    ['🦌','Jelonek przybiegł na czas po piątkę!'],
+    ['🐘','Słoń pamięta odpowiedź na sto lat!'],
+    ['🐇','Zając wyprzedził wskazówkę minutową!'],
+    ['🦢','Łabędź płynie przez jezioro godzin!'],
+    ['🦉','Sowa ma oko na każdą minutę!'],
+    ['🐱','Kot mówi: „Jest dokładnie pora na miau!”'],
+    ['🦄','Jednorożec wyczarował złoty kwadrans!'],
+    ['🐒','Małpka zrobiła salto na dwunastej!'],
+    ['🐼','Panda ogłosiła godzinę przytulania!']
   ];
   const bigRewards=[
-    {emoji:'🦄',name:'Jednorożec Punktualności',phrase:'Przybywam punktualnie… nawet z krainy bajek!',theme:'lilac'},
-    {emoji:'🦉',name:'Sowa Dwunasta',phrase:'Huhu! Kto tu mądrze liczy minuty?',theme:'mint'},
-    {emoji:'🚀',name:'Rakieta Kwadransowa',phrase:'Od zera do kwadransa w trzy, dwa, jeden!',theme:'peach'},
-    {emoji:'🐱',name:'Kot Miau-nutka',phrase:'Mam dziewięć żyć i zawsze czas na drzemkę!',theme:'lilac'},
-    {emoji:'🐸',name:'Żabka Tik-Tak',phrase:'Hop! Przeskoczyłam na właściwą godzinę!',theme:'mint'},
-    {emoji:'🐼',name:'Panda Półgodzinka',phrase:'Wpół do bambusa? To pora na przekąskę!',theme:'peach'},
-    {emoji:'🦊',name:'Lis Sprytny Zegarmistrz',phrase:'Żadna wskazówka mnie nie przechytrzy!',theme:'lilac'},
+    {emoji:'🦄',name:'Jednorożec Punktualności',phrase:'Nawet magia nie jest szybsza od Twojego liczenia!',theme:'lilac'},
+    {emoji:'🐒',name:'Małpka Minutka',phrase:'Przeskoczyłam 60 minut bez potknięcia!',theme:'peach'},
+    {emoji:'🦉',name:'Sowa Dwunasta',phrase:'Huhu! Kto tu jest mistrzem zegara?',theme:'mint'},
+    {emoji:'🐱',name:'Kot Miau-nutka',phrase:'Mam dziewięć żyć i zawsze chwilę na drzemkę!',theme:'lilac'},
+    {emoji:'🐼',name:'Panda Półgodzinka',phrase:'Wpół do bambusa? To pora na przekąskę!',theme:'mint'},
+    {emoji:'🦊',name:'Lis Zegarmistrz',phrase:'Żadna wskazówka mnie nie przechytrzy!',theme:'peach'},
     {emoji:'🐧',name:'Pingwin na Czas',phrase:'Na lodzie się ślizgam, z godzinami nie!',theme:'mint'},
-    {emoji:'🐙',name:'Ośmiornica Ośma',phrase:'Mam osiem ramion, ale tylko dwie wskazówki!',theme:'peach'},
-    {emoji:'🍕',name:'Pizza o Piątej',phrase:'Każdy kwadrans to dobry czas na kawałek!',theme:'lilac'},
-    {emoji:'🍩',name:'Donut Minut',phrase:'Jestem okrągły jak tarcza, ale smaczniejszy!',theme:'mint'},
-    {emoji:'🐢',name:'Żółw Ekspres',phrase:'Idę wolno, ale zegar znam błyskawicznie!',theme:'peach'},
-    {emoji:'🐝',name:'Pszczółka Punktulka',phrase:'Bzyy! Nawet sekunda mi nie umknie!',theme:'mint'},
-    {emoji:'🦖',name:'Dinozaur Czasozaur',phrase:'Mam milion lat i nie spóźniłem się ani razu!',theme:'peach'},
-    {emoji:'🛸',name:'Kosmita Tik-Tak',phrase:'Na mojej planecie godzina trwa tyle, co śmiech!',theme:'lilac'},
-    {emoji:'👑',name:'Królowa Kwadransa',phrase:'Ogłaszam: od dziś minuty są moimi poddanymi!',theme:'mint'}
+    {emoji:'🐢',name:'Żółw Ekspres',phrase:'Idę wolno, ale zadania liczę błyskawicznie!',theme:'peach'},
+    {emoji:'🐙',name:'Ośmiornica Ósma',phrase:'Osiem ramion i dwa razy więcej braw!',theme:'lilac'},
+    {emoji:'🦁',name:'Lew Kwadrans',phrase:'W królestwie ogłaszam porę na zwycięstwo!',theme:'peach'},
+    {emoji:'🦋',name:'Motyl Czasolot',phrase:'Lecę od minuty do minuty po tęczę!',theme:'mint'},
+    {emoji:'🐸',name:'Żabka Tik-Tak',phrase:'Hop! Wskoczyłam na właściwą godzinę!',theme:'mint'},
+    {emoji:'🦖',name:'Dinozaur Czasozaur',phrase:'Mam milion lat i nadal znam zegar!',theme:'peach'},
+    {emoji:'🐝',name:'Pszczółka Punktulka',phrase:'Bzyy! Ani jedna minuta mi nie umknie!',theme:'mint'},
+    {emoji:'🐻',name:'Miś Czasomiś',phrase:'Na wielki sukces zawsze znajdę chwilę!',theme:'lilac'},
+    {emoji:'🦒',name:'Żyrafa Godzinka',phrase:'Z taką szyją widzę przyszłość o godzinę wcześniej!',theme:'peach'},
+    {emoji:'🦓',name:'Zebra Sekundka',phrase:'Znam paski i kwadranse na pamięć!',theme:'mint'},
+    {emoji:'🦔',name:'Jeżyk Punktualek',phrase:'Moje kolce wskazują na same sukcesy!',theme:'peach'},
+    {emoji:'🐬',name:'Delfin Tikton',phrase:'Fala za falą, minuta za minutą!',theme:'lilac'},
+    {emoji:'🦜',name:'Papuga Tyka',phrase:'Powtarzaj za mną: świetnie, świetnie!',theme:'mint'},
+    {emoji:'🐰',name:'Królik Kwadransik',phrase:'Nie spóźniłem się do króliczej nory!',theme:'peach'},
+    {emoji:'🐨',name:'Koala Godzinka',phrase:'Pora na drzemkę... ale najpierw gratulacje!',theme:'lilac'},
+    {emoji:'🦥',name:'Leniwiec Mistrz',phrase:'Nie trzeba się śpieszyć, żeby być mistrzem!',theme:'mint'},
+    {emoji:'🦩',name:'Flamingo Minutango',phrase:'Tańczę tango pomiędzy wskazówkami!',theme:'peach'},
+    {emoji:'🦦',name:'Wydra Czasowydra',phrase:'Wskakuję do wody punktualnie!',theme:'mint'},
+    {emoji:'🐳',name:'Wieloryb Godzinowy',phrase:'Mój śpiew trwa kwadrans oklasków!',theme:'lilac'},
+    {emoji:'🐘',name:'Słoń Pamiętnik',phrase:'Tego wyniku nigdy nie zapomnę!',theme:'peach'},
+    {emoji:'🐿️',name:'Wiewiórka Tikierka',phrase:'Zbieram rekordy jak orzeszki!',theme:'mint'},
+    {emoji:'🐞',name:'Biedronka Minutka',phrase:'Siedem kropek, a rekord na dziesięć!',theme:'lilac'},
+    {emoji:'🦀',name:'Krab Czasobok',phrase:'Idę bokiem, ale trafiam w punkt!',theme:'peach'},
+    {emoji:'🐺',name:'Wilk Księżycowy',phrase:'O północy wyją mi tylko brawa!',theme:'mint'},
+    {emoji:'🐯',name:'Tygrys Godzinor',phrase:'Ryczę z radości: to był rekord!',theme:'lilac'}
   ];
   const minuteLabel=n=>{const last=n%10;return `${n} ${last>=2&&last<=4&&(n%100<12||n%100>14)?'minuty':n===1?'minutę':'minut'}`;};
   function daypart(h){return h>=5&&h<=9?'rano':h<=11?'przed południem':h<=17?'po południu':h<=22?'wieczorem':'w nocy';}
@@ -277,23 +349,24 @@
   function selectFill(el,from,to,step=1,showPad=true){el.replaceChildren(new Option('Wybierz',''));for(let n=from;n<=to;n+=step)el.add(new Option(showPad?pad(n):String(n),String(n)));}
   function populateSelects(){
     selectFill($('answerHour'),1,12,1,false);
-    selectFill($('answerMinute'),0,59,state.level===1?60:state.level===2?5:1);
+    selectFill($('answerMinute'),0,59);
     selectFill($('storyHour'),0,23);
-    selectFill($('storyMinute'),0,59,state.level===1?15:state.level===2?5:1);
+    selectFill($('storyMinute'),0,59);
   }
   function renderClock(){
     const mode=currentMode(),h=mode==='read'?state.targetH:state.userH,m=mode==='read'?state.targetM:state.userM;
     hourHand.setAttribute('transform',`rotate(${(h%12)*30+m*.5} 200 200)`);
     minuteHand.setAttribute('transform',`rotate(${m*6} 200 200)`);
-    clock.setAttribute('aria-label',mode==='read'?'Zegar do odczytania godziny.':'Zegar pomocniczy, przesuń wskazówki.');
+    clock.setAttribute('aria-label',mode==='read'?'Zegar do odczytania godziny.':mode==='story'&&!state.storyClockEnabled?'Zegar poglądowy; obracanie wskazówek jest wyłączone.':'Zegar pomocniczy, przesuń wskazówki.');
     hourHand.setAttribute('opacity',mode==='read'||state.selected==='hour'?'1':'.7');
     minuteHand.setAttribute('opacity',mode==='read'||state.selected==='minute'?'1':'.7');
   }
   function updateCounters(){
     $('solvedCount').textContent=`${state.solved}/${TOTAL}`;
+    $('pointsCount').textContent=state.points+' 🏅';
     $('starCount').textContent=state.stars+' ⭐';
-    $('mistakeCount').textContent='❤️'.repeat(MAX_MISTAKES-state.mistakes)+'🤍'.repeat(state.mistakes);
-    $('mistakeText').textContent=`${MAX_MISTAKES-state.mistakes} z ${MAX_MISTAKES} pomyłek`;
+    $('attemptCount').textContent=`${Math.min(state.questionMistakes+1,MAX_ATTEMPTS)} z ${MAX_ATTEMPTS}`;
+    $('errorCount').textContent=String(state.errors);
   }
   function updateHandChoice(){document.querySelectorAll('.handchoice').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.hand===state.selected)));$('nudgeLabel').textContent=state.selected==='hour'?'Przesuwasz godzinę':'Przesuwasz minuty';renderClock();}
   function updateModeUI(){
@@ -303,14 +376,17 @@
     $('readControls').classList.toggle('hidden',!read);$('setControls').classList.toggle('hidden',!set);
     $('storyControls').classList.toggle('hidden',!story);
     $('storyTypes').classList.toggle('hidden',state.mode!=='story');
+    $('storyTheme').classList.toggle('hidden',state.mode!=='story'&&state.mode!=='mission');
     $('storyClockTools').classList.toggle('hidden',!story);
-    clock.classList.toggle('interactive',!read);
+    $('storyHandTools').classList.toggle('hidden',!story||!state.storyClockEnabled);
+    $('clockToggle').setAttribute('aria-pressed',String(state.storyClockEnabled));
+    $('clockToggle').textContent=state.storyClockEnabled?'🔓 Wyłącz zegar do liczenia':'🔒 Włącz zegar do liczenia';
+    clock.classList.toggle('interactive',set||(story&&state.storyClockEnabled));
     const captions={read:'👀 Odczytywanie',set:'🖐️ Ustawianie wskazówek',story:'🧠 Zadania z czasem'};
     $('modeCaption').textContent=(state.mode==='mission'?'🎲 Wielka misja · ':'')+captions[mode];
     $('question').textContent=read?'Która jest godzina?':set?'Ustaw tę godzinę:':'Pomyśl i rozwiąż!';
-    $('instruction').textContent=read?'Popatrz na wskazówki i wybierz godzinę oraz minuty.':set?'Ustaw krótką i długą wskazówkę we właściwych miejscach.':'Wybierz odpowiedź lub zapisz godzinę cyframi. Możesz liczyć w pamięci albo na zegarze pomocniczym.';
-    $('clockInstruction').textContent=read?'Spójrz uważnie na obie wskazówki':set?'Dotknij tarczy lub przeciągnij wskazówki':'Zegar do samodzielnego liczenia czasu';
-    $('lessonTip').innerHTML=story?'<strong>Ściąga:</strong> kwadrans = <strong>15 minut</strong>, pół godziny = <strong>30 minut</strong>. „Kwadrans po dziewiątej” to 09:15, „wpół do dziesiątej” to 09:30, a „za kwadrans dziesiąta” to 09:45.':'<strong>Zapamiętaj:</strong> krótka wskazówka pokazuje godziny, a długa minuty. Każda duża liczba na tarczy to <strong>5 minut</strong> dla długiej wskazówki.';
+    $('instruction').textContent=read?'Popatrz na wskazówki i wybierz godzinę oraz minuty.':set?'Ustaw krótką i długą wskazówkę we właściwych miejscach.':'Wybierz odpowiedź lub zapisz godzinę cyframi. Licz samodzielnie.';
+    $('clockInstruction').textContent=read?'Spójrz uważnie na obie wskazówki':set?'Dotknij tarczy lub przeciągnij wskazówki':state.storyClockEnabled?'Zegar pomocniczy — przesuwaj wskazówki samodzielnie':'Zegar poglądowy — przestawianie wyłączone';
     updateHandChoice();
   }
   function feedback(message,kind='info'){$('feedback').className='feedback '+kind;$('feedback').textContent=message;}
@@ -327,20 +403,22 @@
     const verbal=!curated&&state.level!==3&&Math.random()<.23;
     const startText=verbal?`„${expressTime(s.h,s.m)}”`:format(s.h,s.m);
     const words=durationWords[delta]||`${delta} minut`;
-    const prompt=future?`Jest ${startText}.\nKtóra będzie godzina za ${words}?`:`Jest ${startText}.\nKtóra była godzina ${words} temu?`;
+    const hero=storyCharacter();
+    const intro=hero?`${hero} patrzy na zegar. `:'';
+    const prompt=intro+(future?`Jest ${startText}.\nKtóra będzie godzina za ${words}?`:`Jest ${startText}.\nKtóra była godzina ${words} temu?`);
     const hours=Math.floor(delta/60),remaining=delta%60,sign=future?1:-1,operator=future?'+':'−';
     const middle=splitTime(start+sign*hours*60);
     const explanation=hours&&remaining?`${format(s.h,s.m)} ${operator} ${hours} godz. = ${format(middle.h,middle.m)}, potem ${operator} ${remaining} min = ${format(result.h,result.m)}.`:`${format(s.h,s.m)} ${operator} ${delta} min = ${format(result.h,result.m)}.`;
-    return {kind:'calc',answer,prompt,start,explanation,hint:`${future?'Dodawaj':'Odejmuj'} czas etapami. 60 minut to jedna godzina. Zacznij od ${format(s.h,s.m)}.`};
+    return {kind:'calc',answer,prompt,start,explanation};
   }
   function buildWords(asChoice){
     const h=6+rand(15),m=pick(storyMinutes()),answer=h*60+m,phrase=expressTime(h,m);
-    const hint=m===30?'„Wpół do” oznacza 30 minut przed następną pełną godziną.':m===45?'„Za kwadrans” to 15 minut przed następną pełną godziną.':m===15?'„Kwadrans po” oznacza 15 minut po pełnej godzinie.':m>30?'„Za” mówi, ile minut brakuje do następnej godziny.':'„Po” mówi, ile minut już minęło.';
-    if(!asChoice)return {kind:'toDigits',answer,prompt:`Którą godzinę oznacza wyrażenie:\n„${phrase}”?`,start:answer,hint,explanation:`„${phrase}” to ${format(h,m)}.`};
+    const hero=storyCharacter();
+    if(!asChoice)return {kind:'toDigits',answer,prompt:`${hero?hero+' ćwiczy zegar.\n':''}Którą godzinę oznacza wyrażenie:\n„${phrase}”?`,start:answer,explanation:`„${phrase}” to ${format(h,m)}.`};
     const choices=[answer],shifts=shuffle(state.level===1?[15,-15,30,-30,60,-60,120,-120]:[5,-5,10,-10,15,-15,30,-30,60,-60,120]);
     for(const shift of shifts){const t=answer+shift,tm=splitTime(t);if(t>=360&&t<=1255&&!choices.includes(t)&&storyMinutes().includes(tm.m)&&choices.length<4)choices.push(t);}
     for(let gap=1;choices.length<4&&gap<24;gap++){const t=answer+gap*15;if(t<=1255&&!choices.includes(t)&&storyMinutes().includes(splitTime(t).m))choices.push(t);}
-    return {kind:'toWords',answer,prompt:`Jest ${format(h,m)}.\nKtóre określenie jest poprawne?`,choices:shuffle(choices),start:answer,hint,explanation:`${format(h,m)} to „${phrase}”.`};
+    return {kind:'toWords',answer,prompt:`${hero?hero+' zerka na zegar.\n':''}Jest ${format(h,m)}.\nKtóre określenie jest poprawne?`,choices:shuffle(choices),start:answer,explanation:`${format(h,m)} to „${phrase}”.`};
   }
   function buildLife(){
     // Każdy scenariusz kończy się pytaniem o godzinę (nie o czas trwania).
@@ -370,18 +448,69 @@
       {subject:'🐶 Spacer',low:7,high:19,durations:[15,30,45,60],forward:true,
        text:(s,d)=>`Spacer z pieskiem rozpoczął się o ${s}. Trwał ${durationWords[d]}.\nO której wróciliście?`}
     ];
-    const template=pick(templates);
+    const fairyTemplates=[
+      {subject:'🌊 Vaiana w kinie',low:12,high:19,durations:[60,90,120,150],forward:true,
+       text:(s,d)=>`Vaiana poszła do kina na film o ${s}. Film trwał ${durationWords[d]}.\nO której Vaiana wyszła z kina?`},
+      {subject:'❄️ Elsa na lodowisku',low:9,high:17,durations:[30,45,60,90],forward:true,
+       text:(s,d)=>`Elsa zaczęła jazdę na łyżwach o ${s}. Jeździła przez ${durationWords[d]}.\nO której skończyła trening?`},
+      {subject:'☃️ Olaf i bałwan',low:8,high:16,durations:[15,30,45,60],forward:true,
+       text:(s,d)=>`Olaf zaczął budować śnieżny zamek o ${s}. Zajęło mu to ${durationWords[d]}.\nO której zamek był gotowy?`},
+      {subject:'🧜 Ariel na koncercie',low:13,high:19,durations:[45,60,90,120],forward:false,
+       text:(s,d)=>`Ariel skończyła koncert o ${s}. Występ trwał ${durationWords[d]}.\nO której rozpoczął się koncert?`},
+      {subject:'🌺 Mirabel i muzyka',low:12,high:18,durations:[15,30,45,60],forward:true,
+       text:(s,d)=>`Mirabel zaczęła lekcję muzyki o ${s}. Ćwiczyła przez ${durationWords[d]}.\nO której skończyła?`},
+      {subject:'🦁 Simba na wyprawie',low:7,high:17,durations:[30,45,60,90,120],forward:true,
+       text:(s,d)=>`Simba wyruszył na wyprawę o ${s}. Wędrówka trwała ${durationWords[d]}.\nO której dotarł na miejsce?`},
+      {subject:'👽 Stitch w kinie',low:13,high:19,durations:[60,90,120,150],forward:true,
+       text:(s,d)=>`Stitch wszedł do kina o ${s}. Seans trwał ${durationWords[d]}.\nO której Stitch wyszedł z kina?`},
+      {subject:'🎨 Roszpunka maluje',low:9,high:18,durations:[15,30,45,60,90],forward:false,
+       text:(s,d)=>`Roszpunka skończyła malować obraz o ${s}. Malowała przez ${durationWords[d]}.\nO której zaczęła?`},
+      {subject:'👑 Bella w bibliotece',low:10,high:18,durations:[20,30,45,60,90],forward:true,
+       text:(s,d)=>`Bella zaczęła czytać w bibliotece o ${s}. Czytała przez ${durationWords[d]}.\nO której skończyła?`},
+      {subject:'🏹 Merida trenuje',low:9,high:17,durations:[15,30,45,60],forward:false,
+       text:(s,d)=>`Merida skończyła trening łuczniczy o ${s}. Trening trwał ${durationWords[d]}.\nO której go rozpoczęła?`},
+      {subject:'🎀 Minnie i babeczki',low:9,high:17,durations:[15,20,25,30,45,60],forward:true,
+       text:(s,d)=>`Minnie wstawiła babeczki do piekarnika o ${s}. Pieczenie trwało ${durationWords[d]}.\nO której babeczki były gotowe?`},
+      {subject:'🐭 Miki na pikniku',low:9,high:17,durations:[30,45,60,90],forward:true,
+       text:(s,d)=>`Miki rozpoczął piknik o ${s}. Piknik trwał ${durationWords[d]}.\nO której się skończył?`},
+      {subject:'🪄 Dżin i latający dywan',low:8,high:18,durations:[15,30,45,60,90],forward:true,
+       text:(s,d)=>`Dżin wsiadł na latający dywan o ${s}. Podróż trwała ${durationWords[d]}.\nO której Dżin wylądował?`},
+      {subject:'🚂 Donald w pociągu',low:8,high:19,durations:[30,45,60,90,120,150],forward:false,
+       text:(s,d)=>`Donald przyjechał pociągiem o ${s}. Podróż trwała ${durationWords[d]}.\nO której pociąg odjechał?`},
+      {subject:'🤖 Baymax pomaga',low:10,high:18,durations:[15,30,45,60],forward:true,
+       text:(s,d)=>`Baymax rozpoczął pomoc w szpitalu o ${s}. Pomagał przez ${durationWords[d]}.\nO której skończył?`},
+      {subject:'🍯 Kubuś i miód',low:8,high:17,durations:[15,30,45,60],forward:true,
+       text:(s,d)=>`Kubuś Puchatek zaczął przygotowywać piknik o ${s}. Zajęło mu to ${durationWords[d]}.\nO której wszystko było gotowe?`},
+      {subject:'👗 Kopciuszek na balu',low:16,high:21,durations:[30,45,60,90,120],forward:false,
+       text:(s,d)=>`Księżniczka Kopciuszek wróciła z balu o ${s}. Bawiła się przez ${durationWords[d]}.\nO której rozpoczął się bal?`},
+      {subject:'🐻 Baloo tańczy',low:10,high:17,durations:[15,30,45,60],forward:true,
+       text:(s,d)=>`Baloo zaczął uczyć tańca o ${s}. Lekcja trwała ${durationWords[d]}.\nO której się skończyła?`},
+      {subject:'🦊 Judy na patrolu',low:8,high:18,durations:[30,45,60,90],forward:true,
+       text:(s,d)=>`Judy Hopps rozpoczęła patrol o ${s}. Patrol trwał ${durationWords[d]}.\nO której go zakończyła?`},
+      {subject:'🐘 Dumbo na pokazie',low:10,high:17,durations:[15,30,45,60,90],forward:false,
+       text:(s,d)=>`Dumbo zakończył pokaz o ${s}. Występ trwał ${durationWords[d]}.\nO której się zaczął?`},
+      {subject:'🧚 Dzwoneczek i wróżki',low:8,high:17,durations:[15,30,45,60],forward:true,
+       text:(s,d)=>`Dzwoneczek rozpoczęła spotkanie wróżek o ${s}. Spotkanie trwało ${durationWords[d]}.\nO której się skończyło?`},
+      {subject:'🐱 Marie na lekcji',low:9,high:17,durations:[30,45,60,90],forward:false,
+       text:(s,d)=>`Kotka Marie skończyła lekcję śpiewu o ${s}. Lekcja trwała ${durationWords[d]}.\nO której się zaczęła?`}
+    ];
+    const storyPool=state.theme==='fairy'?fairyTemplates:state.theme==='classic'?templates:Math.random()<.5?fairyTemplates:templates;
+    const template=pick(storyPool);
     const possible=template.durations.filter(d=>state.level===1?[15,30,45,60,90].includes(d):state.level===2?true:true);
     const duration=pick(possible),h=template.low+rand(template.high-template.low+1),m=pick(storyMinutes());
     const start=h*60+m,answer=norm1440(start+(template.forward?duration:-duration));
     const end=splitTime(answer),sign=template.forward?'+':'−';
     const q=template.text(format(h,m),duration);
     const explanation=`${format(h,m)} ${sign} ${duration} min = ${format(end.h,end.m)}.`;
-    return {kind:'life',answer,prompt:`${template.subject}\n${q}`,start,hint:`Zacznij od ${format(h,m)} i ${template.forward?'dodaj':'odejmij'} ${duration} minut. Możesz użyć zegara pomocniczego.`,explanation};
+    return {kind:'life',answer,prompt:`${template.subject}\n${q}`,start,explanation};
   }
   function buildPlan(){
-    if(state.mode==='mission')return shuffle(['read','read','set','set','calc','calc','wordsDigits','wordsChoice','life','life']);
-    if(state.mode==='story'&&state.storyKind==='mix')return shuffle(['calc','calc','calc','wordsDigits','wordsChoice','words','life','life','life','life']);
+    // 25 pytań: wszystkie umiejętności w równych proporcjach w wielkiej misji.
+    if(state.mode==='mission')return shuffle([
+      ...Array(5).fill('read'),...Array(5).fill('set'),...Array(5).fill('calc'),
+      'wordsDigits','wordsDigits','wordsChoice','wordsChoice','words',...Array(5).fill('life')
+    ]);
+    if(state.mode==='story'&&state.storyKind==='mix')return shuffle([...Array(9).fill('calc'),...Array(8).fill('words'),...Array(8).fill('life')]);
     if(state.mode==='story'&&state.storyKind==='life')return Array(TOTAL).fill('life');
     if(state.mode==='story'&&state.storyKind==='calc')return Array(TOTAL).fill('calc');
     if(state.mode==='story'&&state.storyKind==='words')return Array(TOTAL).fill('words');
@@ -405,40 +534,56 @@
       el.addEventListener('click',()=>{if(state.done)return;state.selectedChoice=value;document.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.time)===value)));});
       $('storyChoices').append(el);
     }
-    $('clockStart').classList.toggle('hidden',task.start===undefined);
     state.userH=12;state.userM=0;updateHandChoice();
   }
+  const kindCategory=kind=>kind==='read'?'read':kind==='set'?'set':kind==='calc'?'calc':kind==='life'?'life':'words';
+  const skillInfo={
+    read:['👀 Odczytywanie','Ćwicz rozpoznawanie godzin i minut na tarczy.'],
+    set:['🖐️ Ustawianie wskazówek','Ćwicz położenie krótkiej i długiej wskazówki.'],
+    calc:['⏳ Liczenie czasu','Ćwicz dodawanie i odejmowanie minut oraz godzin.'],
+    words:['💬 Określenia słowne','Ćwicz „wpół do”, „kwadrans po” i „za kwadrans”.'],
+    life:['📖 Historyjki','Ćwicz ustalanie godziny rozpoczęcia i zakończenia wydarzeń.']
+  };
   function newPuzzle(){
-    state.done=false;state.questionMistakes=0;state.selected='hour';state.dragging=false;
+    state.done=false;state.questionMistakes=0;state.lastWrongSignature=null;state.selected='hour';state.dragging=false;state.storyClockEnabled=false;
     const kind=state.plan[state.index-1];
+    state.category=kindCategory(kind);
     state.puzzleMode=['read','set'].includes(kind)?kind:'story';
     if(state.puzzleMode==='story'){
-      let task;for(let tries=0;tries<16;tries++){task=generateStory(kind);if(task.prompt!==state.lastPrompt)break;}
+      let task,signature;
+      for(let tries=0;tries<80;tries++){
+        task=generateStory(kind);signature=kind+':'+task.prompt;
+        if(!state.seen.has(signature))break;
+      }
+      state.seen.add(signature);
       state.story=task;state.lastPrompt=task.prompt;
       state.targetH=splitTime(task.answer).h;state.targetM=splitTime(task.answer).m;
       populateSelects();showStory();
     } else {
-      const prev=format(state.targetH,state.targetM),options=availableMinutes();
-      do{state.targetH=rand(12)+1;state.targetM=pick(options);}while(format(state.targetH,state.targetM)===prev&&options.length*12>1);
-      do{state.userH=rand(12)+1;state.userM=pick(options);}while(state.userH===state.targetH&&state.userM===state.targetM);
+      const options=availableMinutes();let signature;
+      for(let tries=0;tries<250;tries++){
+        state.targetH=rand(12)+1;state.targetM=pick(options);
+        signature=kind+':'+format(state.targetH,state.targetM);
+        if(!state.seen.has(signature))break;
+      }
+      state.seen.add(signature);
+      do{state.userH=rand(12)+1;state.userM=rand(60);}while(state.userH===state.targetH&&state.userM===state.targetM);
       populateSelects();$('targetTime').textContent=format(state.targetH,state.targetM);
     }
     $('taskLabel').textContent=`Zadanie ${state.index} z ${TOTAL}`;
     $('progressFill').style.width=((state.index-1)/TOTAL*100)+'%';
     $('checkBtn').textContent='Sprawdź ✓';
-    $('hintBtn').classList.remove('hidden');$('skipBtn').classList.remove('hidden');
     $('finish').classList.add('hidden');$('exercise').classList.remove('hidden');
     $('miniReward').classList.add('hidden');
     hideFeedback();updateModeUI();updateCounters();
   }
   function beginSession(){
-    state.index=1;state.solved=0;state.stars=0;state.mistakes=0;state.questionMistakes=0;state.lastPrompt='';state.ended=false;
+    state.index=1;state.solved=0;state.stars=0;state.points=0;state.errors=0;state.wrongAttempts=0;state.questionMistakes=0;state.lastWrongSignature=null;state.lastPrompt='';state.ended=false;state.seen=new Set();state.skills={};
     state.plan=buildPlan();newPuzzle();
   }
   function describeSolution(){return currentMode()==='story'?state.story.explanation:`To jest godzina ${format(state.targetH,state.targetM)}.`;}
-  function miniReward(correct){
+  function miniReward(){
     const box=$('miniReward');box.classList.remove('hidden');
-    if(!correct){$('miniEmoji').textContent='🧩';$('miniText').textContent='Naklejka za odważną próbę! Następne zadanie czeka.';return;}
     let idx=rand(miniRewards.length);
     if(idx===state.lastMini)idx=(idx+1+rand(miniRewards.length-1))%miniRewards.length;
     state.lastMini=idx;$('miniEmoji').textContent=miniRewards[idx][0];$('miniText').textContent=miniRewards[idx][1];
@@ -446,19 +591,28 @@
   }
   function lockPuzzle(){
     state.done=true;$('checkBtn').textContent=state.index===TOTAL?'Zobacz wynik 🏆':'Następne zadanie →';
-    $('hintBtn').classList.add('hidden');$('skipBtn').classList.add('hidden');
+  }
+  function recordSkill(result){
+    const category=state.category;
+    if(!state.skills[category])state.skills[category]={first:0,second:0,failed:0};
+    state.skills[category][result]++;
   }
   function success(){
     const perfect=state.questionMistakes===0;
-    state.solved++;if(perfect)state.stars++;
+    state.solved++;
+    state.points+=perfect?10:5;
+    if(perfect)state.stars++;
+    recordSkill(perfect?'first':'second');
     updateCounters();lockPuzzle();
-    const praise=perfect?'⭐ Brawo! Za pierwszym razem!':'👏 Świetnie! Udało się poprawić odpowiedź!';
-    feedback(`${praise} ${describeSolution()}`,'success');miniReward(true);
+    const praise=perfect?'⭐ +10 pkt! Brawo za pierwszym razem!':'👏 +5 pkt! Świetnie, udało się za drugim razem!';
+    feedback(praise,'success');
+    if(perfect)miniReward();
   }
-  function giveSolution(reason){
-    if(state.done)return;
-    if(currentMode()==='set'){state.userH=state.targetH;state.userM=state.targetM;renderClock();}
-    lockPuzzle();feedback(`${reason} Rozwiązanie: ${describeSolution()} Spróbuj następnego zadania!`,'info');miniReward(false);
+  function finishIncorrect(){
+    state.errors++;
+    recordSkill('failed');updateCounters();lockPuzzle();
+    feedback('Dwie próby wykorzystane. To zadanie zapisujemy do ćwiczenia — w podsumowaniu zobaczysz, nad czym popracować.','error');
+    $('miniReward').classList.add('hidden');
   }
   function check(){
     if(state.done){next();return;}
@@ -481,43 +635,84 @@
     }
     if(!valid){feedback('Najpierw wybierz odpowiedź, a potem ją sprawdź. 😊');return;}
     if(correct){success();return;}
-    state.questionMistakes++;
-    if(state.mistakes<MAX_MISTAKES){
-      state.mistakes++;updateCounters();
-      feedback(state.mistakes===1?'💗 Pierwsza pomyłka — masz jeszcze jedno serduszko. Popraw odpowiedź lub użyj podpowiedzi.':'💗 Druga pomyłka. Serduszka się skończyły, ale nadal możesz spróbować poprawić odpowiedź!','error');
+    const wrongSignature=currentMode()==='read'?`read:${$('answerHour').value}:${$('answerMinute').value}`:
+      currentMode()==='set'?`set:${state.userH}:${state.userM}`:
+      state.story.kind==='toWords'?`choice:${state.selectedChoice}`:`story:${$('storyHour').value}:${$('storyMinute').value}`;
+    if(state.lastWrongSignature===wrongSignature){
+      feedback('Ta odpowiedź była już sprawdzona. Spróbuj podać inną!','error');return;
+    }
+    state.lastWrongSignature=wrongSignature;
+    state.questionMistakes++;state.wrongAttempts++;
+    if(state.questionMistakes<MAX_ATTEMPTS){
+      updateCounters();
+      feedback('To jeszcze nie ta odpowiedź. Została jedna próba — pomyśl i spróbuj jeszcze raz.','error');
     }else{
-      giveSolution('To nie ta odpowiedź. Gdy skończyły się serduszka, pokazujemy wyjaśnienie.');
+      finishIncorrect();
     }
   }
   function next(){if(state.index>=TOTAL){finish();return;}state.index++;newPuzzle();}
-  function hint(){
-    if(state.done)return;
-    if(currentMode()==='story'){feedback(`💡 ${state.story.hint}`,'info');return;}
-    const h=state.targetH,m=state.targetM;
-    if(currentMode()==='read'){
-      const k=Math.floor(m/5),minPart=m%5===0?`Długa wskazówka stoi na ${m===0?12:k}, czyli pokazuje ${pad(m)} minut.`:`Długa wskazówka jest między ${k===0?12:k} a ${k+1}. Małe kreski liczymy po jednej minucie.`;
-      feedback(`💡 ${minPart} Krótka wskazówka pokazuje godzinę, którą właśnie zaczęliśmy.`);
-    }else{
-      const mark=m/5,desc=m%5===0?`na liczbie ${m===0?12:mark}`:`między liczbami ${Math.floor(mark)===0?12:Math.floor(mark)} i ${Math.floor(mark)+1}, na ${m%5}. małej kresce`;
-      feedback(`💡 Długa wskazówka powinna być ${desc}. Krótka pokazuje godzinę ${h} i powoli zmierza do następnej.`);
-    }
-  }
-  function skip(){giveSolution('Sprawdźmy to razem!');}
   function pickBigReward(){
-    let last=-1;try{last=Number(localStorage.getItem('zegar-v3-last-sticker')??-1);}catch(e){}
+    let last=-1;try{last=Number(localStorage.getItem('zegar-v4-last-sticker')??-1);}catch(e){}
     let idx=rand(bigRewards.length);
     if(idx===last)idx=(idx+1+rand(bigRewards.length-1))%bigRewards.length;
-    try{localStorage.setItem('zegar-v3-last-sticker',String(idx));}catch(e){}
+    try{localStorage.setItem('zegar-v4-last-sticker',String(idx));}catch(e){}
     return bigRewards[idx];
+  }
+  function safeReadResults(){
+    try{const v=JSON.parse(localStorage.getItem(RESULTS_KEY)||'[]');return Array.isArray(v)?v.filter(x=>x&&Number.isFinite(x.points)&&x.mode&&x.level):[];}catch(e){return [];}
+  }
+  const sessionScope=()=>`${state.mode}/${state.level}/${state.mode==='story'?state.storyKind:'all'}`;
+  const sessionLabel=()=>({mission:'Wielka misja',read:'Odczytywanie',set:'Wskazówki',story:'Zadania z czasem'}[state.mode]||'Misja')+` · poziom ${state.level}`+(state.mode==='story'?` · ${state.storyKind}`:'');
+  function saveResult(entry){
+    try{const history=safeReadResults();history.push(entry);localStorage.setItem(RESULTS_KEY,JSON.stringify(history.slice(-400)));return true;}catch(e){return false;}
+  }
+  function rankedEntries(){return safeReadResults().filter(r=>r.scope===sessionScope()).sort((a,b)=>b.points-a.points||b.solved-a.solved||b.stars-a.stars||a.time-b.time);}
+  function renderRanking(){
+    $('rankScope').textContent=sessionLabel();
+    const results=rankedEntries().slice(0,10),root=$('rankList');root.replaceChildren();
+    if(!results.length){const msg=document.createElement('p');msg.className='small';msg.textContent='Nie ma jeszcze zapisanych wyników. Ukończ pierwszą serię!';root.append(msg);return;}
+    results.forEach((r,i)=>{
+      const item=document.createElement('div');item.className='rank-row';
+      const pos=document.createElement('strong');pos.textContent=`${i+1}.`;
+      const name=document.createElement('span');name.className='rank-name';name.textContent=r.player||'Gracz';
+      const pts=document.createElement('strong');pts.textContent=`${r.points} pkt`;
+      const details=document.createElement('small');details.textContent=`${r.solved}/${TOTAL} zadań · ${new Date(r.time).toLocaleDateString('pl-PL')}`;
+      item.append(pos,name,pts,details);root.append(item);
+    });
+  }
+  function renderTrainingReport(){
+    const root=$('trainingReport');root.replaceChildren();
+    const heading=document.createElement('h3');heading.textContent='📚 Co warto poćwiczyć?';root.append(heading);
+    const areas=Object.entries(state.skills).map(([key,stat])=>({key,...stat,need:stat.failed*3+stat.second})).sort((a,b)=>b.need-a.need||b.failed-a.failed);
+    if(!areas.length)return;
+    const needs=areas.filter(x=>x.need>0).slice(0,3);
+    if(!needs.length){const p=document.createElement('p');p.textContent='Świetnie! Wszystkie zadania rozwiązane za pierwszym razem. Możesz spróbować trudniejszego poziomu.';root.append(p);}
+    else{
+      const p=document.createElement('p');p.textContent='Te umiejętności warto powtórzyć:';root.append(p);
+      for(const a of needs){
+        const card=document.createElement('div');card.className='skill-row';
+        const label=document.createElement('strong');label.textContent=skillInfo[a.key][0];
+        const count=document.createElement('span');count.textContent=`Niezaliczone: ${a.failed} · Za drugim razem: ${a.second}`;
+        const note=document.createElement('small');note.textContent=skillInfo[a.key][1];
+        card.append(label,count,note);root.append(card);
+      }
+    }
+    const heading2=document.createElement('p');heading2.className='small';heading2.textContent='Pełny rozkład zadań:';root.append(heading2);
+    const summary=document.createElement('div');summary.className='skill-overview';
+    Object.entries(state.skills).forEach(([key,v])=>{
+      const el=document.createElement('div');el.textContent=`${skillInfo[key][0]}: ${v.first} za 1. razem, ${v.second} za 2., ${v.failed} niezaliczone`;summary.append(el);
+    });root.append(summary);
   }
   function finish(){
     if(state.ended)return;state.ended=true;
     $('exercise').classList.add('hidden');$('finish').classList.remove('hidden');
     $('taskLabel').textContent=`Ukończono ${TOTAL} zadań`;$('progressFill').style.width='100%';
-    const percent=Math.round(state.solved/TOTAL*100),winning=percent>90;
+    const percent=Math.round(state.solved/TOTAL*100),winning=state.solved/TOTAL>.9;
     $('finishPercent').textContent=percent+'%';
     $('finishTitle').textContent=winning?'Misja ukończona! 🏆':percent>=70?'Świetnie Ci idzie! 🌈':'Każda próba uczy! 💜';
-    $('finishSummary').textContent=`Poprawnie rozwiązane: ${state.solved}/${TOTAL}. Trafione za pierwszym razem: ${state.stars}/${TOTAL}. Zużyte serduszka: ${state.mistakes}/${MAX_MISTAKES}.`;
+    $('finishSummary').textContent=`Zaliczone: ${state.solved}/${TOTAL}. Za pierwszym razem: ${state.stars}. Za drugim: ${state.solved-state.stars}. Niezaliczone: ${state.errors}.`;
+    $('finishPoints').textContent=`🏅 ${state.points} / ${TOTAL*10} punktów · ${state.wrongAttempts} nietrafionych prób`;
+    renderTrainingReport();
     $('awardCard').classList.toggle('hidden',!winning);
     $('retryMessage').classList.toggle('hidden',winning);
     if(winning){
@@ -526,14 +721,18 @@
       $('awardEmoji').textContent=reward.emoji;
       $('awardName').textContent=reward.name;
       $('awardQuote').textContent=`„${reward.phrase}”`;
-      let count=1;try{count=(Number(localStorage.getItem('zegar-v3-sticker-count'))||0)+1;localStorage.setItem('zegar-v3-sticker-count',String(count));}catch(e){}
+      let count=1;try{count=(Number(localStorage.getItem('zegar-v4-sticker-count'))||0)+1;localStorage.setItem('zegar-v4-sticker-count',String(count));}catch(e){}
       $('awardCollection').textContent=`To Twoja ${count}. wielka naklejka!`;
     }
-    const key=`zegar-przygody-v3-${state.mode}-${state.level}-${state.mode==='story'?state.storyKind:'all'}`;
-    let best=state.solved;
-    try{best=Math.max(Number(localStorage.getItem(key))||0,state.solved);localStorage.setItem(key,String(best));}catch(e){}
-    $('bestScore').textContent=`Twój rekord w tej kategorii: ${best}/${TOTAL}. Duża naklejka jest za wynik 10/10!`;
-    $('restartBtn').textContent='Kolejne 10 zadań 🎲';
+    const player=String($('playerName').value||'Gracz').trim().slice(0,18)||'Gracz';
+    const time=Date.now(),id=`${time}-${Math.random().toString(36).slice(2,9)}`;
+    const entry={id,player,time,mode:state.mode,level:state.level,storyKind:state.storyKind,scope:sessionScope(),solved:state.solved,stars:state.stars,errors:state.errors,points:state.points,skills:state.skills};
+    const stored=saveResult(entry),results=rankedEntries();
+    const place=results.findIndex(r=>r.id===id);
+    $('finishRank').textContent=stored?`🏆 Miejsce w rankingu tego trybu i poziomu: ${place+1} z ${results.length}.`:'Ranking niedostępny w trybie prywatnym lub bez pamięci przeglądarki.';
+    $('bestScore').textContent=stored?`Twój najlepszy zapisany wynik w tej kategorii: ${results.filter(r=>r.player===player)[0]?.points??state.points} pkt. Specjalna naklejka za co najmniej 23/25 zaliczonych zadań.`:'Specjalna naklejka za co najmniej 23/25 zaliczonych zadań.';
+    $('restartBtn').textContent='Kolejne 25 zadań 🎲';
+    if(!$('rankPanel').classList.contains('hidden'))renderRanking();
   }
   function selectHand(hand){state.selected=hand;updateHandChoice();}
   function angleFromPointer(ev){
@@ -546,15 +745,16 @@
   function adjustFromPointer(ev){
     const angle=angleFromPointer(ev);if(angle===null)return;
     if(state.selected==='minute'){
-      const step=state.level===3?1:state.level===2?5:currentMode()==='story'?15:60;
-      state.userM=(Math.round(angle/(6*step))*step)%60;
+      // Każda pozycja (0–59 min) jest dostępna na KAŻDYM poziomie.
+      // Poziom trudności wpływa na generowane pytania, nigdy na możliwe odpowiedzi.
+      state.userM=Math.round(angle/6)%60;
     }else state.userH=norm12(Math.round(angle/30-state.userM/60));
     renderClock();
   }
   function nudge(direction){
     if(currentMode()!=='set'||state.done)return;
     if(state.selected==='hour')state.userH=norm12(state.userH+direction);
-    else state.userM=(state.userM+direction*(state.level===1?60:state.level===3?1:5)+60)%60;
+    else state.userM=(state.userM+direction+60)%60;
     renderClock();
   }
   function stepClock(amount){
@@ -574,31 +774,42 @@
     const kind=button.dataset.kind;
     if(kind!==state.storyKind){state.storyKind=kind;document.querySelectorAll('.typebutton').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.kind===kind)));beginSession();}
   }));
+  document.querySelectorAll('.themebutton').forEach(button=>button.addEventListener('click',()=>{
+    const theme=button.dataset.theme;
+    if(theme!==state.theme){state.theme=theme;document.querySelectorAll('.themebutton').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.theme===theme)));beginSession();}
+  }));
   document.querySelectorAll('.handchoice').forEach(button=>button.addEventListener('click',()=>selectHand(button.dataset.hand)));
-  $('nudgeBack').addEventListener('click',()=>nudge(-1));$('nudgeForward').addEventListener('click',()=>nudge(1));
-  $('clockBack15').addEventListener('click',()=>stepClock(-15));$('clockForward15').addEventListener('click',()=>stepClock(15));
-  $('clockForward30').addEventListener('click',()=>stepClock(30));$('clockForward60').addEventListener('click',()=>stepClock(60));
-  $('clockStart').addEventListener('click',()=>{
-    if(currentMode()!=='story'||state.done||state.story.start===undefined)return;
-    const time=splitTime(state.story.start);state.userH=norm12(time.h);state.userM=time.m;renderClock();
+  $('clockToggle').addEventListener('click',()=>{if(currentMode()!=='story'||state.done)return;state.storyClockEnabled=!state.storyClockEnabled;updateModeUI();});
+  $('rankingToggle').addEventListener('click',()=>{
+    const show=$('rankPanel').classList.toggle('hidden');
+    $('rankingToggle').setAttribute('aria-expanded',String(!show));
+    if(!show)renderRanking();
   });
-  $('checkBtn').addEventListener('click',check);$('hintBtn').addEventListener('click',hint);$('skipBtn').addEventListener('click',skip);$('restartBtn').addEventListener('click',beginSession);
+  $('playerName').addEventListener('change',()=>{
+    const value=String($('playerName').value).trim().slice(0,18)||'Gracz';
+    state.player=value;$('playerName').value=value;
+    try{localStorage.setItem(PLAYER_KEY,value);}catch(e){}
+  });
+  $('nudgeBack').addEventListener('click',()=>nudge(-1));$('nudgeForward').addEventListener('click',()=>nudge(1));
+  $('checkBtn').addEventListener('click',check);$('restartBtn').addEventListener('click',beginSession);
   clock.addEventListener('pointerdown',ev=>{
-    if(currentMode()==='read'||state.done)return;
+    if(currentMode()==='read'||(currentMode()==='story'&&!state.storyClockEnabled)||state.done)return;
     const group=ev.target.closest('[data-hand]');if(group&&group.dataset.hand)selectHand(group.dataset.hand);
     state.dragging=true;clock.setPointerCapture(ev.pointerId);adjustFromPointer(ev);ev.preventDefault();
   });
-  clock.addEventListener('pointermove',ev=>{if(state.dragging&&currentMode()!=='read'&&!state.done){adjustFromPointer(ev);ev.preventDefault();}});
+  clock.addEventListener('pointermove',ev=>{if(state.dragging&&(currentMode()==='set'||(currentMode()==='story'&&state.storyClockEnabled))&&!state.done){adjustFromPointer(ev);ev.preventDefault();}});
   for(const type of ['pointerup','pointercancel','lostpointercapture'])clock.addEventListener(type,()=>{state.dragging=false;});
   document.addEventListener('keydown',ev=>{
-    if(currentMode()!=='read'&&!state.done&&document.activeElement===clock){
+    if((currentMode()==='set'||(currentMode()==='story'&&state.storyClockEnabled))&&!state.done&&document.activeElement===clock){
       if(ev.key==='ArrowLeft'||ev.key==='ArrowDown'){currentMode()==='set'?nudge(-1):stepClock(-5);ev.preventDefault();}
       if(ev.key==='ArrowRight'||ev.key==='ArrowUp'){currentMode()==='set'?nudge(1):stepClock(5);ev.preventDefault();}
     }
   });
+  try{state.player=localStorage.getItem(PLAYER_KEY)||'Gracz';}catch(e){}
+  $('playerName').value=state.player;
   clock.setAttribute('tabindex','0');buildDial();beginSession();
   // Funkcje diagnostyczne używane podczas sprawdzania aplikacji.
-  window.__clockLogic={splitTime,expressTime,buildCalculation,buildWords,buildLife,buildPlan,format,minutesOf,state,currentMode,beginSession,check,finish,success,generateStory};
+  window.__clockLogic={splitTime,expressTime,buildCalculation,buildWords,buildLife,buildPlan,format,minutesOf,state,currentMode,beginSession,check,finish,success,generateStory,rankedEntries,safeReadResults,bigRewards,miniRewards};
 })();
 
 </script>
