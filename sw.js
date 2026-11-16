@@ -1,8 +1,8 @@
-/* Zegarowe przygody 4.4 — offline shell dla GitHub Pages.
+/* Zegarowe przygody 4.5 — offline shell dla GitHub Pages.
  * Aktualna strona pobierana jest z sieci przy każdym otwarciu; offline działa kopia.
  * Wyniki pozostają w localStorage i NIE są usuwane przez aktualizacje cache.
  */
-const CACHE_NAME = 'zegarowe-przygody-shell-v4.4.0';
+const CACHE_NAME = 'zegarowe-przygody-shell-v4.5.0';
 const PRECACHE = [
   './clock-extras.js',
   './',
