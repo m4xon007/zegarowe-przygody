@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#6656cc">
 <meta name="description" content="Gra do nauki zegara: 25 pytań, dwie próby, naklejki, punkty i lokalny ranking wyników.">
-<title>Zegarowe przygody 4.2 — misja 25 pytań</title>
+<title>Zegarowe przygody 4.3 — misja 25 pytań</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
@@ -232,7 +232,7 @@
   const $ = id => document.getElementById(id);
   const clock = $('clock'), hourHand = $('hourHand'), minuteHand = $('minuteHand');
   const TOTAL=25, MAX_ATTEMPTS=2, RESULTS_KEY="zegarowe-przygody-v4-results", PLAYER_KEY="zegarowe-przygody-v4-player";
-  const state={mode:'mission', puzzleMode:'read',level:1,storyKind:'mix',theme:'fairy',errors:0,wrongAttempts:0,lastWrongSignature:null,index:1,targetH:3,targetM:0,userH:12,userM:0,selected:'hour',solved:0,stars:0,points:0,questionMistakes:0,done:false,dragging:false,story:null,selectedChoice:null,plan:[],lastMini:-1,lastPrompt:'',ended:false,storyClockEnabled:false,skills:{},seen:new Set(),player:'Gracz'};
+  const state={mode:'mission', puzzleMode:'read',level:1,storyKind:'mix',theme:'fairy',errors:0,wrongAttempts:0,lastWrongSignature:null,index:1,targetH:3,targetM:0,userH:12,userM:0,selected:'hour',solved:0,stars:0,points:0,questionMistakes:0,done:false,dragging:false,story:null,selectedChoice:null,plan:[],lastMini:-1,usedMini:new Set(),lastPrompt:'',ended:false,storyClockEnabled:false,skills:{},seen:new Set(),player:'Gracz'};
   const pad=n=>String(n).padStart(2,'0');
   const format=(h,m)=>`${pad(h)}:${pad(m)}`;
   const rand=n=>Math.floor(Math.random()*n);
@@ -296,7 +296,177 @@
     ['🐱','Kot mówi: „Jest dokładnie pora na miau!”'],
     ['🦄','Jednorożec wyczarował złoty kwadrans!'],
     ['🐒','Małpka zrobiła salto na dwunastej!'],
-    ['🐼','Panda ogłosiła godzinę przytulania!']
+    ['🐼','Panda ogłosiła godzinę przytulania!'],
+    ["🐒","Małpka założyła bananowi czapkę. Banan jest zachwycony!"],
+    ["🦄","Jednorożec kichnął brokatem. Teraz wszystko jest odświętne!"],
+    ["🐱","Kot ogłosił się królem kanapy. Koronę zrobił z poduszki."],
+    ["🐧","Pingwin włożył klapki. Nikt nie wie, po co!"],
+    ["🐸","Żaba wygrała konkurs skoków w kapciach!"],
+    ["🐼","Panda powiedziała: „Jeszcze tylko jedna bambusowa przekąska!”"],
+    ["🦊","Lisek schował sekret w skarpetce. Skarpetka odmówiła komentarza."],
+    ["🐙","Ośmiornica przybiła sobie osiem piątek. Rekord!"],
+    ["🦁","Lew zaryczał tak głośno, że obudził własną grzywę!"],
+    ["🐢","Żółw wygrał wyścig… o najładniejszą skorupę."],
+    ["🐰","Królik znalazł marchewkę większą od siebie. To dopiero obiad!"],
+    ["🐘","Słoń zapomniał, po co wszedł do pokoju. Zdarza się nawet słoniom!"],
+    ["🦩","Flaming postawił drugą nogę na ziemi. Sensacja dnia!"],
+    ["🐨","Koala przytula drzewo. Drzewo prosi o bis!"],
+    ["🦔","Jeżyk uczesał kolce żelem. Fryzura trzyma się świetnie!"],
+    ["🐝","Pszczółka wynalazła miodowy koktajl z bąbelkami!"],
+    ["🐬","Delfin nauczył rybki robić fikołki!"],
+    ["🦓","Zebra pomyliła paski z kodem kreskowym!"],
+    ["🦒","Żyrafa zobaczyła chmurę i zapytała: „Kto zamówił watę cukrową?”"],
+    ["🐿️","Wiewiórka otworzyła bank orzeszków. Wszystkie zniknęły na lunch!"],
+    ["🐹","Chomik zamówił bieżnię z funkcją dostawy popcornu."],
+    ["🐑","Owieczka znalazła wełniane skarpetki. Pasują idealnie!"],
+    ["🦘","Kangur zgubił klucze. Znalazł je we własnej kieszeni!"],
+    ["🐯","Tygrys ćwiczył groźne miny. Wyszła mu urocza buzia!"],
+    ["🦭","Foka klaszcze tak mocno, że aż fale biją brawo!"],
+    ["🐺","Wilk zawył do księżyca. Księżyc odpowiedział: „Miłego wieczoru!”"],
+    ["🦚","Paw rozłożył ogon. Wszyscy myślą, że to wielki wachlarz!"],
+    ["🐳","Wieloryb kichnął i zrobił fontannę niespodziankę!"],
+    ["🐤","Kurczaczek powiedział „pi!”. Reszta to tajemnica."],
+    ["🐞","Biedronka naliczyła kropki dwa razy. Wynik: nadal uroczo!"],
+    ["🦀","Krab tańczy bokiem. DJ nie nadąża!"],
+    ["🐊","Krokodyl kupił szczoteczkę do zębów wielkości miotły!"],
+    ["🦌","Jelonek założył okulary przeciwsłoneczne na poroże."],
+    ["🦢","Łabędź przepłynął jezioro jak gwiazda czerwonego dywanu!"],
+    ["🦥","Leniwiec wygrał konkurs na najdłuższe „jeszcze chwilkę”."],
+    ["🦜","Papuga powtórzyła dowcip trzy razy. Za trzecim wszyscy chichotali!"],
+    ["🦦","Wydra zbudowała z kamyków spa dla ślimaków!"],
+    ["🦖","Dinozaur kichnął. Z lasu posypały się liście!"],
+    ["🐻","Miś wybrał miód na króla śniadania."],
+    ["🦋","Motylek pomylił tęczę ze zjeżdżalnią!"],
+    ["🐲","Smok piecze ciasteczka. Trochę za mocno dmuchnął!"],
+    ["🧚","Wróżka zaczarowała kalosze. Teraz same skaczą po kałużach!"],
+    ["🧜‍♀️","Syrenka zapisała się na kurs pływania. Instruktor oniemiał!"],
+    ["🦄","Jednorożec zrobił tęczowe naleśniki. Mmm, magia!"],
+    ["🐒","Małpka ukryła banana w bucie. Niespodzianka dla stopy!"],
+    ["🐕","Pies otworzył restaurację „U Szczekusia”. Specjalność: chrupki!"],
+    ["🐈","Kotek zwinął się w rogalik. Piekarz jest zazdrosny!"],
+    ["🦃","Indyk założył muchę. Gotowy na wielki bal!"],
+    ["🦆","Kaczka w kaloszach rozchlapała pół stawu!"],
+    ["🐔","Kura ogłosiła, że od dziś znosi jajka z autografem."],
+    ["🐣","Pisklak wyszedł ze skorupki i zażądał śniadania!"],
+    ["🦉","Sowa przeczytała książkę do góry nogami. Nadal świetna historia!"],
+    ["🐌","Ślimak przyjechał na hulajnodze. Kask pasuje do muszli!"],
+    ["🪼","Meduza urządziła dyskotekę pod wodą. Świeci jak lampka!"],
+    ["🦈","Rekin umył zęby. Rybki przybiły mu piątkę z daleka!"],
+    ["🐠","Rybka znalazła okulary do nurkowania. Nareszcie!"],
+    ["🐡","Rozdymka nadmuchała się ze śmiechu. Puf!"],
+    ["🦞","Homar zamówił czerwone rękawiczki. Idealnie pasują!"],
+    ["🐚","Muszelka opowiedziała morzu sekret. Morze zaszumiało: „Ooo!”"],
+    ["🐛","Gąsienica włożyła sześć par butów i ruszyła na spacer."],
+    ["🪲","Żuczek toczy kulkę. Twierdzi, że to jego walizka!"],
+    ["🕷️","Pająk zrobił hamak z pajęczyny. Pierwszy gość: mucha!"],
+    ["🐜","Mrówka przeniosła okruszek. Teraz nazywa go swoim zamkiem!"],
+    ["🦟","Komar ćwiczy grę na trąbce. Sąsiedzi proszą o ciszę."],
+    ["🪿","Gęś została ochroniarzem ogródka. Nikt nie przejdzie bez gęgania!"],
+    ["🦇","Nietoperz śpi głową w dół. Poduszka niepotrzebna!"],
+    ["🦏","Nosorożec kupił czapkę. Rogowi zabrakło miejsca!"],
+    ["🦛","Hipopotam wskoczył do wanny. Woda urządziła wycieczkę!"],
+    ["🐪","Wielbłąd spakował przekąski do garbów. Genialny plecak!"],
+    ["🦙","Lama splunęła ze śmiechu. Ups, przepraszam!"],
+    ["🦍","Goryl otworzył słoik ogórków. Sala bije brawo!"],
+    ["🦧","Orangutan układał puzzle. Jeden kawałek to banan!"],
+    ["🐐","Koza zjadła plan lekcji. Teraz ma wolny dzień… chyba."],
+    ["🐄","Krowa powiedziała „muuuzyka!” i założyła zespół."],
+    ["🐖","Świnka zrobiła błotne spa. Pięć gwiazdek!"],
+    ["🐴","Konik zamówił buty do tańca. Wszystkie cztery!"],
+    ["🫏","Osioł wygrał konkurs na najgłośniejsze „heeej!”"],
+    ["🦫","Bóbr zbudował most do lodówki. Sprytne rozwiązanie!"],
+    ["🦨","Skunks założył perfumerię. Klienci zachowują dystans!"],
+    ["🦡","Borsuk urządził piknik w swojej norce."],
+    ["🐁","Myszka znalazła ser wielkości walizki. Wakacje od gotowania!"],
+    ["🐀","Szczurek został kucharzem. Ser to jego specjalność!"],
+    ["🦝","Szop wyprał skarpetki. Teraz szuka ich par!"],
+    ["🐇","Zając dostał medal za najwyższy skok przez poduszkę!"],
+    ["🐾","Łapki zostawiły ślady na podłodze. Tajemniczy agent: kot!"],
+    ["🍕","Pizza chciała zostać kołem ratunkowym. Ser ją powstrzymał!"],
+    ["🍌","Banan opowiada dowcip. Wszyscy się zwijają ze śmiechu!"],
+    ["🍉","Arbuz chciał iść na basen. Zabrakło mu stroju!"],
+    ["🥒","Ogórek założył okulary. Teraz to ogórek-cool!"],
+    ["🥨","Precel zrobił fikołek. Nikt nie zauważył różnicy."],
+    ["🍩","Pączek znalazł dziurę w planie. Dosłownie!"],
+    ["🍪","Ciasteczko ucieka przed mlekiem. Plusk!"],
+    ["🧁","Babeczka założyła czapkę z bitej śmietany."],
+    ["🥔","Ziemniak marzy o karierze frytki!"],
+    ["🥕","Marchewka trenowała skoki w dal. Królik był trenerem."],
+    ["🍿","Popcorn strzela z radości. Pyk, pyk, pyk!"],
+    ["🍓","Truskawka założyła pelerynę. Superowoc w akcji!"],
+    ["🧀","Ser zgubił dziury. Rozpoczęto wielkie poszukiwania!"],
+    ["🥚","Jajko powiedziało dowcip. Wszyscy pękli ze śmiechu!"],
+    ["🧦","Skarpetka znalazła drugą połówkę. Romantyczny dzień!"],
+    ["🧤","Rękawiczka chce przybić piątkę. Ma pięć palców!"],
+    ["🎩","Kapelusz poszedł na spacer bez głowy. Co za odwaga!"],
+    ["👟","Trampki przebiegły maraton. Właściciel nadal śpi!"],
+    ["🪥","Szczoteczka założyła zespół rockowy z pastą do zębów!"],
+    ["🧸","Pluszowy miś otworzył hotel dla zagubionych przytulanek."],
+    ["🎈","Balon powiedział: „Ale mnie rozpiera radość!”"],
+    ["🛼","Wrotki urządziły wyścig po dywanie. Dywan protestuje!"],
+    ["🪁","Latawiec poleciał po chmurę na śniadanie."],
+    ["🚀","Rakieta wystartowała po lody na Księżycu!"],
+    ["🌙","Księżyc założył piżamę w gwiazdki."],
+    ["⭐","Gwiazdka mrugnęła do Ciebie. To tajny znak sukcesu!"],
+    ["🌈","Tęcza przymierza nowy kolor. Jaki wybierze?"],
+    ["☁️","Chmura udaje owcę. Owce są zachwycone!"],
+    ["🌻","Słonecznik śledzi słońce jak wielki fan!"],
+    ["🍄","Muchomor otworzył sklep z kropkami."],
+    ["🌵","Kaktus chciał się przytulić. Wszyscy wybrali przybijanie piątki!"],
+    ["🌲","Choinka przebrała się za palmę. Nikt nie dał się nabrać!"],
+    ["🌼","Stokrotka robi minę: „Kto mnie tak łaskocze?”"],
+    ["🪴","Doniczka stwierdziła: „Potrzebuję wakacji na balkonie!”"],
+    ["🤖","Robot nauczył się tańczyć makarenę. Śrubki podskakują!"],
+    ["👽","Kosmita zapytał Ziemian o przepis na pierogi."],
+    ["🛸","UFO pomyliło lądowisko z placem zabaw!"],
+    ["🧙","Czarodziej zamienił kapelusz w popcorn. Ups!"],
+    ["🦸","Superbohater uratował ostatnie ciastko!"],
+    ["👻","Duszek gra w chowanego. Jest w tym naprawdę dobry!"],
+    ["🧟","Zombi przyszedł na lekcję tańca. Trochę sztywny!"],
+    ["🧛","Wampir zamówił sok pomidorowy. Z parasolką!"],
+    ["🧞","Dżin spełnił życzenie. Powstała fontanna lemoniady!"],
+    ["🏴‍☠️","Pirat odkrył skrzynię skarbów. W środku same żelki!"],
+    ["🧑‍🚀","Astronauta zrobił fikołek w nieważkości. Łatwizna!"],
+    ["🥷","Ninja ukrył się za kaktusem. Kaktus go zauważył."],
+    ["🎪","Klaun zgubił czerwony nos. Znalazł go na balonie!"],
+    ["🎭","Maska śmiała się tak głośno, że spadła ze ściany!"],
+    ["🎻","Skrzypce zażądały bisu po jednym dźwięku!"],
+    ["🎺","Trąbka zatrąbiła fanfary dla Twojego mózgu!"],
+    ["🥁","Bęben wystukał rytm: „Bra-wo, bra-wo!”"],
+    ["🎤","Mikrofon zaśpiewał do własnego echa!"],
+    ["🎨","Pędzel namalował kota. Kot zażądał wąsów!"],
+    ["🖍️","Kredka pomalowała niebo na różowo. Dlaczego nie?"],
+    ["✏️","Ołówek zgubił gumkę. Teraz musi uważać!"],
+    ["📚","Książki urządziły wyścigi. Powieść wygrała o rozdział!"],
+    ["🧩","Puzzle świętują: „Wreszcie wszystko pasuje!”"],
+    ["🎲","Kostka wyrzuciła siedem. To dopiero magiczna kostka!"],
+    ["🪄","Różdżka kichnęła. Z kapelusza wyskoczył brokatowy żółw!"],
+    ["🧲","Magnes przyciąga dziś wyłącznie dobre pomysły!"],
+    ["💡","Żarówka dostała genialnego olśnienia!"],
+    ["🫧","Bańka mydlana wybrała się w podróż na sufit."],
+    ["🛁","Kaczuszka kąpielowa ogłosiła mistrzostwa w pluskaniu!"],
+    ["🪣","Wiadro zatańczyło z mopem. Parkiet aż lśni!"],
+    ["🧹","Miotła poleciała na urlop. Kurz nie może uwierzyć!"],
+    ["📦","Pudełko ukrywa niespodziankę. To jeszcze jedno pudełko!"],
+    ["🪞","Lustro mówi: „Ale świetna mina!”"],
+    ["🛎️","Dzwonek ogłosił przerwę na taniec radości!"],
+    ["🎉","Konfetti urządziło imprezę nawet pod biurkiem!"],
+    ["🏆","Puchar zatańczył zwycięski taniec na półce!"],
+    ["💎","Diament błyszczy tak mocno, że mruga do Ciebie!"],
+    ["🍦","Lód chciał wyjechać na pustynię. Zrezygnował przy pakowaniu!"],
+    ["🫖","Czajniczek gwizdnął, bo usłyszał dobry dowcip!"],
+    ["🍬","Cukierek ogłosił: „Dziś wszyscy jesteśmy słodcy!”"],
+    ["🛸","Kosmiczny jamnik odkrył planetę zrobioną z galaretki!"],
+    ["🦄","Jednorożec wpadł do kałuży. Wyszedł w tęczowych kaloszach!"],
+    ["🐒","Małpka otworzyła szkołę robienia głupich minek."],
+    ["🐼","Panda wzięła udział w konkursie jedzenia bambusa. Niespodzianka: wygrała!"],
+    ["🐱","Kot prowadzi lekcję drzemania. Jest wyjątkowo wymagający!"],
+    ["🐶","Piesek myślał, że odkurzacz to smok. Miał odwagę zaszczekać!"],
+    ["🐙","Ośmiornica zaplątała się we własne przybijanie piątek!"],
+    ["🦋","Motyl zamówił maleńki parasol na deszczowe dni!"],
+    ["🐝","Pszczółka otworzyła salon fryzur dla kwiatków."],
+    ["🐧","Pingwin poślizgnął się na bananie. Na lodzie było łatwiej!"],
+    ["🐸","Żabka śpiewa operę. Publiczność kumka z zachwytu!"]
   ];
   const bigRewards=[
     {emoji:'🦄',name:'Jednorożec Punktualności',phrase:'Nawet magia nie jest szybsza od Twojego liczenia!',theme:'lilac'},
@@ -598,14 +768,27 @@
   }
   function beginSession(){
     state.index=1;state.solved=0;state.stars=0;state.points=0;state.errors=0;state.wrongAttempts=0;state.questionMistakes=0;state.lastWrongSignature=null;state.lastPrompt='';state.ended=false;state.seen=new Set();state.skills={};
+    state.usedMini=new Set();
     state.plan=buildPlan();newPuzzle();
   }
   function describeSolution(){return currentMode()==='story'?state.story.explanation:`To jest godzina ${format(state.targetH,state.targetM)}.`;}
+  // Losuj różne żarty bez powtórek w serii; ostatnie 30 pamiętaj między seriami.
+  const MINI_RECENT_KEY='zegarowe-przygody-v4-recent-mini';
   function miniReward(){
     const box=$('miniReward');box.classList.remove('hidden');
-    let idx=rand(miniRewards.length);
-    if(idx===state.lastMini)idx=(idx+1+rand(miniRewards.length-1))%miniRewards.length;
-    state.lastMini=idx;$('miniEmoji').textContent=miniRewards[idx][0];$('miniText').textContent=miniRewards[idx][1];
+    let recent=[];
+    try {
+      const stored=JSON.parse(localStorage.getItem(MINI_RECENT_KEY)||'[]');
+      if(Array.isArray(stored)) recent=stored.filter(i=>Number.isInteger(i)&&i>=0&&i<miniRewards.length).slice(-30);
+    } catch(e){}
+    const all=miniRewards.map((_,i)=>i);
+    let choices=all.filter(i=>!state.usedMini.has(i)&&!recent.includes(i));
+    if(!choices.length) choices=all.filter(i=>!state.usedMini.has(i));
+    if(!choices.length) {state.usedMini.clear();choices=all.filter(i=>!recent.includes(i));}
+    const idx=pick(choices.length?choices:all);
+    state.lastMini=idx;state.usedMini.add(idx);
+    try{localStorage.setItem(MINI_RECENT_KEY,JSON.stringify([...recent,idx].slice(-30)));}catch(e){}
+    $('miniEmoji').textContent=miniRewards[idx][0];$('miniText').textContent=miniRewards[idx][1];
     box.classList.remove('pop');void box.offsetWidth;box.classList.add('pop');
   }
   function lockPuzzle(){
@@ -623,7 +806,8 @@
     if(perfect)state.stars++;
     recordSkill(perfect?'first':'second');
     updateCounters();lockPuzzle();
-    const praise=perfect?'⭐ +10 pkt! Brawo za pierwszym razem!':'👏 +5 pkt! Świetnie, udało się za drugim razem!';
+    const secondTryCheers=["Żółw właśnie wykonał taniec zwycięstwa! 🐢","Małpka podskakuje aż do sufitu! 🐒","Jednorożec posyła Ci tęczowy uśmiech! 🦄","Kotek przybija Ci łapką piątkę! 🐱","Panda aż podskoczyła z wrażenia! 🐼","Pingwin zrobił ślizg triumfalny! 🐧","Żabka kumka: „Jeszcze jeden sukces!” 🐸","Smok dmucha bańkami z radości! 🐲","Wiewiórka sypie orzeszkowym konfetti! 🐿️","Dinozaur wykonał mały taniec T-reksa! 🦖","Lisek świętuje udany powrót! 🦊","Zebra ogłasza: „Paski radości!” 🦓","Wydra macha płetwami z zachwytu! 🦦","Koala śle przytulasa na odległość! 🐨","Króliczek zrobił dwa wesołe susy! 🐰","Tygrys mruczy z dumy! 🐯","Delfin wystrzelił fontannę radości! 🐬","Motylek robi kolorową pętlę! 🦋","Robot ćwiczy taniec pochwalny! 🤖","Rakieta leci po kolejną gwiazdkę! 🚀"];
+    const praise=perfect?'⭐ +10 pkt! Brawo za pierwszym razem!':'👏 +5 pkt! Brawo za wytrwałość! '+pick(secondTryCheers);
     feedback(praise,'success');
     if(perfect)miniReward();
   }
