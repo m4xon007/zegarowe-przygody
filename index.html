@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#6656cc">
 <meta name="description" content="Gra do nauki zegara: 25 pytań, dwie próby, naklejki, punkty i lokalny ranking wyników.">
-<title>Zegarowe przygody 4.4 — misja 25 pytań</title>
+<title>Zegarowe przygody 4.5 — misja 25 pytań</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
@@ -144,7 +144,7 @@
   .skill-overview{display:grid;gap:5px;font-size:.8rem;color:var(--muted)}
   .finish-rank{margin:15px 0;color:#4a4088;font-weight:900}
   @media(max-width:730px){.score{flex:1 1 calc(50% - 9px);min-width:120px}.rank-row{grid-template-columns:28px 1fr auto}.rank-row>small{grid-column:2 / -1}.attempts .rule{min-width:100%}.playerconfig{width:100%}.playerconfig input{flex:1}}
-  /* Bonus za komplet 25/25 — informacja dla dziecka, realizacja przez rodziców. */
+  /* Bonus za 23–24/25 lub 25/25 — informacja dla dziecka, realizacja przez rodziców. */
   .tablet-bonus{max-width:430px;margin:20px auto 23px;padding:19px 20px;border-radius:24px;background:linear-gradient(135deg,#dff8e9,#f1e6ff 60%,#fff0c6);border:3px solid #b3dcca;text-align:center;box-shadow:0 9px 25px #6d4eaa1a}
   .tablet-bonus .tablet-bonus-icon{font-size:3rem;line-height:1.2;margin-bottom:6px}
   .tablet-bonus .tablet-bonus-title{font-size:1.4rem;line-height:1.2;font-weight:950;color:#44328c;margin:4px 0 8px}
@@ -226,10 +226,10 @@
           <p class="award-quote" id="awardQuote"></p>
           <div class="award-collection" id="awardCollection"></div>
         </div>
-        <div id="tabletBonus" class="tablet-bonus hidden" role="status" aria-label="Bonus za 25 zaliczonych zadań">
+        <div id="tabletBonus" class="tablet-bonus hidden" role="status" aria-label="Nagroda za wynik serii">
           <div class="tablet-bonus-icon" aria-hidden="true">🎮🏆🎉</div>
-          <div class="tablet-bonus-title">+5 minut grania na tablecie!</div>
-          <p class="tablet-bonus-detail">Brawo! Wszystkie 25 zadań zaliczone! Pokaż tę nagrodę rodzicom. 💜</p>
+          <div id="tabletBonusTitle" class="tablet-bonus-title">+5 minut grania na tablecie!</div>
+          <p id="tabletBonusDetail" class="tablet-bonus-detail">Brawo! Pokaż tę nagrodę rodzicom. 💜</p>
         </div>
         <div class="retry-message hidden" id="retryMessage">🎁 Specjalna naklejka jest za wynik powyżej 90% — co najmniej 23 z 25 zaliczonych zadań. Trenuj dalej!</div>
         <button class="primary" id="restartBtn" type="button">Kolejne 25 zadań 🎲</button>
@@ -970,8 +970,16 @@
     if(state.mode==='special'&&state.solved===5)$('finishTitle').textContent='🏆 Misja specjalna ukończona! Wielka naklejka!';
     $('retryMessage').classList.toggle('hidden',winning);
     if(state.mode==='special')$('retryMessage').classList.add('hidden');
-    // Bonus wyłącznie informacyjny: 25/25 zaliczonych zadań (także za drugim razem).
-    $('tabletBonus').classList.toggle('hidden',state.mode==='special'||state.solved!==TOTAL);
+    // Informacyjny bonus tylko dla pełnych serii 25 pytań; bez sumowania nagród.
+    // 23/25 = 92%, najniższy osiągalny wynik spełniający próg 90%.
+    const tabletMinutes=state.mode==='special'||total!==TOTAL?0:state.solved===TOTAL?5:state.solved>=23?2:0;
+    $('tabletBonus').classList.toggle('hidden',tabletMinutes===0);
+    if(tabletMinutes){
+      $('tabletBonusTitle').textContent=`+${tabletMinutes} ${tabletMinutes===2?'minuty':'minut'} grania na tablecie!`;
+      $('tabletBonusDetail').textContent=tabletMinutes===5
+        ?'Wspaniale! 25/25 zadań zaliczonych! Pokaż nagrodę rodzicom. 💜'
+        :`Brawo! ${state.solved}/25 zadań zaliczonych! Pokaż nagrodę rodzicom. 💜`;
+    }
     if(winning){
       const reward=pickBigReward();
       $('awardCard').dataset.theme=reward.theme;
@@ -987,7 +995,8 @@
     const stored=saveResult(entry),results=rankedEntries();
     const place=results.findIndex(r=>r.id===id);
     $('finishRank').textContent=stored?`🏆 Miejsce w rankingu tego trybu i poziomu: ${place+1} z ${results.length}.`:'Ranking niedostępny w trybie prywatnym lub bez pamięci przeglądarki.';
-    $('bestScore').textContent=stored?`Twój najlepszy zapisany wynik w tej kategorii: ${results.filter(r=>r.player===player)[0]?.points??state.points} pkt. Specjalna naklejka za co najmniej 23/25 zaliczonych zadań.`:'Specjalna naklejka za co najmniej 23/25 zaliczonych zadań.';
+    const rewardRules='Specjalna naklejka za co najmniej 23/25. Bonus na tablet: 23–24/25 = 2 min, 25/25 = 5 min (nie sumują się).';
+    $('bestScore').textContent=stored?`Twój najlepszy zapisany wynik w tej kategorii: ${results.filter(r=>r.player===player)[0]?.points??state.points} pkt. ${rewardRules}`:rewardRules;
     $('restartBtn').textContent=state.mode==='special'?'Kolejna misja specjalna ✨':'Kolejne 25 zadań 🎲';
     updateSpecialLock();
     if(!$('rankPanel').classList.contains('hidden'))renderRanking();
