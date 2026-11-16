@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#6656cc">
 <meta name="description" content="Gra do nauki zegara: 25 pytań, dwie próby, naklejki, punkty i lokalny ranking wyników.">
-<title>Zegarowe przygody 4.3 — misja 25 pytań</title>
+<title>Zegarowe przygody 4.4 — misja 25 pytań</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
@@ -144,11 +144,18 @@
   .skill-overview{display:grid;gap:5px;font-size:.8rem;color:var(--muted)}
   .finish-rank{margin:15px 0;color:#4a4088;font-weight:900}
   @media(max-width:730px){.score{flex:1 1 calc(50% - 9px);min-width:120px}.rank-row{grid-template-columns:28px 1fr auto}.rank-row>small{grid-column:2 / -1}.attempts .rule{min-width:100%}.playerconfig{width:100%}.playerconfig input{flex:1}}
-  /* Bonus za komplet 25/25 — tylko informacja, przyznanie nagrody przez rodziców. */
+  /* Bonus za komplet 25/25 — informacja dla dziecka, realizacja przez rodziców. */
   .tablet-bonus{max-width:430px;margin:20px auto 23px;padding:19px 20px;border-radius:24px;background:linear-gradient(135deg,#dff8e9,#f1e6ff 60%,#fff0c6);border:3px solid #b3dcca;text-align:center;box-shadow:0 9px 25px #6d4eaa1a}
   .tablet-bonus .tablet-bonus-icon{font-size:3rem;line-height:1.2;margin-bottom:6px}
   .tablet-bonus .tablet-bonus-title{font-size:1.4rem;line-height:1.2;font-weight:950;color:#44328c;margin:4px 0 8px}
   .tablet-bonus .tablet-bonus-detail{font-size:.95rem;color:#564d77;font-weight:700;margin:0}
+  .logic-progress{padding:11px 14px;margin:9px 0;background:#ecf7ff;border:1px solid #b4ddef;border-radius:14px;font-weight:800;color:#255a80}
+  .logic-progress.hidden{display:none}
+  .minute-answer{max-width:160px;font-size:1.15rem;font-weight:900;padding:11px;border:2px solid #bfc7e8;border-radius:12px}
+  .duel-clocks{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:12px 0}
+  .duel-clock{flex:1;max-width:180px;min-width:126px;text-align:center;font-weight:850;color:#4a4779}
+  .duel-clock svg{width:100%;display:block;margin:4px auto}
+  .quest-lock{color:#6b6286;font-size:.87rem;margin:5px 0;font-weight:700}
 </style>
 </head>
 <body>
@@ -162,13 +169,16 @@
     <button class="tab" data-mode="set" id="setTab" aria-selected="false" type="button">🖐️ Ustaw wskazówki</button>
     <button class="tab" data-mode="story" id="storyTab" aria-selected="false" type="button">🧠 Zadania z czasem</button>
     <button class="tab" data-mode="mission" id="missionTab" aria-selected="true" type="button">🎲 Wielka misja · Mix</button>
+    <button class="tab" data-mode="detective" id="detectiveTab" aria-selected="false" type="button">🕵️ Detektyw</button>
+    <button class="tab" data-mode="special" id="specialTab" aria-selected="false" type="button">🎂 Misja specjalna 🔒</button>
   </nav>
   <div class="config">
     <div class="difficulty" role="group" aria-label="Poziom trudności"><label>Poziom:</label><button type="button" class="level" data-level="1" aria-pressed="true">1 · Podstawy</button><button type="button" class="level" data-level="2" aria-pressed="false">2 · Co 5 minut</button><button type="button" class="level" data-level="3" aria-pressed="false">3 · Co minutę</button></div>
-    <div class="difficulty storytypes hidden" id="storyTypes" role="group" aria-label="Typ zadań"><label>Rodzaj:</label><button type="button" class="level typebutton" data-kind="mix" aria-pressed="true">🎲 Wszystkie</button><button type="button" class="level typebutton" data-kind="calc" aria-pressed="false">⏳ Obliczenia</button><button type="button" class="level typebutton" data-kind="words" aria-pressed="false">💬 Słownie</button><button type="button" class="level typebutton" data-kind="life" aria-pressed="false">📖 Historie</button></div>
+    <div class="difficulty storytypes hidden" id="storyTypes" role="group" aria-label="Typ zadań"><label>Rodzaj:</label><button type="button" class="level typebutton" data-kind="mix" aria-pressed="true">🎲 Wszystkie</button><button type="button" class="level typebutton" data-kind="calc" aria-pressed="false">⏳ Obliczenia</button><button type="button" class="level typebutton" data-kind="words" aria-pressed="false">💬 Słownie</button><button type="button" class="level typebutton" data-kind="life" aria-pressed="false">📖 Historie</button><button type="button" class="level typebutton" data-kind="logic" aria-pressed="false">🧩 Zagadki logiczne</button></div>
     <div class="difficulty storytheme" id="storyTheme" role="group" aria-label="Tematyka historyjek"><label>Bohaterowie:</label><button type="button" class="level themebutton" data-theme="fairy" aria-pressed="true">✨ Bajkowi</button><button type="button" class="level themebutton" data-theme="mix" aria-pressed="false">🎲 Mieszani</button><button type="button" class="level themebutton" data-theme="classic" aria-pressed="false">🏫 Zwykłe</button></div>
     <div class="difficulty playerconfig"><label for="playerName">Gracz:</label><input id="playerName" type="text" maxlength="18" placeholder="Gracz" autocomplete="off" aria-label="Nazwa gracza"><button class="level" type="button" id="rankingToggle" aria-expanded="false" aria-controls="rankPanel">🏆 Ranking</button></div>
     <div class="progresslabel" id="taskLabel">Zadanie 1 z 25</div>
+    <div id="adaptiveNote" class="quest-lock" aria-live="polite">🎯 Gra zapamiętuje trudniejsze kategorie i ćwiczy je częściej w następnych seriach.</div>
   </div>
   <div class="attempts"><span>Próba w tym zadaniu:</span><strong id="attemptCount">1 z 2</strong><span class="rule">Za pierwszą poprawną odpowiedź +10 pkt i naklejka, za drugą +5 pkt. Po dwóch nieudanych próbach zadanie jest niezaliczone.</span></div>
   <section id="rankPanel" class="ranking hidden" aria-label="Ranking zapisanych serii"><div class="ranking-head"><h2>🏆 Ranking lokalny</h2><span class="small" id="rankScope"></span></div><div id="rankList"></div><p class="small">Ranking pokazuje 10 najlepszych ukończonych serii w wybranym trybie i na wybranym poziomie. Zapisywany jest tylko w tej przeglądarce.</p></section>
@@ -186,13 +196,16 @@
     <section class="workpane" aria-live="polite">
       <div id="exercise">
         <div class="eyebrow" id="modeCaption">Odczytywanie</div>
+        <div id="logicProgress" class="logic-progress hidden"></div>
         <h2 id="question">Która jest godzina?</h2>
         <p class="desc" id="instruction">Sprawdź, gdzie jest krótka wskazówka, a potem policz minuty na długiej.</p>
         <div id="readControls"><div class="answers"><label class="field" for="answerHour">Godzina<select id="answerHour"><option value="">Wybierz</option></select></label><div class="colon" aria-hidden="true">:</div><label class="field" for="answerMinute">Minuty<select id="answerMinute"><option value="">Wybierz</option></select></label></div></div>
         <div id="storyControls" class="hidden">
           <div class="story-prompt" id="storyPrompt"></div>
+          <div id="duelClocks" class="duel-clocks hidden" aria-label="Dwa zegary do porównania"></div>
           <div id="storyDigitAnswer"><p class="small story-answer-label">Wpisz wynik — godzinę i minuty:</p><div class="answers"><label class="field" for="storyHour">Godzina (0–23)<select id="storyHour"><option value="">Wybierz</option></select></label><div class="colon" aria-hidden="true">:</div><label class="field" for="storyMinute">Minuty<select id="storyMinute"><option value="">Wybierz</option></select></label></div></div>
           <div id="storyWordAnswer" class="hidden"><p class="small story-answer-label">Wybierz jedną odpowiedź:</p><div class="choice-list" id="storyChoices"></div></div>
+          <div id="storyMinuteAnswer" class="hidden"><label for="minutesAnswer" class="story-answer-label">Wpisz liczbę minut:</label><input id="minutesAnswer" class="minute-answer" type="number" inputmode="numeric" min="0" max="240" step="1" placeholder="Ile minut?" autocomplete="off"></div>
         </div>
         <div id="setControls" class="hidden"><div class="target" id="targetTime">3:30</div><p class="small">Wybierz 🟢 krótką lub 🔴 długą wskazówkę, a potem dotknij zegara albo przeciągnij wskazówkę. Możesz ustawić każdą z 60 minut — na każdym poziomie.</p><div class="hands"><button class="handchoice" type="button" data-hand="hour" aria-pressed="true">🟢 Krótka · godzina</button><button class="handchoice" type="button" data-hand="minute" aria-pressed="false">🔴 Długa · minuty</button></div><div class="nudge"><button id="nudgeBack" type="button" aria-label="Przesuń wybraną wskazówkę do tyłu">← W lewo</button><span id="nudgeLabel">Przesuwasz godzinę</span><button id="nudgeForward" type="button" aria-label="Przesuń wybraną wskazówkę do przodu">W prawo →</button></div></div>
         <div class="buttonrow"><button class="primary" type="button" id="checkBtn">Sprawdź ✓</button></div>
@@ -226,13 +239,16 @@
   </main>
   <footer>Ćwicz samodzielnie 💜 · Bez podpowiedzi i reklam · Wyniki zapisują się w tej przeglądarce · Nieoficjalna gra edukacyjna</footer>
 </div>
+<script src="./clock-extras.js"></script>
 <script>
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
   const clock = $('clock'), hourHand = $('hourHand'), minuteHand = $('minuteHand');
   const TOTAL=25, MAX_ATTEMPTS=2, RESULTS_KEY="zegarowe-przygody-v4-results", PLAYER_KEY="zegarowe-przygody-v4-player";
-  const state={mode:'mission', puzzleMode:'read',level:1,storyKind:'mix',theme:'fairy',errors:0,wrongAttempts:0,lastWrongSignature:null,index:1,targetH:3,targetM:0,userH:12,userM:0,selected:'hour',solved:0,stars:0,points:0,questionMistakes:0,done:false,dragging:false,story:null,selectedChoice:null,plan:[],lastMini:-1,usedMini:new Set(),lastPrompt:'',ended:false,storyClockEnabled:false,skills:{},seen:new Set(),player:'Gracz'};
+  const extras=window.ClockExtras;
+  if(!extras)throw Error("Nie załadowano modułu zagadek logicznych.");
+  const state={mode:'mission', puzzleMode:'read',level:1,storyKind:'mix',theme:'fairy',errors:0,wrongAttempts:0,lastWrongSignature:null,index:1,targetH:3,targetM:0,userH:12,userM:0,selected:'hour',solved:0,stars:0,points:0,questionMistakes:0,done:false,dragging:false,story:null,selectedChoice:null,plan:[],lastMini:-1,usedMini:new Set(),questSteps:[],lastPrompt:'',ended:false,storyClockEnabled:false,skills:{},seen:new Set(),player:'Gracz'};
   const pad=n=>String(n).padStart(2,'0');
   const format=(h,m)=>`${pad(h)}:${pad(m)}`;
   const rand=n=>Math.floor(Math.random()*n);
@@ -532,7 +548,7 @@
       txt.textContent=n;$('numbers').append(txt);
     }
   }
-  function currentMode(){return state.mode==='mission'?state.puzzleMode:state.mode;}
+  function currentMode(){return ['mission','detective','special'].includes(state.mode)?state.puzzleMode:state.mode;}
   const availableMinutes=()=>state.level===1?[0]:Array.from({length:state.level===2?12:60},(_,i)=>i*(state.level===2?5:1));
   const storyMinutes=()=>state.level===1?[0,15,30,45]:state.level===2?Array.from({length:12},(_,i)=>i*5):Array.from({length:60},(_,i)=>i);
   function selectFill(el,from,to,step=1,showPad=true){el.replaceChildren(new Option('Wybierz',''));for(let n=from;n<=to;n+=step)el.add(new Option(showPad?pad(n):String(n),String(n)));}
@@ -561,20 +577,22 @@
   function updateModeUI(){
     const mode=currentMode(),read=mode==='read',set=mode==='set',story=mode==='story';
     document.body.dataset.mode=state.mode;document.body.dataset.puzzle=mode;
-    for(const name of ['read','set','story','mission'])$(name+'Tab').setAttribute('aria-selected',String(name===state.mode));
+    for(const name of ['read','set','story','mission','detective','special'])$(name+'Tab').setAttribute('aria-selected',String(name===state.mode));
     $('readControls').classList.toggle('hidden',!read);$('setControls').classList.toggle('hidden',!set);
     $('storyControls').classList.toggle('hidden',!story);
     $('storyTypes').classList.toggle('hidden',state.mode!=='story');
-    $('storyTheme').classList.toggle('hidden',state.mode!=='story'&&state.mode!=='mission');
+    $('storyTheme').classList.toggle('hidden',state.mode!=='story'&&state.mode!=='mission'&&state.mode!=='detective');
     $('storyClockTools').classList.toggle('hidden',!story);
     $('storyHandTools').classList.toggle('hidden',!story||!state.storyClockEnabled);
     $('clockToggle').setAttribute('aria-pressed',String(state.storyClockEnabled));
     $('clockToggle').textContent=state.storyClockEnabled?'🔓 Wyłącz zegar do liczenia':'🔒 Włącz zegar do liczenia';
     clock.classList.toggle('interactive',set||(story&&state.storyClockEnabled));
     const captions={read:'👀 Odczytywanie',set:'🖐️ Ustawianie wskazówek',story:'🧠 Zadania z czasem'};
-    $('modeCaption').textContent=(state.mode==='mission'?'🎲 Wielka misja · ':'')+captions[mode];
-    $('question').textContent=read?'Która jest godzina?':set?'Ustaw tę godzinę:':'Pomyśl i rozwiąż!';
-    $('instruction').textContent=read?'Popatrz na wskazówki i wybierz godzinę oraz minuty.':set?'Ustaw krótką i długą wskazówkę we właściwych miejscach.':'Wybierz odpowiedź lub zapisz godzinę cyframi. Licz samodzielnie.';
+    $('modeCaption').textContent=(state.mode==='mission'?'🎲 Wielka misja · ':state.mode==='detective'?'🕵️ Detektyw · ':state.mode==='special'?'✨ Misja specjalna · ':'')+captions[mode];
+    $('logicProgress').classList.toggle('hidden',state.mode!=='special');
+    if(state.mode==='special')$('logicProgress').textContent=`${state.questSteps[0]?.missionName||'✨ Misja specjalna'} · etap ${state.index} z 5. Kolejne wyniki łączą się w jedną historię.`;
+    $('question').textContent=read?'Która jest godzina?':set?(state.category==='repair'?'Napraw zepsuty zegar:':'Ustaw tę godzinę:'):'Pomyśl i rozwiąż!';
+    $('instruction').textContent=read?'Popatrz na wskazówki i wybierz godzinę oraz minuty.':set?(state.category==='repair'?'Tylko jedna wskazówka jest zepsuta. Popraw ją bez podpowiedzi.':'Ustaw krótką i długą wskazówkę we właściwych miejscach.'):'Wybierz odpowiedź lub zapisz godzinę cyframi. Licz samodzielnie.';
     $('clockInstruction').textContent=read?'Spójrz uważnie na obie wskazówki':set?'Dotknij tarczy lub przeciągnij wskazówki':state.storyClockEnabled?'Zegar pomocniczy — przesuwaj wskazówki samodzielnie':'Zegar poglądowy — przestawianie wyłączone';
     updateHandChoice();
   }
@@ -694,6 +712,9 @@
     return {kind:'life',answer,prompt:`${template.subject}\n${q}`,start,explanation};
   }
   function buildPlan(){
+    return extras.buildPlan(state.mode,state.level,state.storyKind,state.player);
+  }
+  function legacyBuildPlan(){
     // 25 pytań: wszystkie umiejętności w równych proporcjach w wielkiej misji.
     if(state.mode==='mission')return shuffle([
       ...Array(5).fill('read'),...Array(5).fill('set'),...Array(5).fill('calc'),
@@ -706,38 +727,53 @@
     return Array(TOTAL).fill(state.mode);
   }
   function generateStory(kind){
+    if(kind.startsWith('quest'))return state.questSteps[Number(kind.slice(5))];
+    if(extras.kinds[kind])return extras.generate(kind,state.level,{theme:state.theme});
     if(kind==='life')return buildLife();
     if(kind==='calc')return buildCalculation(state.level>=2&&state.index===1);
     return buildWords(kind==='wordsChoice'?true:kind==='wordsDigits'?false:rand(2)===0);
   }
+  function miniClockSVG(t,label){
+    const h=Math.floor(t/60)%12,m=t%60,hd=h*30+m*.5,md=m*6;
+    const ticks=Array.from({length:12},(_,i)=>{const a=i*Math.PI/6;return `<line x1="${100+Math.sin(a)*79}" y1="${100-Math.cos(a)*79}" x2="${100+Math.sin(a)*88}" y2="${100-Math.cos(a)*88}" stroke="#6a7090" stroke-width="3"/>`;}).join('');
+    return `<div class="duel-clock"><span>${label}</span><svg viewBox="0 0 200 200" role="img" aria-label="${label}: zegar analogowy"><circle cx="100" cy="100" r="94" fill="#fff" stroke="#bbb5e8" stroke-width="4"/>${ticks}<line x1="100" y1="110" x2="100" y2="52" stroke="#087e83" stroke-width="7" stroke-linecap="round" transform="rotate(${hd} 100 100)"/><line x1="100" y1="112" x2="100" y2="23" stroke="#f76b77" stroke-width="5" stroke-linecap="round" transform="rotate(${md} 100 100)"/><circle cx="100" cy="100" r="7" fill="#25314e"/></svg></div>`;
+  }
   function showStory(){
-    const task=state.story,multiple=task.kind==='toWords';
+    const task=state.story,multiple=task.answerType==='choice'||task.kind==='toWords',numeric=task.answerType==='minutes';
     $('storyPrompt').textContent=task.prompt;
-    $('storyDigitAnswer').classList.toggle('hidden',multiple);
+    $('storyDigitAnswer').classList.toggle('hidden',multiple||numeric);
     $('storyWordAnswer').classList.toggle('hidden',!multiple);
+    $('storyMinuteAnswer').classList.toggle('hidden',!numeric);
+    $('minutesAnswer').value='';
     $('storyHour').value='';$('storyMinute').value='';
     $('storyChoices').replaceChildren();state.selectedChoice=null;
-    if(multiple)for(const value of task.choices){
-      const el=document.createElement('button');el.className='choice';el.type='button';el.dataset.time=String(value);el.setAttribute('aria-pressed','false');
-      const t=splitTime(value);el.textContent=expressTime(t.h,t.m);
-      el.addEventListener('click',()=>{if(state.done)return;state.selectedChoice=value;document.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.time)===value)));});
+    const clocks=task.visualClocks;
+    $('duelClocks').classList.toggle('hidden',!clocks);
+    $('duelClocks').innerHTML=clocks?clocks.map((x,i)=>miniClockSVG(x,i===0?'Zegar A':'Zegar B')).join(''):'';
+    if(multiple)for(const [i,value] of task.choices.entries()){
+      const el=document.createElement('button');el.className='choice';el.type='button';el.dataset.choice=String(i);el.setAttribute('aria-pressed','false');
+      const t=typeof value==='number'?splitTime(value):null;
+      el.textContent=task.labels?task.labels[i]:t?expressTime(t.h,t.m):String(value);
+      el.addEventListener('click',()=>{if(state.done)return;state.selectedChoice=value;document.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-pressed',String(b===el)));});
       $('storyChoices').append(el);
     }
     state.userH=12;state.userM=0;updateHandChoice();
   }
-  const kindCategory=kind=>kind==='read'?'read':kind==='set'?'set':kind==='calc'?'calc':kind==='life'?'life':'words';
+  const kindCategory=kind=>kind==='read'?'read':kind==='set'?'set':kind==='calc'?'calc':kind==='life'?'life':kind.startsWith('quest')?'life':kind==='wordsChoice'||kind==='wordsDigits'||kind==='words'?'words':kind;
   const skillInfo={
     read:['👀 Odczytywanie','Ćwicz rozpoznawanie godzin i minut na tarczy.'],
     set:['🖐️ Ustawianie wskazówek','Ćwicz położenie krótkiej i długiej wskazówki.'],
     calc:['⏳ Liczenie czasu','Ćwicz dodawanie i odejmowanie minut oraz godzin.'],
     words:['💬 Określenia słowne','Ćwicz „wpół do”, „kwadrans po” i „za kwadrans”.'],
-    life:['📖 Historyjki','Ćwicz ustalanie godziny rozpoczęcia i zakończenia wydarzeń.']
+    life:['📖 Historyjki','Ćwicz ustalanie godziny rozpoczęcia i zakończenia wydarzeń.'],
+    ...Object.fromEntries(Object.keys(extras.kinds).map(k=>[k,[extras.kinds[k],extras.hints[k]]]))
   };
   function newPuzzle(){
     state.done=false;state.questionMistakes=0;state.lastWrongSignature=null;state.selected='hour';state.dragging=false;state.storyClockEnabled=false;
     const kind=state.plan[state.index-1];
     state.category=kindCategory(kind);
-    state.puzzleMode=['read','set'].includes(kind)?kind:'story';
+    if(kind==='repair'){state.story=generateStory(kind);state.targetH=norm12(splitTime(state.story.answer).h);state.targetM=splitTime(state.story.answer).m;}
+    state.puzzleMode=kind==='repair'?'set':['read','set'].includes(kind)?kind:'story';
     if(state.puzzleMode==='story'){
       let task,signature;
       for(let tries=0;tries<80;tries++){
@@ -745,34 +781,43 @@
         if(!state.seen.has(signature))break;
       }
       state.seen.add(signature);
-      state.story=task;state.lastPrompt=task.prompt;
+      state.story=task;state.category=task.category||state.category;state.lastPrompt=task.prompt;
       state.targetH=splitTime(task.answer).h;state.targetM=splitTime(task.answer).m;
       populateSelects();showStory();
     } else {
-      const options=availableMinutes();let signature;
-      for(let tries=0;tries<250;tries++){
-        state.targetH=rand(12)+1;state.targetM=pick(options);
-        signature=kind+':'+format(state.targetH,state.targetM);
-        if(!state.seen.has(signature))break;
+      if(kind==='repair'){
+        const signature='repair:'+state.story.answer+':'+state.story.wrongHand;
+        state.seen.add(signature);
+        state.userH=state.story.shownH;state.userM=state.story.shownM;
+      }else{
+        const options=availableMinutes();let signature;
+        for(let tries=0;tries<250;tries++){
+          state.targetH=rand(12)+1;state.targetM=pick(options);
+          signature=kind+':'+format(state.targetH,state.targetM);
+          if(!state.seen.has(signature))break;
+        }
+        state.seen.add(signature);
+        do{state.userH=rand(12)+1;state.userM=rand(60);}while(state.userH===state.targetH&&state.userM===state.targetM);
       }
-      state.seen.add(signature);
-      do{state.userH=rand(12)+1;state.userM=rand(60);}while(state.userH===state.targetH&&state.userM===state.targetM);
-      populateSelects();$('targetTime').textContent=format(state.targetH,state.targetM);
+      populateSelects();
+      $('targetTime').textContent=kind==='repair'?'🔧 Napraw: '+extras.display(state.story.answer):format(state.targetH,state.targetM);
     }
-    $('taskLabel').textContent=`Zadanie ${state.index} z ${TOTAL}`;
-    $('progressFill').style.width=((state.index-1)/TOTAL*100)+'%';
+    $('taskLabel').textContent=`Zadanie ${state.index} z ${sessionTotal()}`;
+    $('progressFill').style.width=((state.index-1)/sessionTotal()*100)+'%';
     $('checkBtn').textContent='Sprawdź ✓';
     $('finish').classList.add('hidden');$('exercise').classList.remove('hidden');
     $('miniReward').classList.add('hidden');
     hideFeedback();updateModeUI();updateCounters();
   }
+  const sessionTotal=()=>state.mode==='special'?5:TOTAL;
+  function canPlaySpecial(){const name=String($('playerName').value||state.player||'Gracz').trim();return safeReadResults().filter(r=>r.player===name&&r.mode!=='detective'&&r.mode!=='special').length>=2;}
+  function updateSpecialLock(){const open=canPlaySpecial();$('specialTab').disabled=!open;$('specialTab').textContent=open?'🎂 Misja specjalna 🔓':'🎂 Misja specjalna 🔒';$('specialTab').title=open?'Odblokowana: 5 połączonych zagadek':'Odblokuje się po ukończeniu 2 zwykłych serii 25 pytań';}
   function beginSession(){
+    updateSpecialLock();
     state.index=1;state.solved=0;state.stars=0;state.points=0;state.errors=0;state.wrongAttempts=0;state.questionMistakes=0;state.lastWrongSignature=null;state.lastPrompt='';state.ended=false;state.seen=new Set();state.skills={};
-    state.usedMini=new Set();
-    state.plan=buildPlan();newPuzzle();
+    state.questSteps=extras.quest(state.level);state.usedMini=new Set();state.plan=buildPlan();newPuzzle();
   }
   function describeSolution(){return currentMode()==='story'?state.story.explanation:`To jest godzina ${format(state.targetH,state.targetM)}.`;}
-  // Losuj różne żarty bez powtórek w serii; ostatnie 30 pamiętaj między seriami.
   const MINI_RECENT_KEY='zegarowe-przygody-v4-recent-mini';
   function miniReward(){
     const box=$('miniReward');box.classList.remove('hidden');
@@ -792,12 +837,13 @@
     box.classList.remove('pop');void box.offsetWidth;box.classList.add('pop');
   }
   function lockPuzzle(){
-    state.done=true;$('checkBtn').textContent=state.index===TOTAL?'Zobacz wynik 🏆':'Następne zadanie →';
+    state.done=true;$('checkBtn').textContent=state.index===sessionTotal()?'Zobacz wynik 🏆':'Następne zadanie →';
   }
   function recordSkill(result){
     const category=state.category;
     if(!state.skills[category])state.skills[category]={first:0,second:0,failed:0};
     state.skills[category][result]++;
+    extras.noteProgress(state.player,state.level,category,result);
   }
   function success(){
     const perfect=state.questionMistakes===0;
@@ -827,9 +873,13 @@
     }else if(currentMode()==='set')correct=state.userH===state.targetH&&state.userM===state.targetM;
     else {
       const task=state.story;
-      if(task.kind==='toWords'){
+      if(task.kind==='toWords'||task.answerType==='choice'){
         if(state.selectedChoice===null)valid=false;
         else correct=state.selectedChoice===task.answer;
+      }else if(task.answerType==='minutes'){
+        const raw=$('minutesAnswer').value;
+        if(raw===''||!/^\d+$/.test(raw))valid=false;
+        else correct=Number(raw)===task.answer;
       }else{
         const h=$('storyHour').value,m=$('storyMinute').value;
         if(h===''||m==='')valid=false;
@@ -840,7 +890,7 @@
     if(correct){success();return;}
     const wrongSignature=currentMode()==='read'?`read:${$('answerHour').value}:${$('answerMinute').value}`:
       currentMode()==='set'?`set:${state.userH}:${state.userM}`:
-      state.story.kind==='toWords'?`choice:${state.selectedChoice}`:`story:${$('storyHour').value}:${$('storyMinute').value}`;
+      state.story.answerType==='choice'||state.story.kind==='toWords'?`choice:${state.selectedChoice}`:state.story.answerType==='minutes'?`minutes:${$('minutesAnswer').value}`:`story:${$('storyHour').value}:${$('storyMinute').value}`;
     if(state.lastWrongSignature===wrongSignature){
       feedback('Ta odpowiedź była już sprawdzona. Spróbuj podać inną!','error');return;
     }
@@ -853,7 +903,7 @@
       finishIncorrect();
     }
   }
-  function next(){if(state.index>=TOTAL){finish();return;}state.index++;newPuzzle();}
+  function next(){if(state.index>=sessionTotal()){finish();return;}state.index++;newPuzzle();}
   function pickBigReward(){
     let last=-1;try{last=Number(localStorage.getItem('zegar-v4-last-sticker')??-1);}catch(e){}
     let idx=rand(bigRewards.length);
@@ -865,7 +915,7 @@
     try{const v=JSON.parse(localStorage.getItem(RESULTS_KEY)||'[]');return Array.isArray(v)?v.filter(x=>x&&Number.isFinite(x.points)&&x.mode&&x.level):[];}catch(e){return [];}
   }
   const sessionScope=()=>`${state.mode}/${state.level}/${state.mode==='story'?state.storyKind:'all'}`;
-  const sessionLabel=()=>({mission:'Wielka misja',read:'Odczytywanie',set:'Wskazówki',story:'Zadania z czasem'}[state.mode]||'Misja')+` · poziom ${state.level}`+(state.mode==='story'?` · ${state.storyKind}`:'');
+  const sessionLabel=()=>({mission:'Wielka misja',read:'Odczytywanie',set:'Wskazówki',story:'Zadania z czasem',detective:'Tryb Detektywa',special:'Misje specjalne'}[state.mode]||'Misja')+` · poziom ${state.level}`+(state.mode==='story'?` · ${state.storyKind}`:'');
   function saveResult(entry){
     try{const history=safeReadResults();history.push(entry);localStorage.setItem(RESULTS_KEY,JSON.stringify(history.slice(-400)));return true;}catch(e){return false;}
   }
@@ -879,7 +929,7 @@
       const pos=document.createElement('strong');pos.textContent=`${i+1}.`;
       const name=document.createElement('span');name.className='rank-name';name.textContent=r.player||'Gracz';
       const pts=document.createElement('strong');pts.textContent=`${r.points} pkt`;
-      const details=document.createElement('small');details.textContent=`${r.solved}/${TOTAL} zadań · ${new Date(r.time).toLocaleDateString('pl-PL')}`;
+      const details=document.createElement('small');details.textContent=`${r.solved}/${r.total||TOTAL} zadań · ${new Date(r.time).toLocaleDateString('pl-PL')}`;
       item.append(pos,name,pts,details);root.append(item);
     });
   }
@@ -894,32 +944,34 @@
       const p=document.createElement('p');p.textContent='Te umiejętności warto powtórzyć:';root.append(p);
       for(const a of needs){
         const card=document.createElement('div');card.className='skill-row';
-        const label=document.createElement('strong');label.textContent=skillInfo[a.key][0];
+        const label=document.createElement('strong');label.textContent=(skillInfo[a.key]||[a.key,'Ćwicz tę umiejętność.'])[0];
         const count=document.createElement('span');count.textContent=`Niezaliczone: ${a.failed} · Za drugim razem: ${a.second}`;
-        const note=document.createElement('small');note.textContent=skillInfo[a.key][1];
+        const note=document.createElement('small');note.textContent=(skillInfo[a.key]||[a.key,'Ćwicz tę umiejętność.'])[1];
         card.append(label,count,note);root.append(card);
       }
     }
     const heading2=document.createElement('p');heading2.className='small';heading2.textContent='Pełny rozkład zadań:';root.append(heading2);
     const summary=document.createElement('div');summary.className='skill-overview';
     Object.entries(state.skills).forEach(([key,v])=>{
-      const el=document.createElement('div');el.textContent=`${skillInfo[key][0]}: ${v.first} za 1. razem, ${v.second} za 2., ${v.failed} niezaliczone`;summary.append(el);
+      const el=document.createElement('div');el.textContent=`${(skillInfo[key]||[key])[0]}: ${v.first} za 1. razem, ${v.second} za 2., ${v.failed} niezaliczone`;summary.append(el);
     });root.append(summary);
   }
   function finish(){
     if(state.ended)return;state.ended=true;
     $('exercise').classList.add('hidden');$('finish').classList.remove('hidden');
-    $('taskLabel').textContent=`Ukończono ${TOTAL} zadań`;$('progressFill').style.width='100%';
-    const percent=Math.round(state.solved/TOTAL*100),winning=state.solved/TOTAL>.9;
+    const total=sessionTotal();$('taskLabel').textContent=`Ukończono ${total} zadań`;$('progressFill').style.width='100%';
+    const percent=Math.round(state.solved/total*100),winning=state.solved/total>.9;
     $('finishPercent').textContent=percent+'%';
-    $('finishTitle').textContent=winning?'Misja ukończona! 🏆':percent>=70?'Świetnie Ci idzie! 🌈':'Każda próba uczy! 💜';
-    $('finishSummary').textContent=`Zaliczone: ${state.solved}/${TOTAL}. Za pierwszym razem: ${state.stars}. Za drugim: ${state.solved-state.stars}. Niezaliczone: ${state.errors}.`;
-    $('finishPoints').textContent=`🏅 ${state.points} / ${TOTAL*10} punktów · ${state.wrongAttempts} nietrafionych prób`;
+    $('finishTitle').textContent=state.mode==='special'?(state.solved===5?'🏆 Misja specjalna ukończona!':'🌈 Dzielna próba w misji specjalnej!'):winning?'Misja ukończona! 🏆':percent>=70?'Świetnie Ci idzie! 🌈':'Każda próba uczy! 💜';
+    $('finishSummary').textContent=`Zaliczone: ${state.solved}/${total}. Za pierwszym razem: ${state.stars}. Za drugim: ${state.solved-state.stars}. Niezaliczone: ${state.errors}.`;
+    $('finishPoints').textContent=`🏅 ${state.points} / ${total*10} punktów · ${state.wrongAttempts} nietrafionych prób`;
     renderTrainingReport();
     $('awardCard').classList.toggle('hidden',!winning);
+    if(state.mode==='special'&&state.solved===5)$('finishTitle').textContent='🏆 Misja specjalna ukończona! Wielka naklejka!';
     $('retryMessage').classList.toggle('hidden',winning);
+    if(state.mode==='special')$('retryMessage').classList.add('hidden');
     // Bonus wyłącznie informacyjny: 25/25 zaliczonych zadań (także za drugim razem).
-    $('tabletBonus').classList.toggle('hidden',state.solved!==TOTAL);
+    $('tabletBonus').classList.toggle('hidden',state.mode==='special'||state.solved!==TOTAL);
     if(winning){
       const reward=pickBigReward();
       $('awardCard').dataset.theme=reward.theme;
@@ -931,12 +983,13 @@
     }
     const player=String($('playerName').value||'Gracz').trim().slice(0,18)||'Gracz';
     const time=Date.now(),id=`${time}-${Math.random().toString(36).slice(2,9)}`;
-    const entry={id,player,time,mode:state.mode,level:state.level,storyKind:state.storyKind,scope:sessionScope(),solved:state.solved,stars:state.stars,errors:state.errors,points:state.points,skills:state.skills};
+    const entry={id,player,time,total,mode:state.mode,level:state.level,storyKind:state.storyKind,scope:sessionScope(),solved:state.solved,stars:state.stars,errors:state.errors,points:state.points,skills:state.skills};
     const stored=saveResult(entry),results=rankedEntries();
     const place=results.findIndex(r=>r.id===id);
     $('finishRank').textContent=stored?`🏆 Miejsce w rankingu tego trybu i poziomu: ${place+1} z ${results.length}.`:'Ranking niedostępny w trybie prywatnym lub bez pamięci przeglądarki.';
     $('bestScore').textContent=stored?`Twój najlepszy zapisany wynik w tej kategorii: ${results.filter(r=>r.player===player)[0]?.points??state.points} pkt. Specjalna naklejka za co najmniej 23/25 zaliczonych zadań.`:'Specjalna naklejka za co najmniej 23/25 zaliczonych zadań.';
-    $('restartBtn').textContent='Kolejne 25 zadań 🎲';
+    $('restartBtn').textContent=state.mode==='special'?'Kolejna misja specjalna ✨':'Kolejne 25 zadań 🎲';
+    updateSpecialLock();
     if(!$('rankPanel').classList.contains('hidden'))renderRanking();
   }
   function selectHand(hand){state.selected=hand;updateHandChoice();}
@@ -969,6 +1022,7 @@
   }
   document.querySelectorAll('.tab').forEach(button=>button.addEventListener('click',()=>{
     const mode=button.dataset.mode;
+    if(mode==='special'&&!canPlaySpecial())return;
     if(mode!==state.mode){state.mode=mode;beginSession();}
   }));
   document.querySelectorAll('.level[data-level]').forEach(button=>button.addEventListener('click',()=>{
@@ -992,7 +1046,7 @@
   });
   $('playerName').addEventListener('change',()=>{
     const value=String($('playerName').value).trim().slice(0,18)||'Gracz';
-    state.player=value;$('playerName').value=value;
+    state.player=value;$('playerName').value=value;updateSpecialLock();
     try{localStorage.setItem(PLAYER_KEY,value);}catch(e){}
   });
   $('nudgeBack').addEventListener('click',()=>nudge(-1));$('nudgeForward').addEventListener('click',()=>nudge(1));
@@ -1014,7 +1068,7 @@
   $('playerName').value=state.player;
   clock.setAttribute('tabindex','0');buildDial();beginSession();
   // Funkcje diagnostyczne używane podczas sprawdzania aplikacji.
-  window.__clockLogic={splitTime,expressTime,buildCalculation,buildWords,buildLife,buildPlan,format,minutesOf,state,currentMode,beginSession,check,finish,success,generateStory,rankedEntries,safeReadResults,bigRewards,miniRewards};
+  window.__clockLogic={extras,newPuzzle,sessionTotal,canPlaySpecial,splitTime,expressTime,buildCalculation,buildWords,buildLife,buildPlan,format,minutesOf,state,currentMode,beginSession,check,finish,success,generateStory,rankedEntries,safeReadResults,bigRewards,miniRewards};
 })();
 
 </script>
