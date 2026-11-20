@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#6656cc">
 <meta name="description" content="Gra do nauki zegara: 25 pytań, dwie próby, naklejki, punkty i lokalny ranking wyników.">
-<title>Zegarowe przygody 4.5 — misja 25 pytań</title>
+<title>Zegarowe przygody 5.0 — krainy i przygody</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
@@ -19,9 +19,9 @@
   :root { --ink:#243052; --muted:#66718c; --paper:#fff; --mint:#d9f6e8; --aqua:#087e83; --pink:#f76b77; --pink-pale:#ffe8ed; --purple:#6656cc; --border:#e6e9f3; --cream:#fff7e3; }
   * {box-sizing:border-box}
   body {margin:0; color:var(--ink); font-family:ui-rounded, 'Trebuchet MS', system-ui, -apple-system, 'Segoe UI', sans-serif; background:radial-gradient(circle at 12% 3%, #e5e0ff,transparent 29%),radial-gradient(circle at 91% 18%, #d6f8ea,transparent 32%),#f6f7ff; min-height:100svh}
-  button,select {font:inherit}
+  button,select,input {font:inherit}
   button {cursor:pointer}
-  button:focus-visible,select:focus-visible,svg:focus-visible {outline:3px solid #7767f7;outline-offset:3px}
+  button:focus-visible,select:focus-visible,input:focus-visible,svg:focus-visible {outline:3px solid #7767f7;outline-offset:3px}
   .app {width:min(1120px,100%);margin:0 auto;padding:23px 20px 36px}
   header {display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;flex-wrap:wrap}
   .identity {display:flex;gap:12px;align-items:center}
@@ -156,6 +156,48 @@
   .duel-clock{flex:1;max-width:180px;min-width:126px;text-align:center;font-weight:850;color:#4a4779}
   .duel-clock svg{width:100%;display:block;margin:4px auto}
   .quest-lock{color:#6b6286;font-size:.87rem;margin:5px 0;font-weight:700}
+
+  /* Mapa ośmiu krain — główny ekran gry. */
+  .tabbar,.config .difficulty:not(.playerconfig){display:none!important}
+  body.map-view .topscore,body.map-view .attempts,body.map-view .progress,body.map-view main,
+  body.map-view .config #taskLabel,body.map-view .config #adaptiveNote{display:none!important}
+  body:not(.map-view) .config .playerconfig{display:none!important}
+  body.map-view #worldRunBar{display:none!important}
+  body:not(.map-view) #worldMap{display:none!important}
+  .world-map{margin:20px auto 28px;max-width:1050px}
+  .world-map-intro{padding:22px 23px 20px;background:linear-gradient(120deg,#f4edff,#e8fff5 64%,#fff7dc);border:2px solid #dad7f7;border-radius:24px;margin-bottom:20px;box-shadow:0 10px 25px #4a508111}
+  .world-map-intro h2{margin:0 0 9px;font-size:clamp(1.35rem,4vw,2rem);color:#453592}
+  .world-map-intro p{line-height:1.55;margin:0 0 14px;color:#5f557c}
+  .world-global-progress{font-size:.9rem;font-weight:900;color:#3b6473;margin-bottom:9px}
+  .world-global-bar{height:12px;overflow:hidden;background:#fff;border-radius:30px;box-shadow:inset 0 1px 4px #7773a444}
+  .world-global-bar span{display:block;height:100%;border-radius:30px;background:linear-gradient(90deg,#69ce9b,#a18fff,#ffd173)}
+  .world-btn{padding:10px 12px;border-radius:12px;border:2px solid #b5b1d5;background:#fff;color:#493a87;font-weight:900;cursor:pointer;font-size:.88rem}
+  .world-btn:disabled{opacity:.55;cursor:not-allowed;background:#f5f3fa}
+  .world-btn.world-step-next{background:#6955d6;color:#fff;border-color:#6955d6;box-shadow:0 3px 0 #463b9b}
+  .world-btn.world-step-done{background:#e4f7e9;color:#28613b;border-color:#acdcb6}
+  .world-btn.world-primary{margin-top:16px;padding:13px 19px;background:#5b49c8;border-color:#5b49c8;color:#fff;font-size:1rem;box-shadow:0 4px 0 #40318d}
+  .world-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+  .world-card{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(135deg,var(--land-bg),#fff 73%);border:2px solid color-mix(in srgb,var(--land-accent) 36%,white);border-radius:22px;padding:17px;box-shadow:0 7px 24px #40407410;min-width:0;position:relative}
+  .world-card.world-locked{filter:saturate(.67);background:#f5f5fa}
+  .world-card.world-complete{border-color:#83c999;box-shadow:0 0 0 2px #83c99955}
+  .world-icon{font-size:2.45rem;flex:0 0 52px;text-align:center;line-height:1.2}
+  .world-card-desc{min-width:0;flex:1}
+  .world-seq{letter-spacing:.09em;font-size:.69rem;font-weight:950;color:var(--land-accent)}
+  .world-card h3{margin:3px 0 6px;font-size:1.14rem;color:#302f53}
+  .world-card p{font-size:.84rem;line-height:1.4;margin:0 0 10px;color:#5b5d79}
+  .world-hero{font-weight:850;font-size:.84rem;color:#43346d;margin-bottom:12px}
+  .world-steps{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .world-steps .world-btn{padding:8px 6px;font-size:.78rem;min-height:39px}
+  .world-footer-note{text-align:center;font-size:.85rem;line-height:1.5;color:#66708d;margin:17px 8px}
+  .world-runbar[hidden]{display:none!important}
+  .world-runbar{margin:10px 0 16px;padding:10px 14px;border-radius:14px;background:#eae4ff;border:1px solid #c8b8ed;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .world-runbar strong{color:#47348e;font-size:.94rem}
+  .world-runbar button{background:#fff;border:1px solid #9d89c8;border-radius:10px;color:#564295;font-size:.85rem;font-weight:850;padding:8px 10px}
+  .world-stage-outcome{margin:16px auto;padding:16px 18px;border-radius:18px;background:#e9f8e9;color:#265c39;font-weight:900;line-height:1.6;border:2px solid #a6dba9}
+  .world-stage-outcome.world-try-again{background:#fff4e3;color:#794c2e;border-color:#efcd97}
+  .time-entry{font-weight:900;letter-spacing:.025em;background:white;color:#273759;min-width:0;text-align:center;border:2px solid #bcc3e2;border-radius:13px;padding:12px 7px;font-size:1.25rem;width:100%;max-width:125px}
+  .time-entry::placeholder{color:#9ba0b7}
+  @media(max-width:700px){.world-cards{grid-template-columns:1fr}.world-card{padding:13px}.world-icon{font-size:2.1rem;flex-basis:39px}.world-map-intro{padding:18px 16px}.world-map{margin-top:15px}.world-steps .world-btn{font-size:.79rem}}
 </style>
 </head>
 <body>
@@ -164,6 +206,7 @@
     <div class="identity"><div class="logo" aria-hidden="true">⏰</div><div><h1>Zegarowe przygody</h1><p class="subtitle">Klasa 3 · 25 zagadek, rekordy i bajkowe naklejki</p></div></div>
     <div class="topscore" aria-label="Wyniki ćwiczeń"><div class="score">Zaliczone <strong id="solvedCount">0/25</strong></div><div class="score">Punkty <strong id="pointsCount">0 🏅</strong></div><div class="score">Naklejki <strong id="starCount">0 ⭐</strong></div><div class="score error-score">Błędy <strong id="errorCount">0</strong></div></div>
   </header>
+  <section id="worldMap" class="world-map" aria-label="Mapa krain i ratowanie postaci"></section>
   <nav class="tabbar" aria-label="Rodzaj ćwiczeń">
     <button class="tab" data-mode="read" id="readTab" aria-selected="false" type="button">👀 Odczytaj godzinę</button>
     <button class="tab" data-mode="set" id="setTab" aria-selected="false" type="button">🖐️ Ustaw wskazówki</button>
@@ -180,6 +223,7 @@
     <div class="progresslabel" id="taskLabel">Zadanie 1 z 25</div>
     <div id="adaptiveNote" class="quest-lock" aria-live="polite">🎯 Gra zapamiętuje trudniejsze kategorie i ćwiczy je częściej w następnych seriach.</div>
   </div>
+  <div id="worldRunBar" class="world-runbar" hidden><strong id="worldRunTitle"></strong><button type="button" id="worldBackBtn">🗺️ Wróć do mapy</button></div>
   <div class="attempts"><span>Próba w tym zadaniu:</span><strong id="attemptCount">1 z 2</strong><span class="rule">Za pierwszą poprawną odpowiedź +10 pkt i naklejka, za drugą +5 pkt. Po dwóch nieudanych próbach zadanie jest niezaliczone.</span></div>
   <section id="rankPanel" class="ranking hidden" aria-label="Ranking zapisanych serii"><div class="ranking-head"><h2>🏆 Ranking lokalny</h2><span class="small" id="rankScope"></span></div><div id="rankList"></div><p class="small">Ranking pokazuje 10 najlepszych ukończonych serii w wybranym trybie i na wybranym poziomie. Zapisywany jest tylko w tej przeglądarce.</p></section>
   <div class="progress"><span id="progressFill"></span></div>
@@ -199,11 +243,11 @@
         <div id="logicProgress" class="logic-progress hidden"></div>
         <h2 id="question">Która jest godzina?</h2>
         <p class="desc" id="instruction">Sprawdź, gdzie jest krótka wskazówka, a potem policz minuty na długiej.</p>
-        <div id="readControls"><div class="answers"><label class="field" for="answerHour">Godzina<select id="answerHour"><option value="">Wybierz</option></select></label><div class="colon" aria-hidden="true">:</div><label class="field" for="answerMinute">Minuty<select id="answerMinute"><option value="">Wybierz</option></select></label></div></div>
+        <div id="readControls"><div class="answers"><label class="field" for="answerHour">Godzina<input id="answerHour" class="time-entry" type="text" inputmode="numeric" maxlength="2" pattern="[0-9]*" enterkeyhint="next" placeholder="GG" autocomplete="off"></label><div class="colon" aria-hidden="true">:</div><label class="field" for="answerMinute">Minuty<input id="answerMinute" class="time-entry" type="text" inputmode="numeric" maxlength="2" pattern="[0-9]*" enterkeyhint="done" placeholder="MM" autocomplete="off"></label></div></div>
         <div id="storyControls" class="hidden">
           <div class="story-prompt" id="storyPrompt"></div>
           <div id="duelClocks" class="duel-clocks hidden" aria-label="Dwa zegary do porównania"></div>
-          <div id="storyDigitAnswer"><p class="small story-answer-label">Wpisz wynik — godzinę i minuty:</p><div class="answers"><label class="field" for="storyHour">Godzina (0–23)<select id="storyHour"><option value="">Wybierz</option></select></label><div class="colon" aria-hidden="true">:</div><label class="field" for="storyMinute">Minuty<select id="storyMinute"><option value="">Wybierz</option></select></label></div></div>
+          <div id="storyDigitAnswer"><p class="small story-answer-label">Wpisz wynik z klawiatury:</p><div class="answers"><label class="field" for="storyHour">Godzina (0–23)<input id="storyHour" class="time-entry" type="text" inputmode="numeric" maxlength="2" pattern="[0-9]*" enterkeyhint="next" placeholder="GG" autocomplete="off"></label><div class="colon" aria-hidden="true">:</div><label class="field" for="storyMinute">Minuty<input id="storyMinute" class="time-entry" type="text" inputmode="numeric" maxlength="2" pattern="[0-9]*" enterkeyhint="done" placeholder="MM" autocomplete="off"></label></div></div>
           <div id="storyWordAnswer" class="hidden"><p class="small story-answer-label">Wybierz jedną odpowiedź:</p><div class="choice-list" id="storyChoices"></div></div>
           <div id="storyMinuteAnswer" class="hidden"><label for="minutesAnswer" class="story-answer-label">Wpisz liczbę minut:</label><input id="minutesAnswer" class="minute-answer" type="number" inputmode="numeric" min="0" max="240" step="1" placeholder="Ile minut?" autocomplete="off"></div>
         </div>
@@ -218,6 +262,7 @@
         <p id="finishSummary"></p>
         <div id="finishPoints" class="finish-points"></div>
         <div id="trainingReport" class="training-report" aria-label="Podsumowanie umiejętności"></div>
+        <div id="worldStageOutcome" class="world-stage-outcome hidden" role="status"></div>
         <div id="finishRank" class="finish-rank"></div>
         <div id="awardCard" class="award-card hidden" role="status" aria-label="Odblokowana wielka naklejka">
           <div class="award-header">✨ Specjalna naklejka! ✨</div>
@@ -240,6 +285,7 @@
   <footer>Ćwicz samodzielnie 💜 · Bez podpowiedzi i reklam · Wyniki zapisują się w tej przeglądarce · Nieoficjalna gra edukacyjna</footer>
 </div>
 <script src="./clock-extras.js"></script>
+<script src="./clock-worlds.js"></script>
 <script>
 (() => {
   'use strict';
@@ -247,8 +293,9 @@
   const clock = $('clock'), hourHand = $('hourHand'), minuteHand = $('minuteHand');
   const TOTAL=25, MAX_ATTEMPTS=2, RESULTS_KEY="zegarowe-przygody-v4-results", PLAYER_KEY="zegarowe-przygody-v4-player";
   const extras=window.ClockExtras;
+  const worlds=window.ClockWorlds;
   if(!extras)throw Error("Nie załadowano modułu zagadek logicznych.");
-  const state={mode:'mission', puzzleMode:'read',level:1,storyKind:'mix',theme:'fairy',errors:0,wrongAttempts:0,lastWrongSignature:null,index:1,targetH:3,targetM:0,userH:12,userM:0,selected:'hour',solved:0,stars:0,points:0,questionMistakes:0,done:false,dragging:false,story:null,selectedChoice:null,plan:[],lastMini:-1,usedMini:new Set(),questSteps:[],lastPrompt:'',ended:false,storyClockEnabled:false,skills:{},seen:new Set(),player:'Gracz'};
+  const state={mode:'world',worldId:0,worldStep:0, puzzleMode:'read',level:1,storyKind:'mix',theme:'fairy',errors:0,wrongAttempts:0,lastWrongSignature:null,index:1,targetH:3,targetM:0,userH:12,userM:0,selected:'hour',solved:0,stars:0,points:0,questionMistakes:0,done:false,dragging:false,story:null,selectedChoice:null,plan:[],lastMini:-1,usedMini:new Set(),questSteps:[],lastPrompt:'',ended:false,storyClockEnabled:false,skills:{},seen:new Set(),player:'Gracz'};
   const pad=n=>String(n).padStart(2,'0');
   const format=(h,m)=>`${pad(h)}:${pad(m)}`;
   const rand=n=>Math.floor(Math.random()*n);
@@ -548,16 +595,23 @@
       txt.textContent=n;$('numbers').append(txt);
     }
   }
-  function currentMode(){return ['mission','detective','special'].includes(state.mode)?state.puzzleMode:state.mode;}
+  function currentMode(){return ['mission','detective','special','world'].includes(state.mode)?state.puzzleMode:state.mode;}
   const availableMinutes=()=>state.level===1?[0]:Array.from({length:state.level===2?12:60},(_,i)=>i*(state.level===2?5:1));
   const storyMinutes=()=>state.level===1?[0,15,30,45]:state.level===2?Array.from({length:12},(_,i)=>i*5):Array.from({length:60},(_,i)=>i);
   function selectFill(el,from,to,step=1,showPad=true){el.replaceChildren(new Option('Wybierz',''));for(let n=from;n<=to;n+=step)el.add(new Option(showPad?pad(n):String(n),String(n)));}
   function populateSelects(){
-    selectFill($('answerHour'),1,12,1,false);
-    selectFill($('answerMinute'),0,59);
-    selectFill($('storyHour'),0,23);
-    selectFill($('storyMinute'),0,59);
+    ['answerHour','answerMinute','storyHour','storyMinute'].forEach(id=>{$(id).value='';});
   }
+  const validTimeInput=(h,m,limit)=>/^\d{1,2}$/.test(h)&&/^\d{1,2}$/.test(m)&&Number(h)>=0&&Number(h)<=limit&&Number(m)>=0&&Number(m)<=59;
+  function attachTimeInputs(hourId,minuteId){
+    const hour=$(hourId),minute=$(minuteId);
+    for(const input of [hour,minute]){
+      input.addEventListener('input',()=>{input.value=input.value.replace(/[^0-9]/g,'').slice(0,2);if(input===hour&&input.value.length===2&&minute.value==='')minute.focus();});
+      input.addEventListener('blur',()=>{if(/^\d$/.test(input.value))input.value=input.value.padStart(2,'0');});
+    }
+  }
+  attachTimeInputs('answerHour','answerMinute');
+  attachTimeInputs('storyHour','storyMinute');
   function renderClock(){
     const mode=currentMode(),h=mode==='read'?state.targetH:state.userH,m=mode==='read'?state.targetM:state.userM;
     hourHand.setAttribute('transform',`rotate(${(h%12)*30+m*.5} 200 200)`);
@@ -588,7 +642,7 @@
     $('clockToggle').textContent=state.storyClockEnabled?'🔓 Wyłącz zegar do liczenia':'🔒 Włącz zegar do liczenia';
     clock.classList.toggle('interactive',set||(story&&state.storyClockEnabled));
     const captions={read:'👀 Odczytywanie',set:'🖐️ Ustawianie wskazówek',story:'🧠 Zadania z czasem'};
-    $('modeCaption').textContent=(state.mode==='mission'?'🎲 Wielka misja · ':state.mode==='detective'?'🕵️ Detektyw · ':state.mode==='special'?'✨ Misja specjalna · ':'')+captions[mode];
+    $('modeCaption').textContent=(state.mode==='world'?worlds.worlds[state.worldId].icon+' '+worlds.worlds[state.worldId].name+' · ':state.mode==='mission'?'🎲 Wielka misja · ':state.mode==='detective'?'🕵️ Detektyw · ':state.mode==='special'?'✨ Misja specjalna · ':'')+captions[mode];
     $('logicProgress').classList.toggle('hidden',state.mode!=='special');
     if(state.mode==='special')$('logicProgress').textContent=`${state.questSteps[0]?.missionName||'✨ Misja specjalna'} · etap ${state.index} z 5. Kolejne wyniki łączą się w jedną historię.`;
     $('question').textContent=read?'Która jest godzina?':set?(state.category==='repair'?'Napraw zepsuty zegar:':'Ustaw tę godzinę:'):'Pomyśl i rozwiąż!';
@@ -712,7 +766,7 @@
     return {kind:'life',answer,prompt:`${template.subject}\n${q}`,start,explanation};
   }
   function buildPlan(){
-    return extras.buildPlan(state.mode,state.level,state.storyKind,state.player);
+    return state.mode==='world'?worlds.plan(state.worldId,state.worldStep,state.player,extras):extras.buildPlan(state.mode,state.level,state.storyKind,state.player);
   }
   function legacyBuildPlan(){
     // 25 pytań: wszystkie umiejętności w równych proporcjach w wielkiej misji.
@@ -812,6 +866,25 @@
   const sessionTotal=()=>state.mode==='special'?5:TOTAL;
   function canPlaySpecial(){const name=String($('playerName').value||state.player||'Gracz').trim();return safeReadResults().filter(r=>r.player===name&&r.mode!=='detective'&&r.mode!=='special').length>=2;}
   function updateSpecialLock(){const open=canPlaySpecial();$('specialTab').disabled=!open;$('specialTab').textContent=open?'🎂 Misja specjalna 🔓':'🎂 Misja specjalna 🔒';$('specialTab').title=open?'Odblokowana: 5 połączonych zagadek':'Odblokuje się po ukończeniu 2 zwykłych serii 25 pytań';}
+  function showWorldMap(){
+    document.body.classList.add('map-view');
+    $('worldRunBar').hidden=true;
+    $('rankPanel').classList.add('hidden');
+    $('rankingToggle').setAttribute('aria-expanded','false');
+    worlds.render($('worldMap'),state.player,startWorldStage);
+    window.scrollTo({top:0,behavior:'instant'});
+  }
+  function startWorldStage(worldId,worldStep){
+    const record=worlds.read(state.player);
+    if(!worlds.unlocked(record,worldId)||(worldStep>0&&!worlds.passed(record,worldId,worldStep-1)))return;
+    state.mode='world';state.worldId=worldId;state.worldStep=worldStep;state.level=worlds.worlds[worldId].level;state.theme='fairy';
+    document.body.classList.remove('map-view');
+    $('worldRunBar').hidden=false;
+    $('worldRunTitle').textContent=worlds.worlds[worldId].icon+' '+worlds.worlds[worldId].name+' · '+worlds.stages[worldStep]+' · 25 zadań';
+    $('rankPanel').classList.add('hidden');
+    beginSession();
+    window.scrollTo({top:0,behavior:'instant'});
+  }
   function beginSession(){
     updateSpecialLock();
     state.index=1;state.solved=0;state.stars=0;state.points=0;state.errors=0;state.wrongAttempts=0;state.questionMistakes=0;state.lastWrongSignature=null;state.lastPrompt='';state.ended=false;state.seen=new Set();state.skills={};
@@ -868,7 +941,7 @@
     let valid=true,correct=false;
     if(currentMode()==='read'){
       const h=$('answerHour').value,m=$('answerMinute').value;
-      if(h===''||m==='')valid=false;
+      if(!validTimeInput(h,m,12)||Number(h)<1)valid=false;
       else correct=Number(h)===state.targetH&&Number(m)===state.targetM;
     }else if(currentMode()==='set')correct=state.userH===state.targetH&&state.userM===state.targetM;
     else {
@@ -882,15 +955,15 @@
         else correct=Number(raw)===task.answer;
       }else{
         const h=$('storyHour').value,m=$('storyMinute').value;
-        if(h===''||m==='')valid=false;
+        if(!validTimeInput(h,m,23))valid=false;
         else correct=minutesOf(Number(h),Number(m))===task.answer;
       }
     }
-    if(!valid){feedback('Najpierw wybierz odpowiedź, a potem ją sprawdź. 😊');return;}
+    if(!valid){feedback('Najpierw wpisz prawidłową godzinę i minuty albo zaznacz odpowiedź. 😊');return;}
     if(correct){success();return;}
-    const wrongSignature=currentMode()==='read'?`read:${$('answerHour').value}:${$('answerMinute').value}`:
+    const wrongSignature=currentMode()==='read'?`read:${Number($('answerHour').value)}:${Number($('answerMinute').value)}`:
       currentMode()==='set'?`set:${state.userH}:${state.userM}`:
-      state.story.answerType==='choice'||state.story.kind==='toWords'?`choice:${state.selectedChoice}`:state.story.answerType==='minutes'?`minutes:${$('minutesAnswer').value}`:`story:${$('storyHour').value}:${$('storyMinute').value}`;
+      state.story.answerType==='choice'||state.story.kind==='toWords'?`choice:${state.selectedChoice}`:state.story.answerType==='minutes'?`minutes:${$('minutesAnswer').value}`:`story:${Number($('storyHour').value)}:${Number($('storyMinute').value)}`;
     if(state.lastWrongSignature===wrongSignature){
       feedback('Ta odpowiedź była już sprawdzona. Spróbuj podać inną!','error');return;
     }
@@ -914,8 +987,8 @@
   function safeReadResults(){
     try{const v=JSON.parse(localStorage.getItem(RESULTS_KEY)||'[]');return Array.isArray(v)?v.filter(x=>x&&Number.isFinite(x.points)&&x.mode&&x.level):[];}catch(e){return [];}
   }
-  const sessionScope=()=>`${state.mode}/${state.level}/${state.mode==='story'?state.storyKind:'all'}`;
-  const sessionLabel=()=>({mission:'Wielka misja',read:'Odczytywanie',set:'Wskazówki',story:'Zadania z czasem',detective:'Tryb Detektywa',special:'Misje specjalne'}[state.mode]||'Misja')+` · poziom ${state.level}`+(state.mode==='story'?` · ${state.storyKind}`:'');
+  const sessionScope=()=>state.mode==='world'?`world/${state.worldId}/${state.worldStep}`:`${state.mode}/${state.level}/${state.mode==='story'?state.storyKind:'all'}`;
+  const sessionLabel=()=>state.mode==='world'?worlds.worlds[state.worldId].name+' · '+worlds.stages[state.worldStep]:({mission:'Wielka misja',read:'Odczytywanie',set:'Wskazówki',story:'Zadania z czasem',detective:'Tryb Detektywa',special:'Misje specjalne'}[state.mode]||'Misja')+` · poziom ${state.level}`+(state.mode==='story'?` · ${state.storyKind}`:'');
   function saveResult(entry){
     try{const history=safeReadResults();history.push(entry);localStorage.setItem(RESULTS_KEY,JSON.stringify(history.slice(-400)));return true;}catch(e){return false;}
   }
@@ -991,13 +1064,27 @@
     }
     const player=String($('playerName').value||'Gracz').trim().slice(0,18)||'Gracz';
     const time=Date.now(),id=`${time}-${Math.random().toString(36).slice(2,9)}`;
-    const entry={id,player,time,total,mode:state.mode,level:state.level,storyKind:state.storyKind,scope:sessionScope(),solved:state.solved,stars:state.stars,errors:state.errors,points:state.points,skills:state.skills};
+    const entry={id,player,time,total,mode:state.mode,level:state.level,worldId:state.mode==='world'?state.worldId:null,worldStep:state.mode==='world'?state.worldStep:null,storyKind:state.storyKind,scope:sessionScope(),solved:state.solved,stars:state.stars,errors:state.errors,points:state.points,skills:state.skills};
     const stored=saveResult(entry),results=rankedEntries();
+    const outcome=$('worldStageOutcome');outcome.classList.add('hidden');outcome.classList.remove('world-try-again');
+    if(state.mode==='world'){
+      const outcomeData=worlds.record(state.player,state.worldId,state.worldStep,state.solved);
+      const land=worlds.worlds[state.worldId];
+      outcome.classList.remove('hidden');
+      if(outcomeData.success){
+        $('finishTitle').textContent=outcomeData.heroUnlocked?'🏆 Bohater uratowany!':'✨ Etap ukończony!';
+        outcome.textContent=outcomeData.heroUnlocked?'🎉 Uratowano '+land.hero+'! Odblokowałaś kolejną krainę. Wróć na mapę i ruszaj dalej!':state.worldStep===3?'🏆 '+land.name+' ukończona! Możesz zdobywać nowe krainy.':'🌟 Brawo! Etap zaliczony! Wróć na mapę, aby odkryć kolejną część przygody.';
+      }else{
+        $('finishTitle').textContent='💜 Spróbuj jeszcze raz!';
+        outcome.classList.add('world-try-again');
+        outcome.textContent='Tym razem '+state.solved+'/25. Do zaliczenia potrzebujesz '+outcomeData.min+'/25. Ćwicz dalej — możesz ponowić etap, a błędy pomogą dobrać kolejne zadania.';
+      }
+    }
     const place=results.findIndex(r=>r.id===id);
     $('finishRank').textContent=stored?`🏆 Miejsce w rankingu tego trybu i poziomu: ${place+1} z ${results.length}.`:'Ranking niedostępny w trybie prywatnym lub bez pamięci przeglądarki.';
     const rewardRules='Specjalna naklejka za co najmniej 23/25. Bonus na tablet: 23–24/25 = 2 min, 25/25 = 5 min (nie sumują się).';
     $('bestScore').textContent=stored?`Twój najlepszy zapisany wynik w tej kategorii: ${results.filter(r=>r.player===player)[0]?.points??state.points} pkt. ${rewardRules}`:rewardRules;
-    $('restartBtn').textContent=state.mode==='special'?'Kolejna misja specjalna ✨':'Kolejne 25 zadań 🎲';
+    $('restartBtn').textContent=state.mode==='world'?'🗺️ Wróć do mapy':state.mode==='special'?'Kolejna misja specjalna ✨':'Kolejne 25 zadań 🎲';
     updateSpecialLock();
     if(!$('rankPanel').classList.contains('hidden'))renderRanking();
   }
@@ -1057,9 +1144,12 @@
     const value=String($('playerName').value).trim().slice(0,18)||'Gracz';
     state.player=value;$('playerName').value=value;updateSpecialLock();
     try{localStorage.setItem(PLAYER_KEY,value);}catch(e){}
+    if(document.body.classList.contains('map-view'))showWorldMap();
   });
   $('nudgeBack').addEventListener('click',()=>nudge(-1));$('nudgeForward').addEventListener('click',()=>nudge(1));
-  $('checkBtn').addEventListener('click',check);$('restartBtn').addEventListener('click',beginSession);
+  $('checkBtn').addEventListener('click',check);
+  $('restartBtn').addEventListener('click',()=>{if(state.mode==='world')showWorldMap();else beginSession();});
+  $('worldBackBtn').addEventListener('click',showWorldMap);
   clock.addEventListener('pointerdown',ev=>{
     if(currentMode()==='read'||(currentMode()==='story'&&!state.storyClockEnabled)||state.done)return;
     const group=ev.target.closest('[data-hand]');if(group&&group.dataset.hand)selectHand(group.dataset.hand);
@@ -1075,7 +1165,7 @@
   });
   try{state.player=localStorage.getItem(PLAYER_KEY)||'Gracz';}catch(e){}
   $('playerName').value=state.player;
-  clock.setAttribute('tabindex','0');buildDial();beginSession();
+  clock.setAttribute('tabindex','0');buildDial();showWorldMap();
   // Funkcje diagnostyczne używane podczas sprawdzania aplikacji.
   window.__clockLogic={extras,newPuzzle,sessionTotal,canPlaySpecial,splitTime,expressTime,buildCalculation,buildWords,buildLife,buildPlan,format,minutesOf,state,currentMode,beginSession,check,finish,success,generateStory,rankedEntries,safeReadResults,bigRewards,miniRewards};
 })();
