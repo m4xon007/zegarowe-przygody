@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#6656cc">
 <meta name="description" content="Gra do nauki zegara: 25 pytań, dwie próby, naklejki, punkty i lokalny ranking wyników.">
-<title>Zegarowe przygody 6.0 — gra planszowa</title>
+<title>Zegarowe przygody 6.1 — nagrody za krainy</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
@@ -1151,6 +1151,28 @@
       const el=document.createElement('div');el.textContent=`${(skillInfo[key]||[key])[0]}: ${v.first} za 1. razem, ${v.second} za 2., ${v.failed} niezaliczone`;summary.append(el);
     });root.append(summary);
   }
+  // Nagrody są tylko informacją; przyznają je rodzice.
+  // Premia za krainę przysługuje tylko za pierwsze ukończenie jej Wielkiego Testu.
+  function calculateTabletReward(mode,total,solved,worldId,worldStep,firstTime){
+    if(mode==='world'&&worldStep===3&&firstTime){
+      return {minutes:worldId===worlds.worlds.length-1?60:10,kind:worldId===worlds.worlds.length-1?'final':'world'};
+    }
+    if(mode==='special'||total!==TOTAL)return {minutes:0,kind:'none'};
+    return {minutes:solved===TOTAL?5:solved>=23?2:0,kind:'series'};
+  }
+  function showTabletReward(reward,solved){
+    $('tabletBonus').classList.toggle('hidden',reward.minutes===0);
+    if(!reward.minutes)return;
+    $('tabletBonusTitle').textContent=reward.kind==='final'?'👑 +1 godzina grania na tablecie!'
+      :`+${reward.minutes} ${reward.minutes===2?'minuty':'minut'} grania na tablecie!`;
+    $('tabletBonusDetail').textContent=reward.kind==='final'
+      ?'Gratulacje! Pokonałaś ostatniego bossa i uratowałaś Królestwo Czasu! Pokaż nagrodę rodzicom. 💜'
+      :reward.kind==='world'
+      ?'Hurra! Pierwszy raz ukończyłaś tę krainę i uratowałaś bohatera! Pokaż nagrodę rodzicom. 💜'
+      :reward.minutes===5
+      ?'Wspaniale! 25/25 zadań zaliczonych! Pokaż nagrodę rodzicom. 💜'
+      :`Brawo! ${solved}/25 zadań zaliczonych! Pokaż nagrodę rodzicom. 💜`;
+  }
   function finish(){
     if(state.ended)return;state.ended=true;
     $('exercise').classList.add('hidden');$('finish').classList.remove('hidden');
@@ -1165,16 +1187,6 @@
     if(state.mode==='special'&&state.solved===5)$('finishTitle').textContent='🏆 Misja specjalna ukończona! Wielka naklejka!';
     $('retryMessage').classList.toggle('hidden',winning);
     if(state.mode==='special')$('retryMessage').classList.add('hidden');
-    // Informacyjny bonus tylko dla pełnych serii 25 pytań; bez sumowania nagród.
-    // 23/25 = 92%, najniższy osiągalny wynik spełniający próg 90%.
-    const tabletMinutes=state.mode==='special'||total!==TOTAL?0:state.solved===TOTAL?5:state.solved>=23?2:0;
-    $('tabletBonus').classList.toggle('hidden',tabletMinutes===0);
-    if(tabletMinutes){
-      $('tabletBonusTitle').textContent=`+${tabletMinutes} ${tabletMinutes===2?'minuty':'minut'} grania na tablecie!`;
-      $('tabletBonusDetail').textContent=tabletMinutes===5
-        ?'Wspaniale! 25/25 zadań zaliczonych! Pokaż nagrodę rodzicom. 💜'
-        :`Brawo! ${state.solved}/25 zadań zaliczonych! Pokaż nagrodę rodzicom. 💜`;
-    }
     if(winning){
       const reward=pickBigReward();
       collection.addBig(state.player,bigRewards.indexOf(reward));
@@ -1190,8 +1202,9 @@
     const entry={id,player,time,total,mode:state.mode,level:state.level,worldId:state.mode==='world'?state.worldId:null,worldStep:state.mode==='world'?state.worldStep:null,storyKind:state.storyKind,scope:sessionScope(),solved:state.solved,stars:state.stars,errors:state.errors,points:state.points,skills:state.skills};
     const stored=saveResult(entry),results=rankedEntries();
     const outcome=$('worldStageOutcome');outcome.classList.add('hidden');outcome.classList.remove('world-try-again');
+    let outcomeData=null;
     if(state.mode==='world'){
-      const outcomeData=worlds.record(state.player,state.worldId,state.worldStep,state.solved);
+      outcomeData=worlds.record(state.player,state.worldId,state.worldStep,state.solved);
       const land=worlds.worlds[state.worldId];
       outcome.classList.remove('hidden');
       if(outcomeData.success){
@@ -1203,9 +1216,12 @@
         outcome.textContent='Tym razem '+state.solved+'/25. Do zaliczenia potrzebujesz '+outcomeData.min+'/25. Ćwicz dalej — możesz ponowić etap, a błędy pomogą dobrać kolejne zadania.';
       }
     }
+    // Za jeden test: albo 2/5 minut, albo 10 za nową krainę, albo 60 za finał.
+    showTabletReward(calculateTabletReward(state.mode,total,state.solved,
+      state.worldId,state.worldStep,!!outcomeData?.heroUnlocked),state.solved);
     const place=results.findIndex(r=>r.id===id);
     $('finishRank').textContent=stored?`🏆 Miejsce w rankingu tego trybu i poziomu: ${place+1} z ${results.length}.`:'Ranking niedostępny w trybie prywatnym lub bez pamięci przeglądarki.';
-    const rewardRules='Specjalna naklejka za co najmniej 23/25. Bonus na tablet: 23–24/25 = 2 min, 25/25 = 5 min (nie sumują się).';
+    const rewardRules='Specjalna naklejka za min. 23/25. Premia za serię: 23–24/25 = 2 min, 25/25 = 5 min. Pierwsze uratowanie postaci: 10 min, ostatni boss: 60 min zamiast 10. Za jeden test premie się nie sumują.';
     $('bestScore').textContent=stored?`Twój najlepszy zapisany wynik w tej kategorii: ${results.filter(r=>r.player===player)[0]?.points??state.points} pkt. ${rewardRules}`:rewardRules;
     $('restartBtn').textContent=state.mode==='world'?'🗺️ Wróć do mapy':state.mode==='special'?'Kolejna misja specjalna ✨':'Kolejne 25 zadań 🎲';
     updateSpecialLock();
