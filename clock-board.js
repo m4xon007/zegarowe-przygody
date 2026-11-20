@@ -26,6 +26,22 @@ const rand=n=>Math.floor(Math.random()*n);
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=rand(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;}
 const previousPlan=base.plan;
 base.plan=function(world,stage,player,clock){
+ // Boss na końcu każdego z czterech światów: trudniejsza mieszanka zadań logicznych.
+ if(world%4===3&&stage===3){
+   const level=base.worlds[world].level,logic=clock.forLevel(level);
+   const progress=clock.readProgress(player,level);
+   const list=['read','set','calc','words','life',...logic,'detective','rescue','schedule','repair'];
+   const pool=['calc','life','words',...logic,'detective','rescue','schedule'];
+   while(list.length<25){
+     const weighted=[];
+     for(const kind of pool){
+       const weight=Math.min(11,2+Math.round(clock.weakness(progress[kind])*10));
+       for(let i=0;i<weight;i++)weighted.push(kind);
+     }
+     list.push(weighted[rand(weighted.length)]);
+   }
+   return shuffle(list.slice(0,25));
+ }
  if(world<8)return previousPlan(world,stage,player,clock);
  const logic=clock.forLevel(3),progress=clock.readProgress(player,3);
  const priority=world>=12?['midnight','mystery','detective','duel','schedule','rescue','ontime','repair']:['detective','rescue','schedule','duel','ontime','repair','mystery','midnight'];
@@ -142,7 +158,7 @@ base.render=function(root,player,onStart){
   base.stages.forEach((label,s)=>{
    const done=base.passed(data,i,s),unlocked=open&&(s===0||base.passed(data,i,s-1));
    const best=Number(data.best[w.id+':'+s])||0,stars=best>=25?'⭐⭐⭐':best>=23?'⭐⭐':best>=20?'⭐':'';
-   const b=btn((done?'✅ ':unlocked?'▶️ ':'🔒 ')+(s===3?'Wielki Test':'Etap '+(s+1))+(stars?' '+stars:''),()=>onStart(i,s),!unlocked,'board-stage-button'+(done?' completed':unlocked?' available':''));
+   const b=btn((done?'✅ ':unlocked?'▶️ ':'🔒 ')+(s===3&&i%4===3?'👑 Wielki Boss':s===3?'Wielki Test':'Etap '+(s+1))+(stars?' '+stars:''),()=>onStart(i,s),!unlocked,'board-stage-button'+(done?' completed':unlocked?' available':''));
    b.title=label+' · minimum '+(s===3?'23':'20')+'/25';stageButtons.append(b);
   });
   content.append(stageButtons);selectedView.append(content);
