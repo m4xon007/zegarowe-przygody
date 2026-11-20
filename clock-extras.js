@@ -77,22 +77,24 @@
     return Array(25).fill('calc');
   }
   const hero=(ctx)=>ctx.theme==='classic'?choose(['Zuzia','Ola','Tomek','Ania']):choose(['Vaiana','Stitch','Elsa','Olaf','Simba','Mirabel','Roszpunka']);
+  // Detektyw bez łatwego zgadywania Prawda/Fałsz: cztery podobne odpowiedzi.
   function detective(level,ctx){
-    const character=hero(ctx),start=time(level),d=duration(level);
-    if(rand(2)===0){
-      const changes=level===1?[15,30,60]:level===2?[5,10,15,30,60]:[3,7,12,15,30,60];
-      const correct=rand(2)===0,claimed=wrap(start+(correct?d:d+choose(changes)));
-      return {kind:'detective',category:'detective',answerType:'choice',answer:correct?'Tak':'Nie',choices:['Tak','Nie'],labels:['✅ Prawda','❌ Fałsz'],start,
-        prompt:`🕵️ ${character} mówi: „Jest ${display(start)}. Za ${minutePhrase(d)} będzie ${display(claimed)}”.\nCzy ma rację?`,explanation:`${display(start)} + ${d} min = ${display(start+d)}.`};
+    const name=hero(ctx),start=time(level),d=duration(level),result=wrap(start+d);
+    const near=level===1?[15,30,45,60]:level===2?[5,10,15,20,25,30]:[3,5,7,9,11,13,17,25];
+    const values=new Set([result]);
+    let attempts=0;
+    while(values.size<4&&attempts++<100){
+      const offset=choose(near)*(rand(2)?1:-1);
+      values.add(wrap(result+offset));
     }
-    const h=Math.floor(start/60),m=start%60,next=((h+1)%12)||12,current=(h%12)||12;
-    const correct=rand(2)===0;
-    // Określenia kwadrans po / wpół do / za kwadrans – pełne minuty są dobierane zgodnie z treścią.
-    const target=choose([15,30,45]),clockH=h;
-    const words=target===15?`kwadrans po ${current}`:target===30?`wpół do ${next}`:`za kwadrans ${next}`;
-    const displayed=correct?target:(target+15)%60;
-    return {kind:'detective',category:'detective',answerType:'choice',answer:correct?'Tak':'Nie',choices:['Tak','Nie'],labels:['✅ Prawda','❌ Fałsz'],start:clockH*60+displayed,
-      prompt:`🕵️ ${character} twierdzi: „${display(clockH*60+displayed)} to ${words}”.\nPrawda czy fałsz?`,explanation:`Poprawna godzina to ${display(clockH*60+target)}.`};
+    if(values.size<4)throw Error('Brak unikalnych opcji detektywa');
+    const options=shuffle(Array.from(values).map(display));
+    const claimed=choose(options.filter(x=>x!==display(result)));
+    const word=level===1?minutePhrase(d):d+' minut';
+    const extraText=rand(2)===0?'Zauważ, że wskazówki mogą przekroczyć pełną godzinę.':'Uważnie sprawdź obliczenie, zanim wybierzesz odpowiedź.';
+    return {kind:'detective',category:'detective',answerType:'choice',answer:display(result),choices:options,start,
+      prompt:'🕵️ '+name+' twierdzi: „Jest '+display(start)+'. Za '+word+' będzie '+claimed+'”.\nKtóra godzina będzie NAPRAWDĘ? Wybierz jedną z czterech możliwości.\n'+extraText,
+      explanation:display(start)+' + '+d+' min = '+display(result)+'.'};
   }
   function rescue(level,ctx){
     const name=hero(ctx),journey=duration(level),arrival=time(level,10,19);
