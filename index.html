@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#6656cc">
 <meta name="description" content="Gra do nauki zegara: 25 pytań, dwie próby, naklejki, punkty i lokalny ranking wyników.">
-<title>Zegarowe przygody 5.0 — krainy i przygody</title>
+<title>Zegarowe przygody 6.0 — gra planszowa</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
@@ -198,6 +198,108 @@
   .time-entry{font-weight:900;letter-spacing:.025em;background:white;color:#273759;min-width:0;text-align:center;border:2px solid #bcc3e2;border-radius:13px;padding:12px 7px;font-size:1.25rem;width:100%;max-width:125px}
   .time-entry::placeholder{color:#9ba0b7}
   @media(max-width:700px){.world-cards{grid-template-columns:1fr}.world-card{padding:13px}.world-icon{font-size:2.1rem;flex-basis:39px}.world-map-intro{padding:18px 16px}.world-map{margin-top:15px}.world-steps .world-btn{font-size:.79rem}}
+
+  /* v6: kręta plansza, księga naklejek i wspólny ranking rodzinny */
+  body:not(.map-view) #campaignNav,body:not(.map-view) #worldAlbum,body:not(.map-view) #worldLeaderboard{display:none!important}
+  body.map-view #rankingToggle{display:none!important}
+  .campaign-nav{display:flex;gap:9px;flex-wrap:wrap;margin:16px 0 13px}
+  .campaign-tab{border:2px solid #c6bcea;border-radius:999px;background:white;color:#584a87;padding:11px 15px;font-weight:900;box-shadow:0 3px 0 #c2bbdc}
+  .campaign-tab[aria-pressed="true"]{background:#6551c5;color:white;border-color:#6551c5;box-shadow:0 3px 0 #3f3294}
+  .campaign-panel{margin:17px auto 30px}
+  .board-header{background:linear-gradient(125deg,#eee6ff,#e6f8ec 65%,#fff1cc);border:2px solid #d4d0ee;border-radius:23px;padding:19px 22px;margin-bottom:16px}
+  .board-eyebrow{font-size:.76rem;letter-spacing:.12em;font-weight:950;color:#6b57a2;margin-bottom:6px}
+  .board-header h2{font-size:clamp(1.45rem,4vw,2.05rem);margin:3px 0;color:#44358f}
+  .board-header p{color:#565675;line-height:1.5;margin:6px 0 10px}
+  .board-totals{color:#425476;font-size:.92rem;font-weight:850;margin:12px 0 8px}
+  .board-progress{height:12px;border-radius:30px;background:#fff;overflow:hidden;box-shadow:inset 0 1px 5px #6b6b8933}
+  .board-progress span{height:100%;background:linear-gradient(90deg,#53c98d,#8f8dfa,#ffc868);border-radius:30px;display:block}
+  .board-continue{margin-top:16px;background:#6651cb;color:#fff;border:2px solid #5541ae;border-radius:13px;padding:12px 18px;font-weight:950;font-size:1rem;box-shadow:0 4px 0 #423486}
+  .board-canvas{height:750px;position:relative;overflow:hidden;border:3px solid #d5d6e9;border-radius:26px;isolation:isolate;box-shadow:0 13px 30px #7272961b;background:#f7f9ff}
+  .board-zone{position:absolute;left:0;width:100%;z-index:-1;overflow:hidden}
+  .board-zone:after{content:"✦   ☁️   ✦    🌿   ✦";position:absolute;left:5%;bottom:5%;font-size:1.5rem;opacity:.18;letter-spacing:2.5rem;pointer-events:none}
+  .board-zone-label{position:absolute;top:7px;left:14px;font-size:.75rem;letter-spacing:.025em;font-weight:950;color:#51627c;background:#ffffffaf;border-radius:999px;padding:5px 10px}
+  .board-road-desktop,.board-road-mobile{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+  .board-road-mobile{display:none}
+  .board-route-base{fill:none;stroke:#fff;stroke-width:18;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1 35;filter:drop-shadow(0px 2px 1px #8e8ba766)}
+  .board-route-done{fill:none;stroke:#65ca94;stroke-width:15;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1 35}
+  .board-node{position:absolute;left:var(--board-x);top:var(--board-y);transform:translate(-50%,-50%);z-index:2;width:168px;min-height:117px;background:transparent;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;color:#343850;cursor:pointer}
+  .board-emoji{width:69px;height:69px;display:grid;place-items:center;font-size:2.2rem;border:4px solid #b0b5cb;border-radius:50%;background:linear-gradient(135deg,#fff,#f0f1fb);box-shadow:0 6px 0 #9b95b744,0 10px 15px #7b78982d;transition:transform .18s ease}
+  .board-node:hover .board-emoji,.board-node:focus-visible .board-emoji{transform:translateY(-3px) scale(1.07)}
+  .board-node.is-open .board-emoji{border-color:#8f83e8;background:#fff}
+  .board-node.is-current .board-emoji{border-color:#7559ce;box-shadow:0 0 0 6px #957be955,0 6px 0 #6a58ae44}
+  .board-node.is-complete .board-emoji{border-color:#54b586;background:#effff1}
+  .board-node.is-locked .board-emoji{filter:grayscale(.6);background:#ededf1}
+  .board-number{position:absolute;top:49px;left:50%;margin-left:20px;border-radius:999px;min-width:24px;padding:3px 6px;background:#59518a;color:#fff;font-size:.72rem;font-weight:950}
+  .board-node-title{font-size:.79rem;font-weight:950;line-height:1.18;max-width:160px;padding:4px 8px;border-radius:10px;background:#ffffffdb;text-wrap:balance}
+  .board-node-marker{position:absolute;top:1px;margin-left:-51px;font-size:1.25rem}
+  .board-node.is-selected .board-node-title{background:#5d4ac1;color:#fff}
+  .board-selected{--land-color:#e2f4ff;display:flex;gap:15px;align-items:flex-start;background:linear-gradient(125deg,var(--land-color),#fff 72%);padding:18px;border:2px solid #c6c2ec;border-radius:22px;margin-top:17px}
+  .board-selected-icon{font-size:2.6rem;flex:0 0 57px;text-align:center}
+  .board-selected-content{flex:1;min-width:0}
+  .board-selected-kicker{color:#6250a0;font-size:.76rem;letter-spacing:.05em;font-weight:950}
+  .board-selected h3{margin:4px 0 6px;color:#37305d;font-size:1.35rem}
+  .board-selected p{margin:4px 0 10px;line-height:1.5;font-size:.91rem}
+  .board-selected-hero{font-weight:900;color:#594a8b;font-size:.91rem;margin-bottom:10px}
+  .board-selected-stages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .board-stage-button{padding:11px 9px;border:2px solid #c1b7df;border-radius:12px;background:#fff;color:#564687;font-weight:950;font-size:.86rem;min-height:47px}
+  .board-stage-button.available{background:#6051c8;color:white;border-color:#6051c8}
+  .board-stage-button.completed{background:#e0f6e7;color:#22613e;border-color:#a2d7b3}
+  .board-stage-button:disabled{opacity:.55;cursor:not-allowed}
+  .board-caption{color:#65728e;text-align:center;font-size:.85rem;line-height:1.5;margin:12px 4px}
+  /* Książka kolekcjonera */
+  .album-header,.leaderboard-intro{padding:20px;border:2px solid #ddc79f;background:linear-gradient(120deg,#fff6de,#fffafd);border-radius:21px;margin-bottom:15px}
+  .album-kicker{font-weight:950;font-size:.77rem;letter-spacing:.12em;color:#aa7d40}
+  .album-header h2,.leaderboard-intro h2{margin:5px 0 9px;color:#594287;font-size:1.65rem}
+  .album-header p,.leaderboard-intro p{margin:0 0 12px;line-height:1.5;color:#656174}
+  .album-totals{font-weight:900;color:#7e593e;font-size:.85rem;line-height:1.6}
+  .album-tabs{display:flex;flex-wrap:wrap;gap:9px;margin:15px 0}
+  .album-tab{padding:10px 12px;border:2px solid #dfcfae;background:white;color:#795633;font-weight:900;border-radius:13px;font-size:.88rem}
+  .album-tab[aria-pressed="true"]{background:#7958b9;color:white;border-color:#7958b9}
+  .album-page{padding:18px;background:linear-gradient(130deg,#fffdf4,#fff6e9);border:3px solid #d7ba87;border-radius:22px;box-shadow:inset 0 0 0 5px #fff0d3,0 8px 24px #6b4d3e1a;min-height:320px}
+  .album-page-title{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:7px;margin:0 0 14px}
+  .album-page-title h3{margin:0;color:#7e4f39;font-size:1.25rem}
+  .album-page-title span{font-size:.81rem;font-weight:900;color:#8e7e64}
+  .album-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+  .album-sticker{min-height:143px;background:#fff;border:2px dashed #d4c7ac;border-radius:15px;padding:12px 7px;display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center}
+  .album-sticker.unlocked{border:2px solid #e9cf9d;box-shadow:0 4px 11px #c7ab6833}
+  .album-sticker.locked{background:#f5efe5;color:#8b8580}
+  .album-sticker-emoji{font-size:2.2rem;margin-bottom:7px}
+  .album-sticker-name{font-size:.77rem;font-weight:900;line-height:1.32;overflow-wrap:anywhere}
+  .album-sticker-index{font-size:.69rem;color:#877b79;margin-top:7px}
+  .album-pages{display:flex;justify-content:center;align-items:center;gap:14px;margin:14px 0;font-weight:900;color:#80604b;font-size:.8rem}
+  .album-pager-btn{border:1px solid #caad87;border-radius:10px;background:#fff6e5;color:#855b3b;font-size:.81rem;font-weight:850;padding:9px}
+  .album-pager-btn:disabled{opacity:.4}
+  .album-footer{font-size:.79rem;color:#847383;line-height:1.5}
+  /* Ranking tej samej rodziny, tylko na tym urządzeniu */
+  .leaderboard-list{display:grid;gap:9px}
+  .leaderboard-row{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:10px;align-items:center;padding:13px 14px;border:2px solid #e4e0f2;border-radius:15px;background:white}
+  .leaderboard-row.myself{border-color:#a4bcef;background:#f0f5ff}
+  .leaderboard-place{font-size:1.45rem;font-weight:950;text-align:center}
+  .leaderboard-player{display:flex;flex-direction:column;gap:5px;overflow-wrap:anywhere}
+  .leaderboard-player strong{color:#443484;font-size:1.02rem}
+  .leaderboard-player small{color:#6b7292}
+  .leaderboard-score{color:#35674b;font-weight:950;white-space:nowrap}
+  .leaderboard-foot{font-size:.83rem;color:#74748b;line-height:1.5;margin:14px 4px}
+  @media(max-width:680px){
+    .board-canvas{height:1350px}
+    .board-road-desktop{display:none}
+    .board-road-mobile{display:block}
+    .board-node{left:var(--board-mobile-x);top:var(--board-mobile-y);width:min(44vw,145px);min-height:95px}
+    .board-emoji{width:61px;height:61px;font-size:1.9rem}
+    .board-number{top:43px;margin-left:15px}
+    .board-node-title{font-size:.72rem;max-width:132px}
+    .board-zone-label{font-size:.7rem;left:7px;top:4px}
+    .board-zone:after{letter-spacing:1rem}
+    .board-selected{padding:14px;gap:8px}
+    .board-selected-icon{font-size:1.95rem;flex-basis:34px}
+    .board-selected-stages{gap:7px}
+    .board-stage-button{font-size:.75rem;padding:8px 5px}
+    .board-header{padding:16px}
+    .album-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .campaign-tab{font-size:.83rem;padding:9px 10px}
+    .leaderboard-row{grid-template-columns:38px minmax(0,1fr) auto;padding:11px 9px}
+  }
+  @media(prefers-reduced-motion:reduce){.board-emoji{transition:none}}
 </style>
 </head>
 <body>
@@ -222,6 +324,13 @@
     <div class="progresslabel" id="taskLabel">Zadanie 1 z 25</div>
     <div id="adaptiveNote" class="quest-lock" aria-live="polite">🎯 Gra zapamiętuje trudniejsze kategorie i ćwiczy je częściej w następnych seriach.</div>
   </div>
+  <nav id="campaignNav" class="campaign-nav" aria-label="Mapa, ranking i album">
+    <button id="campaignMapBtn" type="button" class="campaign-tab" aria-pressed="true">🗺️ Mapa krain</button>
+    <button id="campaignAlbumBtn" type="button" class="campaign-tab" aria-pressed="false">📖 Album naklejek</button>
+    <button id="campaignRankingBtn" type="button" class="campaign-tab" aria-pressed="false">🏆 Ranking</button>
+  </nav>
+  <section id="worldAlbum" class="campaign-panel hidden" aria-label="Księga naklejek"></section>
+  <section id="worldLeaderboard" class="campaign-panel hidden" aria-label="Ranking odkrywców"></section>
   <section id="worldMap" class="world-map" aria-label="Mapa krain i ratowanie postaci"></section>
   <div id="worldRunBar" class="world-runbar" hidden><strong id="worldRunTitle"></strong><button type="button" id="worldBackBtn">🗺️ Wróć do mapy</button></div>
   <div class="attempts"><span>Próba w tym zadaniu:</span><strong id="attemptCount">1 z 2</strong><span class="rule">Za pierwszą poprawną odpowiedź +10 pkt i naklejka, za drugą +5 pkt. Po dwóch nieudanych próbach zadanie jest niezaliczone.</span></div>
@@ -286,6 +395,8 @@
 </div>
 <script src="./clock-extras.js"></script>
 <script src="./clock-worlds.js"></script>
+<script src="./clock-board.js"></script>
+<script src="./clock-collection.js"></script>
 <script>
 (() => {
   'use strict';
@@ -294,6 +405,7 @@
   const TOTAL=25, MAX_ATTEMPTS=2, RESULTS_KEY="zegarowe-przygody-v4-results", PLAYER_KEY="zegarowe-przygody-v4-player";
   const extras=window.ClockExtras;
   const worlds=window.ClockWorlds;
+  const collection=window.ClockCollection;
   if(!extras)throw Error("Nie załadowano modułu zagadek logicznych.");
   const state={mode:'world',worldId:0,worldStep:0, puzzleMode:'read',level:1,storyKind:'mix',theme:'fairy',errors:0,wrongAttempts:0,lastWrongSignature:null,index:1,targetH:3,targetM:0,userH:12,userM:0,selected:'hour',solved:0,stars:0,points:0,questionMistakes:0,done:false,dragging:false,story:null,selectedChoice:null,plan:[],lastMini:-1,usedMini:new Set(),questSteps:[],lastPrompt:'',ended:false,storyClockEnabled:false,skills:{},seen:new Set(),player:'Gracz'};
   const pad=n=>String(n).padStart(2,'0');
@@ -866,14 +978,23 @@
   const sessionTotal=()=>state.mode==='special'?5:TOTAL;
   function canPlaySpecial(){const name=String($('playerName').value||state.player||'Gracz').trim();return safeReadResults().filter(r=>r.player===name&&r.mode!=='detective'&&r.mode!=='special').length>=2;}
   function updateSpecialLock(){const open=canPlaySpecial();$('specialTab').disabled=!open;$('specialTab').textContent=open?'🎂 Misja specjalna 🔓':'🎂 Misja specjalna 🔒';$('specialTab').title=open?'Odblokowana: 5 połączonych zagadek':'Odblokuje się po ukończeniu 2 zwykłych serii 25 pytań';}
-  function showWorldMap(){
+  function showCampaignView(view){
     document.body.classList.add('map-view');
     $('worldRunBar').hidden=true;
     $('rankPanel').classList.add('hidden');
     $('rankingToggle').setAttribute('aria-expanded','false');
-    worlds.render($('worldMap'),state.player,startWorldStage);
+    for(const [name,id] of [['map','worldMap'],['album','worldAlbum'],['ranking','worldLeaderboard']]){
+      $(id).classList.toggle('hidden',name!==view);
+    }
+    $('campaignMapBtn').setAttribute('aria-pressed',String(view==='map'));
+    $('campaignAlbumBtn').setAttribute('aria-pressed',String(view==='album'));
+    $('campaignRankingBtn').setAttribute('aria-pressed',String(view==='ranking'));
+    if(view==='map')worlds.render($('worldMap'),state.player,startWorldStage);
+    else if(view==='album')collection.renderAlbum($('worldAlbum'),state.player,worlds,bigRewards,miniRewards);
+    else collection.renderRanking($('worldLeaderboard'),state.player,safeReadResults(),worlds);
     window.scrollTo(0,0);
   }
+  function showWorldMap(){showCampaignView('map');}
   function startWorldStage(worldId,worldStep){
     const record=worlds.read(state.player);
     if(!worlds.unlocked(record,worldId)||(worldStep>0&&!worlds.passed(record,worldId,worldStep-1)))return;
@@ -907,6 +1028,7 @@
     state.lastMini=idx;state.usedMini.add(idx);
     try{localStorage.setItem(MINI_RECENT_KEY,JSON.stringify([...recent,idx].slice(-30)));}catch(e){}
     $('miniEmoji').textContent=miniRewards[idx][0];$('miniText').textContent=miniRewards[idx][1];
+    collection.addMini(state.player,idx);
     box.classList.remove('pop');void box.offsetWidth;box.classList.add('pop');
   }
   function lockPuzzle(){
@@ -1055,6 +1177,7 @@
     }
     if(winning){
       const reward=pickBigReward();
+      collection.addBig(state.player,bigRewards.indexOf(reward));
       $('awardCard').dataset.theme=reward.theme;
       $('awardEmoji').textContent=reward.emoji;
       $('awardName').textContent=reward.name;
@@ -1150,6 +1273,9 @@
   $('checkBtn').addEventListener('click',check);
   $('restartBtn').addEventListener('click',()=>{if(state.mode==='world')showWorldMap();else beginSession();});
   $('worldBackBtn').addEventListener('click',showWorldMap);
+  $('campaignMapBtn').addEventListener('click',showWorldMap);
+  $('campaignAlbumBtn').addEventListener('click',()=>showCampaignView('album'));
+  $('campaignRankingBtn').addEventListener('click',()=>showCampaignView('ranking'));
   clock.addEventListener('pointerdown',ev=>{
     if(currentMode()==='read'||(currentMode()==='story'&&!state.storyClockEnabled)||state.done)return;
     const group=ev.target.closest('[data-hand]');if(group&&group.dataset.hand)selectHand(group.dataset.hand);
