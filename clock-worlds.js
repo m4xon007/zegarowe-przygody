@@ -25,9 +25,9 @@ const rand=n=>Math.floor(Math.random()*n);
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=rand(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;}
 function plan(i,s,name,extra){
  const level=WORLDS[i].level,logic=extra.forLevel(level),all=['read','set','calc','words','life',...logic];let list=[];
- if(s===0)list=[...Array(9).fill('read'),...Array(10).fill('set'),...Array(6).fill('words')];
- else if(s===1)list=[...Array(8).fill('calc'),...Array(8).fill('life'),...Array(7).fill('words'),'read','set'];
- else if(s===2){list=[...logic];while(list.length<16)list.push(logic[rand(logic.length)]);list.push(...['read','set','calc','life','words','calc','life','read','set']);}
+ if(s===0)list=[...Array(7).fill('read'),...Array(8).fill('set'),...Array(5).fill('words')];
+ else if(s===1)list=[...Array(6).fill('calc'),...Array(6).fill('life'),...Array(6).fill('words'),'read','set'];
+ else if(s===2){list=[...logic];while(list.length<13)list.push(logic[rand(logic.length)]);list.push(...['read','set','calc','life','words','calc','life']);}
  else list=['read','read','set','set','calc','calc','words','words','life','life',...logic];
  const progress=extra.readProgress(name,level),pool=s===0?['read','set','words']:s===1?['calc','life','words','read','set']:s===2?[...logic,'calc','life','words']:all;
  function weighted(){const bag=[];for(const k of pool){const w=Math.min(8,1+Math.round(extra.weakness(progress[k])*9));for(let j=0;j<w;j++)bag.push(k);}return bag[rand(bag.length)];}
