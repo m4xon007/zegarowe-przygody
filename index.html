@@ -94,7 +94,7 @@
   .story-clock-tools .small {margin:8px 0}
   body[data-mode="story"] .clockpane {position:relative}
   body[data-mode="story"] #clock {touch-action:none}
-  @media(max-width:730px){body[data-mode="story"] .workpane,body[data-mode="mission"][data-puzzle="story"] .workpane{order:-1} body[data-mode="story"] .clockpane .clockbox,body[data-mode="mission"][data-puzzle="story"] .clockpane .clockbox{max-width:310px} .story-prompt{padding:14px;font-size:1.2rem}}
+  @media(max-width:730px){body[data-mode="story"] .workpane,body[data-mode="mission"][data-puzzle="story"] .workpane,body[data-mode="world"][data-puzzle="story"] .workpane{order:-1} body[data-mode="story"] .clockpane .clockbox,body[data-mode="mission"][data-puzzle="story"] .clockpane .clockbox,body[data-mode="world"][data-puzzle="story"] .clockpane .clockbox{max-width:310px} .story-prompt{padding:14px;font-size:1.2rem}}
 
   @media(max-width:730px) { .app{padding:16px 12px 30px} header{margin-bottom:15px}.topscore{width:100%}.score{flex:1;padding:8px 12px}.tab{flex:1;padding:11px 10px;font-size:.95rem}.config{padding:11px}.progress{margin-bottom:12px}main{grid-template-columns:1fr;gap:12px}.clockpane{padding:13px 10px 15px}.clockbox{max-width:350px;margin:0 auto}.workpane{padding:21px 18px;min-height:initial}.desc{margin-bottom:15px}.hands{margin:12px 0}.nudge{margin-bottom:10px}.clockhint{font-size:.82rem} }
   @media(max-width:380px) {.tab{font-size:.83rem;padding:10px 7px}.logo{width:43px;height:43px}.level{font-size:.8rem;padding:8px}.answers{gap:5px}.field{min-width:95px}.colon{padding:0 2px 8px}}
@@ -206,7 +206,6 @@
     <div class="identity"><div class="logo" aria-hidden="true">⏰</div><div><h1>Zegarowe przygody</h1><p class="subtitle">Klasa 3 · 25 zagadek, rekordy i bajkowe naklejki</p></div></div>
     <div class="topscore" aria-label="Wyniki ćwiczeń"><div class="score">Zaliczone <strong id="solvedCount">0/25</strong></div><div class="score">Punkty <strong id="pointsCount">0 🏅</strong></div><div class="score">Naklejki <strong id="starCount">0 ⭐</strong></div><div class="score error-score">Błędy <strong id="errorCount">0</strong></div></div>
   </header>
-  <section id="worldMap" class="world-map" aria-label="Mapa krain i ratowanie postaci"></section>
   <nav class="tabbar" aria-label="Rodzaj ćwiczeń">
     <button class="tab" data-mode="read" id="readTab" aria-selected="false" type="button">👀 Odczytaj godzinę</button>
     <button class="tab" data-mode="set" id="setTab" aria-selected="false" type="button">🖐️ Ustaw wskazówki</button>
@@ -223,6 +222,7 @@
     <div class="progresslabel" id="taskLabel">Zadanie 1 z 25</div>
     <div id="adaptiveNote" class="quest-lock" aria-live="polite">🎯 Gra zapamiętuje trudniejsze kategorie i ćwiczy je częściej w następnych seriach.</div>
   </div>
+  <section id="worldMap" class="world-map" aria-label="Mapa krain i ratowanie postaci"></section>
   <div id="worldRunBar" class="world-runbar" hidden><strong id="worldRunTitle"></strong><button type="button" id="worldBackBtn">🗺️ Wróć do mapy</button></div>
   <div class="attempts"><span>Próba w tym zadaniu:</span><strong id="attemptCount">1 z 2</strong><span class="rule">Za pierwszą poprawną odpowiedź +10 pkt i naklejka, za drugą +5 pkt. Po dwóch nieudanych próbach zadanie jest niezaliczone.</span></div>
   <section id="rankPanel" class="ranking hidden" aria-label="Ranking zapisanych serii"><div class="ranking-head"><h2>🏆 Ranking lokalny</h2><span class="small" id="rankScope"></span></div><div id="rankList"></div><p class="small">Ranking pokazuje 10 najlepszych ukończonych serii w wybranym trybie i na wybranym poziomie. Zapisywany jest tylko w tej przeglądarce.</p></section>
