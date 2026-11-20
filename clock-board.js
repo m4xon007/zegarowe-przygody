@@ -1,4 +1,4 @@
-/* Zegarowe przygody 6.0: interaktywna plansza, 16 krain, zachowanie starego postępu */
+/* Zegarowe przygody 6.1: interaktywna plansza, 16 krain, zachowanie starego postępu */
 (function(global){
 'use strict';
 const base=global.ClockWorlds;
@@ -107,7 +107,7 @@ base.render=function(root,player,onStart){
  const intro=elem('section','board-header');
  intro.append(elem('div','board-eyebrow','🎲 ZEGAROWE PRZYGODY · GRA PLANSZOWA'));
  intro.append(elem('h2','',next.complete?'👑 Mistrzyni Czasu!':'🗺️ Szlak 16 Krain'));
- intro.append(elem('p','',next.complete?'Uratowałaś wszystkich bohaterów! Wybierz dowolną krainę i zbieraj więcej gwiazdek.':'Podróżuj po planszy, zbieraj gwiazdki i ratuj 16 bohaterów. Przed Tobą 4 magiczne światy.'));
+ intro.append(elem('p','',next.complete?'Uratowałaś wszystkich bohaterów! Wybierz dowolną krainę i zbieraj więcej gwiazdek.':'Podróżuj po planszy, zbieraj gwiazdki i ratuj 16 bohaterów. Za pierwsze uratowanie postaci: +10 min na tablecie, za ostatecznego bossa: +1 godzina! Nagrody przyznają rodzice.'));
  intro.append(elem('div','board-totals','🏆 Postacie '+stat.heroes+'/16  ·  ⭐ Gwiazdki '+stat.stars+'/192  ·  🏁 Etapy '+stat.stages+'/64'));
  const outer=elem('div','board-progress'),inside=elem('span');
  inside.style.width=stat.stages/64*100+'%';outer.append(inside);intro.append(outer);
