@@ -872,7 +872,7 @@
     $('rankPanel').classList.add('hidden');
     $('rankingToggle').setAttribute('aria-expanded','false');
     worlds.render($('worldMap'),state.player,startWorldStage);
-    window.scrollTo({top:0,behavior:'instant'});
+    window.scrollTo(0,0);
   }
   function startWorldStage(worldId,worldStep){
     const record=worlds.read(state.player);
@@ -883,7 +883,7 @@
     $('worldRunTitle').textContent=worlds.worlds[worldId].icon+' '+worlds.worlds[worldId].name+' · '+worlds.stages[worldStep]+' · 25 zadań';
     $('rankPanel').classList.add('hidden');
     beginSession();
-    window.scrollTo({top:0,behavior:'instant'});
+    window.scrollTo(0,0);
   }
   function beginSession(){
     updateSpecialLock();
